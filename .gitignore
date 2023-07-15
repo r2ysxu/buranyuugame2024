@@ -1,5 +1,6 @@
 .vs
 Binaries
+Config
 Content
 !Content/NecoGoblin
 DerivedDataCache
@@ -7,3 +8,5 @@ Intermediate
 Platforms
 Saved
 .vsconfig
+NecoGoblin.sln
+NecoGoblin.uproject
