@@ -1,7 +1,7 @@
 .vs
 Binaries
 Config
-Content
+Content/*
 !Content/NecoGoblin
 DerivedDataCache
 Intermediate
