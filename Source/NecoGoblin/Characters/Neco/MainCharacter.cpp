@@ -66,6 +66,12 @@ void AMainCharacter::BeginPlay() {
 	}
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
+
+	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
+	if (HudWidget) {
+		HudWidget->AddToViewport();
+		HudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void AMainCharacter::OnAimModeStart() {
@@ -75,6 +81,7 @@ void AMainCharacter::OnAimModeStart() {
 		GetCameraBoom()->SetRelativeLocation(offset);
 		GetCameraBoom()->TargetArmLength -= cameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
+		HudWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -84,6 +91,7 @@ void AMainCharacter::OnAimModeStop() {
 		GetCameraBoom()->SetRelativeLocation(FVector::ZeroVector);
 		GetCameraBoom()->TargetArmLength += cameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
+		HudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

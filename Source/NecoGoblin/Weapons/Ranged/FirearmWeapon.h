@@ -18,7 +18,9 @@ private:
 	bool FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult);
 
 protected:
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = Pawn)
+	UParticleSystem* HitFX;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
 	class USkeletalMesh* Mesh;
 	class USkeletalMeshComponent* WeaponMeshComponent;

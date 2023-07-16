@@ -5,6 +5,7 @@
 #include "../../Characters/Humanoid.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AFirearmWeapon::AFirearmWeapon() {
@@ -49,6 +50,7 @@ bool AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FC
 		AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 		if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
 			targetActor->TakeHitDamage(GetWeaponDamage(), this);
+			if (HitFX) UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitFX, OutResult.ImpactPoint);
 		}
 	} else return false;
 	return true;
