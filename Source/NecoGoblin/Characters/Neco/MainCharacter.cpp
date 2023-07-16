@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MainCharacter.h"
+#include "../Goblin/Goblin.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -11,7 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "../Goblin/Goblin.h"
+#include "Blueprint/UserWidget.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h>
 
 
@@ -89,12 +90,12 @@ void AMainCharacter::OnAimModeStop() {
 void AMainCharacter::OnFireWeapon() {
 	if (Firearm) {
 		const float targetArmLength = GetCameraBoom()->TargetArmLength;
-		FVector camStart = FollowCamera->GetComponentLocation() + FollowCamera->GetForwardVector() * targetArmLength;
+		FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
 		FCollisionQueryParams collisionParams;
 		collisionParams.AddIgnoredActor(GetOwner());
 
 		FHitResult result;
-		Firearm->OnFire(camStart, FollowCamera->GetForwardVector(), collisionParams, result);
+		Firearm->OnFire(camStart, GetCameraBoom()->GetForwardVector(), collisionParams, result);
 	}
 }
 

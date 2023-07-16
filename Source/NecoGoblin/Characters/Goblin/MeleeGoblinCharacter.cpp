@@ -61,7 +61,10 @@ void AMeleeGoblinCharacter::OnOutsideMeleeAttackRange(UPrimitiveComponent* Overl
 }
 
 void AMeleeGoblinCharacter::InitiateMeleeAttack() {
-	if (MeleeAttackMontage && !GetAIController()->GetIsAttacking()) {
+	if (!GetIsAlive()) {
+		GetAIController()->SetIsAttacking(false);
+		GetWorld()->GetTimerManager().ClearTimer(InitateAttackHandler);
+	} else if (MeleeAttackMontage && !GetAIController()->GetIsAttacking()) {
 		GetAIController()->SetIsAttacking(true);
 		if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(true);
 		float animationDelay = PlayAnimMontage(MeleeAttackMontage);

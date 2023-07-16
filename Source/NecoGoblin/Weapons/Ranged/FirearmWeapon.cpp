@@ -4,20 +4,31 @@
 #include "FirearmWeapon.h"
 #include "../../Characters/Humanoid.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AFirearmWeapon::AFirearmWeapon() {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	class USceneComponent* sceneRoot = CreateDefaultSubobject<USceneComponent>("OneHandWeaponRoot");
+	SetRootComponent(sceneRoot);
+
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("FirearmWeaponMesh");
+	WeaponMeshComponent->SetupAttachment(GetRootComponent());
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetRootComponent(WeaponMeshComponent);
+
+	
+	UBoxComponent* box = CreateDefaultSubobject<UBoxComponent>("Box");
+	box->SetBoxExtent(FVector(50.f, 50.f, 0));
+	box->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+	box->bHiddenInGame = false;
 }
 
 void AFirearmWeapon::BeginPlay() {
 	Super::BeginPlay();
 	if (Mesh) WeaponMeshComponent->SetSkeletalMesh(Mesh);
+	WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 90.f, 180.f));
 }
 
 void AFirearmWeapon::WeaponFireStart() {
