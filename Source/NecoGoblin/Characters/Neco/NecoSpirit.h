@@ -24,7 +24,7 @@ protected:
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	FName FirearmSocketName = FName("weapon_rSocket");
+	FName FirearmSocketName = FName("hand_l");
 
 	FORCEINLINE uint8 GetTeam() override { return 1; }
 	virtual TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return nullptr; }

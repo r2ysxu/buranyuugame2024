@@ -54,6 +54,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	bool IsAimMode = false;
+	float PlayerPitch = 0.f;
 
 protected:
 	// APawn interface
@@ -75,6 +76,7 @@ public:
 
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAimMode() { return IsAimMode; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

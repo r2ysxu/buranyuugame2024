@@ -3,6 +3,7 @@ Binaries
 Config
 Content/*
 !Content/NecoGoblin
+Content/NecoGoblin/Mesh
 DerivedDataCache
 Intermediate
 Platforms

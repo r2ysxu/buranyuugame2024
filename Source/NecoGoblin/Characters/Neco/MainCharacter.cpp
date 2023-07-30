@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/UserWidget.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h>
 
@@ -103,7 +104,7 @@ void AMainCharacter::OnFireWeapon() {
 		collisionParams.AddIgnoredActor(GetOwner());
 
 		FHitResult result;
-		Firearm->OnFire(camStart, GetCameraBoom()->GetForwardVector(), collisionParams, result);
+		Firearm->OnFire(camStart, FollowCamera->GetForwardVector(), collisionParams, result);
 	}
 }
 
@@ -166,5 +167,8 @@ void AMainCharacter::Look(const FInputActionValue& Value) {
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+
+		FRotator playerRotation = (GetControlRotation() - GetActorRotation()).GetNormalized();
+		PlayerPitch = playerRotation.Pitch;
 	}
 }

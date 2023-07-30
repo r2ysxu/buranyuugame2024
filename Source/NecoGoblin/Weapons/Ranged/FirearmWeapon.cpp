@@ -23,13 +23,15 @@ AFirearmWeapon::AFirearmWeapon() {
 	UBoxComponent* box = CreateDefaultSubobject<UBoxComponent>("Box");
 	box->SetBoxExtent(FVector(50.f, 50.f, 0));
 	box->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
-	box->bHiddenInGame = false;
 }
 
 void AFirearmWeapon::BeginPlay() {
 	Super::BeginPlay();
-	if (Mesh) WeaponMeshComponent->SetSkeletalMesh(Mesh);
-	WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 90.f, 180.f));
+	if (Mesh) {
+		WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
+		WeaponMeshComponent->SetSkeletalMesh(Mesh);
+		WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
+	}
 }
 
 void AFirearmWeapon::WeaponFireStart() {
