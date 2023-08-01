@@ -38,7 +38,7 @@ void AMeleeGoblinCharacter::SetupMeleeWeapon() {
 // Called when the game starts or when spawned
 void AMeleeGoblinCharacter::BeginPlay() {
 	Super::BeginPlay();
-	AiController = Cast<AMeleeGoblinController>(GetController());
+	SpawnDefaultController();
 	SetupMeleeWeapon();
 	MeleeDetectionBox->OnComponentBeginOverlap.AddDynamic(this, &AMeleeGoblinCharacter::OnWithinMeleeAttackRange);
 	MeleeDetectionBox->OnComponentEndOverlap.AddDynamic(this, &AMeleeGoblinCharacter::OnOutsideMeleeAttackRange);
@@ -75,4 +75,11 @@ void AMeleeGoblinCharacter::InitiateMeleeAttack() {
 void AMeleeGoblinCharacter::OnAttackStop() {
 	GetAIController()->SetIsAttacking(false);
 	if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
+}
+
+void AMeleeGoblinCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
+	Super::TakeHitDamage(damage, DamageCauser);
+	if (!GetIsAlive() && MeleeAttackMontage) {
+		StopAnimMontage(MeleeAttackMontage);
+	}
 }

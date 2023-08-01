@@ -40,6 +40,7 @@ public:
 		FName WeaponSocketName = FName("Base-HumanRPalm");
 
 	FORCEINLINE AMeleeGoblinController* GetAIController() { return AiController; }
+	FORCEINLINE void SetAIController(AMeleeGoblinController* controller) { AiController = controller; }
 
 	UFUNCTION()
 	void OnWithinMeleeAttackRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -49,5 +50,6 @@ public:
 
 	void InitiateMeleeAttack();
 	void OnAttackStop();
+	void TakeHitDamage(float damage, AActor* DamageCauser) override;
 
 };

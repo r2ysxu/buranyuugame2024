@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../Weapon.h"
+#include "NiagaraComponent.h"
 #include "FirearmWeapon.generated.h"
 
 /**
@@ -20,7 +21,7 @@ private:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Pawn)
-	UParticleSystem* HitFX;
+	class UNiagaraSystem* BloodHitFX;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh)
 	class USkeletalMesh* Mesh;
 	class USkeletalMeshComponent* WeaponMeshComponent;

@@ -49,6 +49,7 @@ void AMeleeGoblinController::InitializeAIPerception() {
 
 void AMeleeGoblinController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
+	Cast<AMeleeGoblinCharacter>(InPawn)->SetAIController(this);
 	GetWorld()->GetTimerManager().SetTimer(MoveHandler, this, &AMeleeGoblinController::OnMoveToTarget, 0.1f, true);
 }
 
