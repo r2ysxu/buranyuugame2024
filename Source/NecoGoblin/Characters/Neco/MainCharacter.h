@@ -45,6 +45,9 @@ class AMainCharacter : public ANecoSpirit {
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ReloadAction;
+
 protected:
 
 	/** Called for movement input */
@@ -55,6 +58,10 @@ protected:
 
 	bool IsAimMode = false;
 	float PlayerPitch = 0.f;
+	FTimerHandle OnFireWeaponHandler;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	class UAnimMontage* ReloadFirearmMontage;
 
 protected:
 	// APawn interface
@@ -86,6 +93,8 @@ public:
 	void OnAimModeStart();
 	void OnAimModeStop();
 	void OnFireWeapon();
+	void OnFireWeaponOnce();
 	void OnFireStop();
+	void OnReloadWeapon();
 };
 

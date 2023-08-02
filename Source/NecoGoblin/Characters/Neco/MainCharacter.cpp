@@ -96,19 +96,39 @@ void AMainCharacter::OnAimModeStop() {
 	}
 }
 
-void AMainCharacter::OnFireWeapon() {
-	if (Firearm) {
-		const float targetArmLength = GetCameraBoom()->TargetArmLength;
-		FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
-		FCollisionQueryParams collisionParams;
-		collisionParams.AddIgnoredActor(GetOwner());
+void AMainCharacter::OnFireWeaponOnce() {
+	const float targetArmLength = GetCameraBoom()->TargetArmLength;
+	FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
+	FCollisionQueryParams collisionParams;
+	collisionParams.AddIgnoredActor(GetOwner());
 
-		FHitResult result;
-		Firearm->OnFire(camStart, FollowCamera->GetForwardVector(), collisionParams, result);
+	FHitResult result;
+	if (Firearm->OnFire(camStart, FollowCamera->GetForwardVector(), collisionParams, result)) {
+		FVector2D recoil = Firearm->GenerateRecoil();
+		Look(FInputActionValue(recoil));
 	}
 }
 
-void AMainCharacter::OnFireStop() {}
+void AMainCharacter::OnFireWeapon() {
+	if (Firearm && IsAimMode) {
+		OnFireWeaponOnce();
+		if (!Firearm->IsSemiAutomatic()) {
+			GetWorld()->GetTimerManager().SetTimer(OnFireWeaponHandler, this, &AMainCharacter::OnFireWeaponOnce, Firearm->GetFireRate(), true);
+		}
+	}
+}
+
+void AMainCharacter::OnFireStop() {
+	if (Firearm) {
+		GetWorld()->GetTimerManager().ClearTimer(OnFireWeaponHandler);
+	}
+}
+
+void AMainCharacter::OnReloadWeapon() {
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Reloading"));
+	float animationDelay = PlayAnimMontage(ReloadFirearmMontage, Firearm->GetReloadSpeedModifier());
+	Firearm->ReloadWeapon(animationDelay);
+}
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -135,6 +155,9 @@ void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 		//Fire
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnFireWeapon);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainCharacter::OnFireStop);
+
+		//Reload
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnReloadWeapon);
 	}
 }
 

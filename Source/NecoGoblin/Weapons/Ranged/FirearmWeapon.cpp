@@ -29,10 +29,14 @@ AFirearmWeapon::AFirearmWeapon() {
 
 void AFirearmWeapon::BeginPlay() {
 	Super::BeginPlay();
-	if (Mesh) {
-		WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
-		WeaponMeshComponent->SetSkeletalMesh(Mesh);
-		WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
+	WeaponData = weaponDataTable->FindRow<FFirearmWeaponData>(WeaponKey, FString("MainFirearm"), true);
+	if (WeaponData) {
+		CurrentAmmoInMagazine = WeaponData->MagazineSize;
+		if (WeaponData->WeaponMesh) {
+			WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
+			WeaponMeshComponent->SetSkeletalMesh(WeaponData->WeaponMesh);
+			WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
+		}
 	}
 }
 
@@ -45,21 +49,32 @@ void AFirearmWeapon::WeaponFireStop() {
 	GetWorld()->GetTimerManager().ClearTimer(InitiateFireHandler);
 }
 
+void AFirearmWeapon::WeaponReloadStop() {
+	WeaponReloaded = true;
+	CurrentAmmoInMagazine = (WeaponData) ? WeaponData->MagazineSize : 0.f;
+}
+
 bool AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult) {
-	FVector endLocation = startLocation + (forwardVector * MaxRange);
-	collisionParams.AddIgnoredActor(this);
-	if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
-		WeaponFireStart();
-		DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
-		AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
-		if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
-			targetActor->TakeHitDamage(GetWeaponDamage(), this);
-			if (BloodHitFX) {
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
+	if (!WeaponData) return false;
+	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
+		CurrentAmmoInMagazine--;
+		if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
+		FVector endLocation = startLocation + (forwardVector * MaxRange);
+		collisionParams.AddIgnoredActor(this);
+		if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
+			WeaponFireStart();
+			DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
+			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
+			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
+				targetActor->TakeHitDamage(GetWeaponDamage(), this);
+				if (BloodHitFX) {
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
+				}
 			}
 		}
-	} else return false;
-	return true;
+		return true;
+	}
+	return false;
 }
 
 void AFirearmWeapon::EquipWeapon(FName SocketName) {
@@ -67,18 +82,41 @@ void AFirearmWeapon::EquipWeapon(FName SocketName) {
 }
 
 float AFirearmWeapon::GetWeaponDamage() {
-	return 50.0f;
+	return (WeaponData) ? WeaponData->BaseDamage : 10.f;
 }
 
 uint8 AFirearmWeapon::GetWeaponTeam() {
 	return Wielder->GetTeam();
 }
 
+bool AFirearmWeapon::IsSemiAutomatic() {
+	return (WeaponData) ? WeaponData->SemiAutomatic : true;
+}
+
+float AFirearmWeapon::GetFireRate() {
+	return (WeaponData) ? std::min(WeaponData->FireRate, 0.1f) : 1.f;
+}
+
+float AFirearmWeapon::GetReloadSpeedModifier() {
+	return WeaponData ? WeaponData->ReloadSpeed : 1.f;
+}
+
+void AFirearmWeapon::ReloadWeapon(float ReloadSpeed) {
+	WeaponReloaded = false;
+	GetWorld()->GetTimerManager().SetTimer(InitiateReloadHandler, this, &AFirearmWeapon::WeaponReloadStop, ReloadSpeed);
+}
+
 bool AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult) {
 	if (!IsFiring) {
-		FireWeapon(startLocation, forwardVector, collisionParams, OutResult);
-		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, FireRate, false);
+		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate, false);
+		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult);
 	}
+	return false;
+}
 
-	return true;
+FVector2D AFirearmWeapon::GenerateRecoil() {
+	return FVector2D(
+		FMath::RandRange(-WeaponData->RecoilYawVariance, WeaponData->RecoilYawVariance),
+		FMath::RandRange(-WeaponData->RecoiPitchVariance, 0.f)
+	);
 }
