@@ -33,7 +33,6 @@ void AMeleeWeapon::BeginPlay() {
 	WeaponMeshComponent->AddLocalOffset(FVector(7.f, 2.f, 0));
 	WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180.f, 180.f));
 	MeleeAttackWeaponBox->AddLocalRotation(FRotator(0.f, 90.f, 90.f));
-	//MeleeAttackWeaponBox->AddLocalOffset(FVector(0, 50.f, 0));
 }
 
 void AMeleeWeapon::EquipWeapon(FName SocketName) {

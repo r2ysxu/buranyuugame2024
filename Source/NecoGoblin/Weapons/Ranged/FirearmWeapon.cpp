@@ -59,13 +59,13 @@ void AFirearmWeapon::WeaponReloadStop() {
 bool AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult) {
 	if (!WeaponData) return false;
 	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
+		WeaponFireStart();
 		CurrentAmmoInMagazine--;
 		if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
-		if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), GetActorRotation(), EAttachLocation::SnapToTargetIncludingScale, true);
+		if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), FRotator(), EAttachLocation::SnapToTargetIncludingScale, true);
 		FVector endLocation = startLocation + (forwardVector * MaxRange);
 		collisionParams.AddIgnoredActor(this);
 		if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
-			WeaponFireStart();
 			// DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {

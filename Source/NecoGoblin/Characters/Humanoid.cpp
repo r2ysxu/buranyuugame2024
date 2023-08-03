@@ -33,6 +33,11 @@ void AHumanoid::OnMeleeHit(AActor* actor, float modifier) {
 	}
 }
 
+void AHumanoid::OnDecompose() {
+	GetWorld()->GetTimerManager().ClearTimer(OnDeadHandler);
+	Destroy();
+}
+
 void AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
 	CurrentHealth -= damage;
 	if (CurrentHealth <= 0) {
@@ -42,5 +47,6 @@ void AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
 			GetMesh()->SetSimulatePhysics(true);
 		}
 		GetCapsuleComponent()->DestroyComponent();
+		GetWorld()->GetTimerManager().SetTimer(OnDeadHandler, this, &AHumanoid::OnDecompose, DECOMPOSE_DELAY, false);
 	}
 }

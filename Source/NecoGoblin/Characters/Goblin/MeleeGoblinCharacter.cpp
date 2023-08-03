@@ -28,6 +28,8 @@ void AMeleeGoblinCharacter::SetupMeleeWeapon() {
 	FTransform weaponTransform;
 	weaponTransform.SetLocation(FVector::ZeroVector);
 	weaponTransform.SetRotation(FQuat(FRotator::ZeroRotator));
+	
+	FActorSpawnParameters params;
 
 	MeleeWeapon = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, weaponTransform);
 	if (MeleeWeapon) {
@@ -82,4 +84,9 @@ void AMeleeGoblinCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 	if (!GetIsAlive() && MeleeAttackMontage) {
 		StopAnimMontage(MeleeAttackMontage);
 	}
+}
+
+void AMeleeGoblinCharacter::OnDecompose() {
+	Super::OnDecompose();
+	MeleeWeapon->Destroy();
 }
