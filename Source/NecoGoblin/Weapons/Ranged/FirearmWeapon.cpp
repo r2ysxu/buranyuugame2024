@@ -106,6 +106,10 @@ void AFirearmWeapon::ReloadWeapon(float ReloadSpeed) {
 	GetWorld()->GetTimerManager().SetTimer(InitiateReloadHandler, this, &AFirearmWeapon::WeaponReloadStop, ReloadSpeed);
 }
 
+int AFirearmWeapon::MaxAmmoInMagazine() {
+	return (WeaponData) ? WeaponData->MagazineSize : 0.f;
+}
+
 bool AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult) {
 	if (!IsFiring) {
 		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate, false);

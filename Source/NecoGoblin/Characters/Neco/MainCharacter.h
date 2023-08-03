@@ -58,6 +58,7 @@ protected:
 
 	bool IsAimMode = false;
 	float PlayerPitch = 0.f;
+	bool IsReloading = false;
 	FTimerHandle OnFireWeaponHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
@@ -76,6 +77,10 @@ public:
 	TSubclassOf<class AWeapon> FirearmWeaponClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UUserWidget> CrosshairHudWidgetClass;
+	UUserWidget* CrosshairHudWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> HudWidgetClass;
 	UUserWidget* HudWidget;
 
@@ -84,6 +89,9 @@ public:
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAimMode() { return IsAimMode; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
+	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
+	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
+	UFUNCTION(BlueprintCallable) bool GetIsReloading();
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

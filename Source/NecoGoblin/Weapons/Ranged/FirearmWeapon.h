@@ -61,7 +61,7 @@ protected:
 	volatile bool WeaponReloaded = true;
 
 	float MaxRange = 5000.f;
-	float CurrentAmmoInMagazine = 0;
+	int CurrentAmmoInMagazine = 0;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -79,6 +79,10 @@ public:
 	float GetFireRate();
 	float GetReloadSpeedModifier();
 	void ReloadWeapon(float ReloadSpeed);
+	int MaxAmmoInMagazine();
+	FORCEINLINE int GetAmmoMagazine() { return CurrentAmmoInMagazine; }
+	FORCEINLINE bool GetIsFiring() { return IsFiring; }
+	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
 	
 	bool OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult);
 	FVector2D GenerateRecoil();

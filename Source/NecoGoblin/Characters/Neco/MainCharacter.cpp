@@ -21,6 +21,7 @@
 // AMainCharacter
 
 const float cameraArmLengthOffset = 100.f;
+const float FRAMES_PER_MAG = 2.f;
 
 AMainCharacter::AMainCharacter()
 {
@@ -71,7 +72,11 @@ void AMainCharacter::BeginPlay() {
 	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
 		HudWidget->AddToViewport();
-		HudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	CrosshairHudWidget = CreateWidget<UUserWidget>(GetWorld(), CrosshairHudWidgetClass);
+	if (CrosshairHudWidget) {
+		CrosshairHudWidget->AddToViewport();
+		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -82,7 +87,7 @@ void AMainCharacter::OnAimModeStart() {
 		GetCameraBoom()->SetRelativeLocation(offset);
 		GetCameraBoom()->TargetArmLength -= cameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
-		HudWidget->SetVisibility(ESlateVisibility::Visible);
+		CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -92,7 +97,7 @@ void AMainCharacter::OnAimModeStop() {
 		GetCameraBoom()->SetRelativeLocation(FVector::ZeroVector);
 		GetCameraBoom()->TargetArmLength += cameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
-		HudWidget->SetVisibility(ESlateVisibility::Hidden);
+		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -125,9 +130,23 @@ void AMainCharacter::OnFireStop() {
 }
 
 void AMainCharacter::OnReloadWeapon() {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Reloading"));
 	float animationDelay = PlayAnimMontage(ReloadFirearmMontage, Firearm->GetReloadSpeedModifier());
 	Firearm->ReloadWeapon(animationDelay);
+}
+
+float AMainCharacter::GetReloadUIFrame() {
+	if (!Firearm) return 0.f;
+	float uiFrame = float(Firearm->MaxAmmoInMagazine() - Firearm->GetAmmoMagazine()) * FRAMES_PER_MAG;
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::SanitizeFloat(uiFrame));
+	return float(Firearm->MaxAmmoInMagazine() - Firearm->GetAmmoMagazine()) * FRAMES_PER_MAG;
+}
+
+bool AMainCharacter::GetIsReloading() {
+	return Firearm && Firearm->GetIsReloading();
+}
+
+bool AMainCharacter::GetIsFiringWeapon() {
+	return Firearm && Firearm->GetIsFiring();
 }
 
 //////////////////////////////////////////////////////////////////////////
