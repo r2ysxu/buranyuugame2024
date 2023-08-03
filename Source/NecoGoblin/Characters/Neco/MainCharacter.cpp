@@ -136,8 +136,6 @@ void AMainCharacter::OnReloadWeapon() {
 
 float AMainCharacter::GetReloadUIFrame() {
 	if (!Firearm) return 0.f;
-	float uiFrame = float(Firearm->MaxAmmoInMagazine() - Firearm->GetAmmoMagazine()) * FRAMES_PER_MAG;
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::SanitizeFloat(uiFrame));
 	return float(Firearm->MaxAmmoInMagazine() - Firearm->GetAmmoMagazine()) * FRAMES_PER_MAG;
 }
 

@@ -9,6 +9,8 @@
 #include "Niagara/Public/NiagaraComponent.h"
 #include "Niagara/Public/NiagaraFunctionLibrary.h"
 
+const FName MUZZLE = FName("Muzzle");
+
 // Sets default values
 AFirearmWeapon::AFirearmWeapon() {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -59,11 +61,12 @@ bool AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FC
 	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
 		CurrentAmmoInMagazine--;
 		if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
+		if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), GetActorRotation(), EAttachLocation::SnapToTargetIncludingScale, true);
 		FVector endLocation = startLocation + (forwardVector * MaxRange);
 		collisionParams.AddIgnoredActor(this);
 		if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
 			WeaponFireStart();
-			DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
+			// DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
 				targetActor->TakeHitDamage(GetWeaponDamage(), this);

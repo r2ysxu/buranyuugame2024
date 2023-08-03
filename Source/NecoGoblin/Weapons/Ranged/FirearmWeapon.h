@@ -49,8 +49,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FName WeaponKey = FName("AK-47");
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	class UNiagaraSystem* BloodHitFX;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	class UNiagaraSystem* MuzzleFX;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	class UDataTable* weaponDataTable;
 	class USkeletalMeshComponent* WeaponMeshComponent;
