@@ -69,7 +69,8 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 			// DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
-				if (!targetActor->TakeHitDamage(GetWeaponDamage(), this)) {
+				targetActor->TakeHitDamage(GetWeaponDamage(), this);
+				if (!targetActor->CheckAlive()) {
 					return FireType::VE_Killed;
 				}
 				if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);

@@ -13,5 +13,8 @@ UCLASS()
 class NECOGOBLIN_API AHealthPickup : public APickupable
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void BeginPlay() override;
+	virtual void OnPickup(ANecoSpirit* actor) override;
 };

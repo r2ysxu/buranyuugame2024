@@ -29,6 +29,7 @@ void AHumanoid::OnMeleeHit(AActor* actor, float modifier) {
 		if (weaponActor->GetLastHitCharacter() != this) {
 			weaponActor->SetLastHitCharacter(this);
 			TakeHitDamage(weaponActor->GetWeaponDamage() * modifier, actor);
+			CheckAlive();
 		}
 	}
 }
@@ -47,8 +48,11 @@ void AHumanoid::OnDecompose() {
 	Destroy();
 }
 
-bool AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
+void AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
 	CurrentHealth -= damage;
+}
+
+bool AHumanoid::CheckAlive() {
 	if (CurrentHealth <= 0) {
 		IsAlive = false;
 		if (!UseDeathAnimation) {

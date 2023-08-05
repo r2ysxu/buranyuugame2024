@@ -50,7 +50,7 @@ public:
 
 	void InitiateMeleeAttack();
 	void OnAttackStop();
-	bool TakeHitDamage(float damage, AActor* DamageCauser) override;
+	void TakeHitDamage(float damage, AActor* DamageCauser) override;
+	bool CheckAlive() override;
 	void OnDecompose() override;
-
 };

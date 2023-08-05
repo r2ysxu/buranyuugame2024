@@ -28,8 +28,6 @@ void AMeleeGoblinCharacter::SetupMeleeWeapon() {
 	FTransform weaponTransform;
 	weaponTransform.SetLocation(FVector::ZeroVector);
 	weaponTransform.SetRotation(FQuat(FRotator::ZeroRotator));
-	
-	FActorSpawnParameters params;
 
 	MeleeWeapon = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, weaponTransform);
 	if (MeleeWeapon) {
@@ -79,14 +77,18 @@ void AMeleeGoblinCharacter::OnAttackStop() {
 	if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
 }
 
-bool AMeleeGoblinCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
-	const bool isAlive = Super::TakeHitDamage(damage, DamageCauser);
-	if (!GetIsAlive() && MeleeAttackMontage) {
-		StopAnimMontage(MeleeAttackMontage);
-		GetAIController()->SetIsAttacking(false);
+void AMeleeGoblinCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
+	Super::TakeHitDamage(damage, DamageCauser);
+}
+
+bool AMeleeGoblinCharacter::CheckAlive() {
+	if (Super::CheckAlive()) {
+		if (MeleeAttackMontage) StopAnimMontage(MeleeAttackMontage);
 		if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
+		GetAIController()->SetIsAttacking(false);
+		return true;
 	}
-	return isAlive;
+	return false;
 }
 
 void AMeleeGoblinCharacter::OnDecompose() {

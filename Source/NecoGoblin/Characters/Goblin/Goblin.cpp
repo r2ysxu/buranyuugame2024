@@ -3,6 +3,7 @@
 
 #include "Goblin.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../Pickups/HealthPickup.h"
 #include "NecoGoblin/NecoGoblinGameMode.h"
 
 
@@ -11,12 +12,14 @@ void AGoblin::BeginPlay() {
 	GameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
-bool AGoblin::TakeHitDamage(float damage, AActor* DamageCauser) {
-	const bool isAlive = Super::TakeHitDamage(damage, DamageCauser);
-	if (!isAlive) {
+bool AGoblin::CheckAlive() {
+	if (CurrentHealth <= 0 && FMath::RandRange(0, 100) <= HealthPickupSpawnRate) {
 		GameMode->DecrementGoblin();
+
+		AHealthPickup* healthPickup = GetWorld()->SpawnActor<AHealthPickup>(HealthPickupClass);
+		healthPickup->SetActorLocation(GetActorLocation());
 	}
-	return isAlive;
+	return Super::CheckAlive();
 }
 
 void AGoblin::OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
