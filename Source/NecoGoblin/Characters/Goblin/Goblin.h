@@ -21,7 +21,7 @@ protected:
 
 public:
 	FORCEINLINE uint8 GetTeam() { return 2; };
-	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
+	virtual bool TakeHitDamage(float damage, AActor* DamageCauser) override;
 
 	void OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 	void OnBodyHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;

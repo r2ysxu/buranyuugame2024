@@ -25,7 +25,7 @@ void AHumanoid::BeginPlay() {
 
 void AHumanoid::OnMeleeHit(AActor* actor, float modifier) {
 	AMeleeWeapon* weaponActor = Cast<AMeleeWeapon>(actor);
-	if (weaponActor && weaponActor->GetWeaponTeam() != GetTeam()) {
+	if (weaponActor && weaponActor->GetWeaponTeam() != GetTeam() && weaponActor->GetIsMeleeAttacking()) {
 		if (weaponActor->GetLastHitCharacter() != this) {
 			weaponActor->SetLastHitCharacter(this);
 			TakeHitDamage(weaponActor->GetWeaponDamage() * modifier, actor);
@@ -33,12 +33,21 @@ void AHumanoid::OnMeleeHit(AActor* actor, float modifier) {
 	}
 }
 
+void AHumanoid::HealToFull() {
+	CurrentHealth = MaxHealth;
+}
+
+void AHumanoid::IncreaseMaxHealth(float additionalHealth) {
+	MaxHealth += additionalHealth;
+	CurrentHealth += additionalHealth;
+}
+
 void AHumanoid::OnDecompose() {
 	GetWorld()->GetTimerManager().ClearTimer(OnDeadHandler);
 	Destroy();
 }
 
-void AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
+bool AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
 	CurrentHealth -= damage;
 	if (CurrentHealth <= 0) {
 		IsAlive = false;
@@ -49,4 +58,5 @@ void AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
 		GetCapsuleComponent()->DestroyComponent();
 		GetWorld()->GetTimerManager().SetTimer(OnDeadHandler, this, &AHumanoid::OnDecompose, DECOMPOSE_DELAY, false);
 	}
+	return IsAlive;
 }

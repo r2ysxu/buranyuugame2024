@@ -56,8 +56,8 @@ void AFirearmWeapon::WeaponReloadStop() {
 	CurrentAmmoInMagazine = (WeaponData) ? WeaponData->MagazineSize : 0.f;
 }
 
-bool AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult) {
-	if (!WeaponData) return false;
+FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult) {
+	if (!WeaponData) return FireType::VE_NotFired;
 	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
 		WeaponFireStart();
 		CurrentAmmoInMagazine--;
@@ -69,15 +69,15 @@ bool AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FC
 			// DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
-				targetActor->TakeHitDamage(GetWeaponDamage(), this);
-				if (BloodHitFX) {
-					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
+				if (!targetActor->TakeHitDamage(GetWeaponDamage(), this)) {
+					return FireType::VE_Killed;
 				}
+				if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
 			}
 		}
-		return true;
+		return FireType::VE_Fired;
 	}
-	return false;
+	return FireType::VE_NotFired;
 }
 
 void AFirearmWeapon::EquipWeapon(FName SocketName) {
@@ -85,7 +85,7 @@ void AFirearmWeapon::EquipWeapon(FName SocketName) {
 }
 
 float AFirearmWeapon::GetWeaponDamage() {
-	return (WeaponData) ? WeaponData->BaseDamage : 10.f;
+	return ((WeaponData) ? WeaponData->BaseDamage : 10.f) * DamageModifier;
 }
 
 uint8 AFirearmWeapon::GetWeaponTeam() {
@@ -113,12 +113,16 @@ int AFirearmWeapon::MaxAmmoInMagazine() {
 	return (WeaponData) ? WeaponData->MagazineSize : 0.f;
 }
 
-bool AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult) {
+void AFirearmWeapon::UpgradeDamageModifier(float additionalModifier) {
+	DamageModifier += additionalModifier;
+}
+
+FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult) {
 	if (!IsFiring) {
 		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate, false);
 		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult);
 	}
-	return false;
+	return FireType::VE_NotFired;
 }
 
 FVector2D AFirearmWeapon::GenerateRecoil() {

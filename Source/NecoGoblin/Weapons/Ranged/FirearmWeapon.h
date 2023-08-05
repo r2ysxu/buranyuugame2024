@@ -34,6 +34,14 @@ struct FFirearmWeaponData : public FTableRowBase {
 		float BaseDamage;
 };
 
+UENUM(BlueprintType)
+enum class FireType : uint8 {
+	VE_NotFired UMETA(DisplayName = "NotFired"),
+	VE_Fired	UMETA(DisplayName = "Fired"),
+	VE_Hit		UMETA(DisplayName = "Hit"),
+	VE_Killed   UMETA(Displayname = "Killed"),
+};
+
 /**
  * 
  */
@@ -43,7 +51,7 @@ class NECOGOBLIN_API AFirearmWeapon : public AWeapon
 	GENERATED_BODY()
 
 private:
-	bool FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult);
+	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult);
 
 protected:
 
@@ -65,6 +73,8 @@ protected:
 	float MaxRange = 5000.f;
 	int CurrentAmmoInMagazine = 0;
 
+	float DamageModifier = 1.f;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -85,7 +95,8 @@ public:
 	FORCEINLINE int GetAmmoMagazine() { return CurrentAmmoInMagazine; }
 	FORCEINLINE bool GetIsFiring() { return IsFiring; }
 	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
+	void UpgradeDamageModifier(float additionalModifier);
 	
-	bool OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult);
+	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult);
 	FVector2D GenerateRecoil();
 };

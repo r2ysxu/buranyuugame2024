@@ -11,11 +11,12 @@ void AGoblin::BeginPlay() {
 	GameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
-void AGoblin::TakeHitDamage(float damage, AActor* DamageCauser) {
-	Super::TakeHitDamage(damage, DamageCauser);
-	if (!GetIsAlive()) {
+bool AGoblin::TakeHitDamage(float damage, AActor* DamageCauser) {
+	const bool isAlive = Super::TakeHitDamage(damage, DamageCauser);
+	if (!isAlive) {
 		GameMode->DecrementGoblin();
 	}
+	return isAlive;
 }
 
 void AGoblin::OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

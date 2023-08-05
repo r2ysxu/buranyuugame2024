@@ -79,11 +79,14 @@ void AMeleeGoblinCharacter::OnAttackStop() {
 	if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
 }
 
-void AMeleeGoblinCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
-	Super::TakeHitDamage(damage, DamageCauser);
+bool AMeleeGoblinCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
+	const bool isAlive = Super::TakeHitDamage(damage, DamageCauser);
 	if (!GetIsAlive() && MeleeAttackMontage) {
 		StopAnimMontage(MeleeAttackMontage);
+		GetAIController()->SetIsAttacking(false);
+		if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
 	}
+	return isAlive;
 }
 
 void AMeleeGoblinCharacter::OnDecompose() {

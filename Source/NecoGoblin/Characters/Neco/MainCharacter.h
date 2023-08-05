@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "NecoSpirit.h"
+#include "NecoCharacterStat.h"
+#include "UpgradeShopComponent.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BehaviorTreeComponent.h>
 #include "MainCharacter.generated.h"
@@ -48,6 +50,9 @@ class AMainCharacter : public ANecoSpirit {
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ReloadAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InteractAction;
+
 protected:
 
 	/** Called for movement input */
@@ -84,6 +89,13 @@ public:
 	TSubclassOf<class UUserWidget> HudWidgetClass;
 	UUserWidget* HudWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UUserWidget> ShopHudWidgetClass;
+	UUserWidget* ShopHudWidget;
+
+	UNecoCharacterStat* stats;
+	UUpgradeShopComponent* upgradeComponent;
+
 	AMainCharacter();
 
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
@@ -92,18 +104,22 @@ public:
 	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
 	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
-	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / MAX_HEALTH; }
+	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / MaxHealth; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE UNecoCharacterStat* GetStats() { return stats; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE UUpgradeShopComponent* GetShopUpgrades() { return upgradeComponent; }
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	void UpgradeWeaponDamage(float additionalDamage);
 	void OnAimModeStart();
 	void OnAimModeStop();
 	void OnFireWeapon();
 	void OnFireWeaponOnce();
 	void OnFireStop();
 	void OnReloadWeapon();
+	void OnInteract();
 };
 

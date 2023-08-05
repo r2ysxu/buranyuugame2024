@@ -22,6 +22,7 @@
 
 const float cameraArmLengthOffset = 100.f;
 const float FRAMES_PER_MAG = 2.f;
+const int POINTS_PER_KILL = 10;
 
 AMainCharacter::AMainCharacter()
 {
@@ -41,7 +42,7 @@ AMainCharacter::AMainCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
@@ -55,11 +56,16 @@ AMainCharacter::AMainCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	stats = CreateDefaultSubobject<UNecoCharacterStat>(TEXT("CharacterStats"));
+	upgradeComponent = CreateDefaultSubobject<UUpgradeShopComponent>(TEXT("UpgradeShopComponent"));
+	upgradeComponent->SetParentCharacter(this);
+
 	
 	Tags.Add(FName("MainPlayer"));
 }
 
-void AMainCharacter::BeginPlay() {  
+void AMainCharacter::BeginPlay() {
 	Super::BeginPlay();
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
@@ -78,6 +84,15 @@ void AMainCharacter::BeginPlay() {
 		CrosshairHudWidget->AddToViewport();
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
+	ShopHudWidget = CreateWidget<UUserWidget>(GetWorld(), ShopHudWidgetClass);
+	if (ShopHudWidget) {
+		ShopHudWidget->AddToViewport();
+		ShopHudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
+	if (Firearm) Firearm->UpgradeDamageModifier(additionalDamage);
 }
 
 void AMainCharacter::OnAimModeStart() {
@@ -108,7 +123,12 @@ void AMainCharacter::OnFireWeaponOnce() {
 	collisionParams.AddIgnoredActor(GetOwner());
 
 	FHitResult result;
-	if (Firearm->OnFire(camStart, FollowCamera->GetForwardVector(), collisionParams, result)) {
+	const FireType fireResponse = Firearm->OnFire(camStart, FollowCamera->GetForwardVector(), collisionParams, result);
+	switch(fireResponse) {
+	case FireType::VE_Killed:
+		stats->IncrementKillCount();
+		upgradeComponent->IncrementPoints(POINTS_PER_KILL);
+	case FireType::VE_Fired:
 		FVector2D recoil = Firearm->GenerateRecoil();
 		Look(FInputActionValue(recoil));
 	}
@@ -132,6 +152,12 @@ void AMainCharacter::OnFireStop() {
 void AMainCharacter::OnReloadWeapon() {
 	float animationDelay = PlayAnimMontage(ReloadFirearmMontage, Firearm->GetReloadSpeedModifier());
 	Firearm->ReloadWeapon(animationDelay);
+}
+
+void AMainCharacter::OnInteract() {
+	if (upgradeComponent->GetCanShop()) {
+		upgradeComponent->EnterShopScreen(ShopHudWidget);
+	}
 }
 
 float AMainCharacter::GetReloadUIFrame() {
@@ -175,6 +201,9 @@ void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 		//Reload
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnReloadWeapon);
+
+		//Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnInteract);
 	}
 }
 
