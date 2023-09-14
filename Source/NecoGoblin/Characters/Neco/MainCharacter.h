@@ -63,7 +63,6 @@ protected:
 
 	bool IsAimMode = false;
 	float PlayerPitch = 0.f;
-	bool IsReloading = false;
 	FTimerHandle OnFireWeaponHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")

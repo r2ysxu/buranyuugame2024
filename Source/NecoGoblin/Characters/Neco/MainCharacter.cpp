@@ -23,6 +23,7 @@
 const float cameraArmLengthOffset = 100.f;
 const float FRAMES_PER_MAG = 2.f;
 const int POINTS_PER_KILL = 10;
+const float RELOAD_SPEED = 1.5f;
 
 AMainCharacter::AMainCharacter()
 {
@@ -150,13 +151,15 @@ void AMainCharacter::OnFireStop() {
 }
 
 void AMainCharacter::OnReloadWeapon() {
-	float animationDelay = PlayAnimMontage(ReloadFirearmMontage, Firearm->GetReloadSpeedModifier());
+	//float animationDelay = PlayAnimMontage(ReloadFirearmMontage, Firearm->GetReloadSpeedModifier());
+	float animationDelay = RELOAD_SPEED * Firearm->GetReloadSpeedModifier();
 	Firearm->ReloadWeapon(animationDelay);
 }
 
 void AMainCharacter::OnInteract() {
 	if (upgradeComponent->GetCanShop()) {
 		upgradeComponent->EnterShopScreen(ShopHudWidget);
+		GetMovementComponent()->StopActiveMovement();
 	}
 }
 
@@ -208,6 +211,7 @@ void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 }
 
 void AMainCharacter::Move(const FInputActionValue& Value) {
+	if (ShopHudWidget->GetVisibility() == ESlateVisibility::Visible) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
