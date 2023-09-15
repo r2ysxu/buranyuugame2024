@@ -75,7 +75,10 @@ void AMainCharacter::BeginPlay() {
 	}
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
+	GetMesh()->SetVisibility(false);
+}
 
+void AMainCharacter::SetupHuds() {
 	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
 		HudWidget->AddToViewport();
@@ -90,6 +93,11 @@ void AMainCharacter::BeginPlay() {
 		ShopHudWidget->AddToViewport();
 		ShopHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+void AMainCharacter::OnCharacterStart() {
+	GetMesh()->SetVisibility(true);
+	SetupHuds();
 }
 
 void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {

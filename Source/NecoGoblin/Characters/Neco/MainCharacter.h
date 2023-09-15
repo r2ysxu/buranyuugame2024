@@ -53,6 +53,9 @@ class AMainCharacter : public ANecoSpirit {
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* InteractAction;
 
+private:
+	void SetupHuds();
+
 protected:
 
 	/** Called for movement input */
@@ -66,14 +69,15 @@ protected:
 	FTimerHandle OnFireWeaponHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	class UAnimMontage* ReloadFirearmMontage;
+		class UAnimMontage* ReloadFirearmMontage;
 
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
+	
+	UFUNCTION(BlueprintCallable) void OnCharacterStart();
 
 public:
 
