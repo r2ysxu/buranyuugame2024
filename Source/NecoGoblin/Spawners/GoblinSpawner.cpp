@@ -16,14 +16,12 @@ AGoblinSpawner::AGoblinSpawner() {
 void AGoblinSpawner::SpawnGoblin() {
 	if (GameMode) {
 		if (GameMode->IncrementGoblin()) {
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Spawning Goblin"));
 			FTransform goblinTransform;
 			goblinTransform.SetLocation(GetActorLocation());
 			goblinTransform.SetRotation(FQuat(FRotator::ZeroRotator));
 
 			AMeleeGoblinCharacter* goblin = GetWorld()->SpawnActor<AMeleeGoblinCharacter>(GoblinClass, goblinTransform);
 		}
-		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnGoblin, GameMode->GetGoblinSpawnRate(), false);
 	}
 }
 
@@ -32,7 +30,7 @@ void AGoblinSpawner::BeginPlay() {
 	Super::BeginPlay();
 	GameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GameMode) {
-		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnGoblin, GameMode->GetGoblinSpawnRate(), false);
+		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnGoblin, GameMode->GetGoblinSpawnRate(), true);
 	}
 }
 

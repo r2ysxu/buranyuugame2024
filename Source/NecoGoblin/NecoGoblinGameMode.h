@@ -11,13 +11,17 @@ class ANecoGoblinGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+private:
+	const int GOBLIN_PER_ROUND = 10;
+	const int MAX_GOBLIN = 200;
+
 protected:
 	FTimerHandle NextRoundHandler;
 
 	int CurrentRound = 0;
+	int GoblinSpawned = 0;
 	int GoblinPerRound;
 	int GoblinCount;
-	int GoblinKilled = 0;
 	float GoblinSpawnRate = 5.f;
 
 	void NextRound();

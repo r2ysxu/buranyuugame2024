@@ -13,11 +13,12 @@ void AGoblin::BeginPlay() {
 }
 
 bool AGoblin::CheckAlive() {
-	if (CurrentHealth <= 0 && FMath::RandRange(0, 100) <= HealthPickupSpawnRate) {
+	if (CurrentHealth <= 0) {
 		GameMode->DecrementGoblin();
-
-		AHealthPickup* healthPickup = GetWorld()->SpawnActor<AHealthPickup>(HealthPickupClass);
-		healthPickup->SetActorLocation(GetActorLocation());
+		if (FMath::RandRange(0, 100) <= HealthPickupSpawnRate) {
+			AHealthPickup* healthPickup = GetWorld()->SpawnActor<AHealthPickup>(HealthPickupClass);
+			healthPickup->SetActorLocation(GetActorLocation());
+		}
 	}
 	return Super::CheckAlive();
 }

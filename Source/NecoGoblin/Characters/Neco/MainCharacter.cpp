@@ -20,11 +20,6 @@
 //////////////////////////////////////////////////////////////////////////
 // AMainCharacter
 
-const float cameraArmLengthOffset = 100.f;
-const float FRAMES_PER_MAG = 2.f;
-const int POINTS_PER_KILL = 10;
-const float RELOAD_SPEED = 1.5f;
-
 AMainCharacter::AMainCharacter()
 {
 	// Set size for collision capsule
@@ -41,9 +36,9 @@ AMainCharacter::AMainCharacter()
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
-	GetCharacterMovement()->JumpZVelocity = 700.f;
+	GetCharacterMovement()->JumpZVelocity = 300.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	GetCharacterMovement()->MaxWalkSpeed = WALK_SPEED;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
@@ -76,6 +71,8 @@ void AMainCharacter::BeginPlay() {
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
 	GetMesh()->SetVisibility(false);
+
+	GetWorld()->GetTimerManager().SetTimer(OnSprintHandler, this, &AMainCharacter::StaminaGen, 0.1, true);
 }
 
 void AMainCharacter::SetupHuds() {
@@ -106,10 +103,11 @@ void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
 
 void AMainCharacter::OnAimModeStart() {
 	if (!IsAimMode) {
+		if (IsSprinting) OnSprintStop();
 		IsAimMode = true;
 		FVector offset = FVector(0, 50, 50);
 		GetCameraBoom()->SetRelativeLocation(offset);
-		GetCameraBoom()->TargetArmLength -= cameraArmLengthOffset;
+		GetCameraBoom()->TargetArmLength -= CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
 	}
@@ -119,7 +117,7 @@ void AMainCharacter::OnAimModeStop() {
 	if (IsAimMode) {
 		IsAimMode = false;
 		GetCameraBoom()->SetRelativeLocation(FVector::ZeroVector);
-		GetCameraBoom()->TargetArmLength += cameraArmLengthOffset;
+		GetCameraBoom()->TargetArmLength += CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
@@ -159,7 +157,6 @@ void AMainCharacter::OnFireStop() {
 }
 
 void AMainCharacter::OnReloadWeapon() {
-	//float animationDelay = PlayAnimMontage(ReloadFirearmMontage, Firearm->GetReloadSpeedModifier());
 	float animationDelay = RELOAD_SPEED * Firearm->GetReloadSpeedModifier();
 	Firearm->ReloadWeapon(animationDelay);
 }
@@ -169,6 +166,30 @@ void AMainCharacter::OnInteract() {
 		upgradeComponent->EnterShopScreen(ShopHudWidget);
 		GetMovementComponent()->StopActiveMovement();
 	}
+}
+
+void AMainCharacter::OnSprint() {
+	if (Stamina <= MAX_STAMINA * 0.75f) return;
+	OnAimModeStop();
+	IsSprinting = true;
+	GetCharacterMovement()->MaxWalkSpeed = SPRINT_SPEED;
+	GetWorld()->GetTimerManager().UnPauseTimer(OnSprintHandler);
+}
+
+void AMainCharacter::OnSprintStop() {
+	if (IsSprinting) {
+		IsSprinting = false;
+		GetCharacterMovement()->MaxWalkSpeed = WALK_SPEED;
+	}
+}
+
+void AMainCharacter::StaminaGen() {
+	if (Stamina >= MAX_STAMINA) {
+		GetWorld()->GetTimerManager().PauseTimer(OnSprintHandler);
+	} else if (Stamina <= 0) {
+		OnSprintStop();
+	}
+	Stamina = std::max(0.f, std::min(MAX_STAMINA, Stamina + (IsSprinting ? -1.f : 1.f)));
 }
 
 float AMainCharacter::GetReloadUIFrame() {
@@ -201,6 +222,10 @@ void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
+
+		//Sprinting
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnSprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainCharacter::OnSprintStop);
 
 		//Aiming
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnAimModeStart);

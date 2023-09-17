@@ -42,6 +42,9 @@ class AMainCharacter : public ANecoSpirit {
 	class UInputAction* LookAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SprintAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AimAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -54,6 +57,15 @@ class AMainCharacter : public ANecoSpirit {
 	class UInputAction* InteractAction;
 
 private:
+
+	const float CameraArmLengthOffset = 100.f;
+	const float FRAMES_PER_MAG = 2.f;
+	const int POINTS_PER_KILL = 10;
+	const float RELOAD_SPEED = 1.5f;
+	const float WALK_SPEED = 300.f;
+	const float SPRINT_SPEED = 500.f;
+	const float MAX_STAMINA = 20.f;
+
 	void SetupHuds();
 
 protected:
@@ -64,8 +76,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	bool IsSprinting = false;
 	bool IsAimMode = false;
 	float PlayerPitch = 0.f;
+	float Stamina = MAX_STAMINA;
+	FTimerHandle OnSprintHandler;
 	FTimerHandle OnFireWeaponHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
@@ -124,5 +139,8 @@ public:
 	void OnFireStop();
 	void OnReloadWeapon();
 	void OnInteract();
+	void OnSprint();
+	void OnSprintStop();
+	void StaminaGen();
 };
 

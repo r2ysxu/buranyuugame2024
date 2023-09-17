@@ -22,7 +22,7 @@ protected:
 	FTimerHandle OnSpawnHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		TSubclassOf<class AGoblin> GoblinClass;
+	TSubclassOf<class AGoblin> GoblinClass;
 	
 public:	
 	// Sets default values for this actor's properties

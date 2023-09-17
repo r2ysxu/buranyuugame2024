@@ -19,7 +19,7 @@ protected:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
-	int32 HealthPickupSpawnRate = 100;
+	int32 HealthPickupSpawnRate = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
 	TSubclassOf<class AHealthPickup> HealthPickupClass;
 
