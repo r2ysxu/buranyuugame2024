@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/UserWidget.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h>
@@ -90,6 +91,15 @@ void AMainCharacter::SetupHuds() {
 		ShopHudWidget->AddToViewport();
 		ShopHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+bool AMainCharacter::CheckAlive() {
+	if (!Super::CheckAlive()) {
+		GetCharacterMovement()->StopMovementImmediately();
+		GetWorld()->GetTimerManager().SetTimer(GameOverHandler, this, &AMainCharacter::GameRestart, 5.f, false);
+		return false;
+	}
+	return true;
 }
 
 void AMainCharacter::OnCharacterStart() {
@@ -192,6 +202,10 @@ void AMainCharacter::StaminaGen() {
 	Stamina = std::max(0.f, std::min(MAX_STAMINA, Stamina + (IsSprinting ? -1.f : 1.f)));
 }
 
+void AMainCharacter::GameRestart() {
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
 float AMainCharacter::GetReloadUIFrame() {
 	if (!Firearm) return 0.f;
 	return float(Firearm->MaxAmmoInMagazine() - Firearm->GetAmmoMagazine()) * FRAMES_PER_MAG;
@@ -262,6 +276,11 @@ void AMainCharacter::Move(const FInputActionValue& Value) {
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+
+		if (GetActorLocation().Z < WATER_LEVEL) {
+			TakeHitDamage(CurrentHealth, nullptr);
+			CheckAlive();
+		}
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../../Pickups/HealthPickup.h"
 #include "NecoGoblin/NecoGoblinGameMode.h"
+#include "Components/CapsuleComponent.h"
 
 
 void AGoblin::BeginPlay() {
@@ -20,7 +21,10 @@ bool AGoblin::CheckAlive() {
 			healthPickup->SetActorLocation(GetActorLocation());
 		}
 	}
-	return Super::CheckAlive();
+	if (!Super::CheckAlive()) {
+		GetCapsuleComponent()->DestroyComponent();
+		return false;
+	} else return true;
 }
 
 void AGoblin::OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

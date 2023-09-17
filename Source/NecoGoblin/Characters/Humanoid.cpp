@@ -4,7 +4,7 @@
 #include "Humanoid.h"
 #include "../Weapons/Melee/MeleeWeapon.h"
 #include "Components/SphereComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AHumanoid::AHumanoid() {
@@ -59,7 +59,7 @@ bool AHumanoid::CheckAlive() {
 			GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 			GetMesh()->SetSimulatePhysics(true);
 		}
-		GetCapsuleComponent()->DestroyComponent();
+		GetMovementComponent()->Deactivate();
 		GetWorld()->GetTimerManager().SetTimer(OnDeadHandler, this, &AHumanoid::OnDecompose, DECOMPOSE_DELAY, false);
 	}
 	return IsAlive;

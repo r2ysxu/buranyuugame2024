@@ -65,6 +65,7 @@ private:
 	const float WALK_SPEED = 300.f;
 	const float SPRINT_SPEED = 500.f;
 	const float MAX_STAMINA = 20.f;
+	const float WATER_LEVEL = 1200.f;
 
 	void SetupHuds();
 
@@ -82,6 +83,7 @@ protected:
 	float Stamina = MAX_STAMINA;
 	FTimerHandle OnSprintHandler;
 	FTimerHandle OnFireWeaponHandler;
+	FTimerHandle GameOverHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		class UAnimMontage* ReloadFirearmMontage;
@@ -92,6 +94,7 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 	
+	bool CheckAlive() override;
 	UFUNCTION(BlueprintCallable) void OnCharacterStart();
 
 public:
@@ -142,5 +145,7 @@ public:
 	void OnSprint();
 	void OnSprintStop();
 	void StaminaGen();
+
+	void GameRestart();
 };
 

@@ -4,6 +4,7 @@ Config
 Content/*
 !Content/NecoGoblin
 Content/NecoGoblin/Mesh
+Content/NecoGoblin/Sounds
 DerivedDataCache
 Intermediate
 Platforms
