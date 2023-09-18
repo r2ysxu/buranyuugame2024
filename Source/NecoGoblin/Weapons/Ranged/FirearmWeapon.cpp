@@ -63,6 +63,7 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 		CurrentAmmoInMagazine--;
 		if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
 		if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), FRotator(), EAttachLocation::SnapToTargetIncludingScale, true);
+		if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation());
 		FVector endLocation = startLocation + (forwardVector * MaxRange);
 		collisionParams.AddIgnoredActor(this);
 		if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
@@ -106,6 +107,7 @@ float AFirearmWeapon::GetReloadSpeedModifier() {
 }
 
 void AFirearmWeapon::ReloadWeapon(float ReloadSpeed) {
+	if (WeaponData->ReloadSound && WeaponReloaded) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ReloadSound, GetActorLocation());
 	WeaponReloaded = false;
 	GetWorld()->GetTimerManager().SetTimer(InitiateReloadHandler, this, &AFirearmWeapon::WeaponReloadStop, ReloadSpeed);
 }

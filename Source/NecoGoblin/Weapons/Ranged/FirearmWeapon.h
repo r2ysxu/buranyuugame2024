@@ -18,6 +18,10 @@ struct FFirearmWeaponData : public FTableRowBase {
 		class USkeletalMesh* WeaponMesh;
 	UPROPERTY(EditAnywhere)
 		class UAnimationAsset* FireAnimation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+		USoundBase* ShotSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+		USoundBase* ReloadSound;
 	UPROPERTY(EditAnywhere)
 		int MagazineSize;
 	UPROPERTY(EditAnywhere)
