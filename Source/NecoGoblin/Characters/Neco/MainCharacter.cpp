@@ -96,7 +96,7 @@ void AMainCharacter::SetupHuds() {
 bool AMainCharacter::CheckAlive() {
 	if (!Super::CheckAlive()) {
 		GetCharacterMovement()->StopMovementImmediately();
-		GetWorld()->GetTimerManager().SetTimer(GameOverHandler, this, &AMainCharacter::GameRestart, 5.f, false);
+		GetWorld()->GetTimerManager().SetTimer(GameOverHandler, this, &AMainCharacter::GameRestart, 2.f, false);
 		return false;
 	}
 	return true;
