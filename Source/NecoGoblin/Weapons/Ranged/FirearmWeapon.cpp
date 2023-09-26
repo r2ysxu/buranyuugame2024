@@ -26,7 +26,7 @@ AFirearmWeapon::AFirearmWeapon() {
 	
 	UBoxComponent* box = CreateDefaultSubobject<UBoxComponent>("Box");
 	box->SetBoxExtent(FVector(50.f, 50.f, 0));
-	box->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+	box->SetupAttachment(GetRootComponent());
 }
 
 void AFirearmWeapon::BeginPlay() {
@@ -34,6 +34,7 @@ void AFirearmWeapon::BeginPlay() {
 	WeaponData = weaponDataTable->FindRow<FFirearmWeaponData>(WeaponKey, FString("MainFirearm"), true);
 	if (WeaponData) {
 		CurrentAmmoInMagazine = WeaponData->MagazineSize;
+		RefillAmmo(30 * 10);
 		if (WeaponData->WeaponMesh) {
 			WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
 			WeaponMeshComponent->SetSkeletalMesh(WeaponData->WeaponMesh);
@@ -53,7 +54,9 @@ void AFirearmWeapon::WeaponFireStop() {
 
 void AFirearmWeapon::WeaponReloadStop() {
 	WeaponReloaded = true;
-	CurrentAmmoInMagazine = (WeaponData) ? WeaponData->MagazineSize : 0.f;
+	const int reloadedAmmo = MaxAmmoInMagazine() - CurrentAmmoInMagazine;
+	CurrentAmmoInMagazine = FMath::Min(ReserveAmmo, MaxAmmoInMagazine());
+	ReserveAmmo -= reloadedAmmo;
 }
 
 FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult) {
@@ -99,17 +102,19 @@ bool AFirearmWeapon::IsSemiAutomatic() {
 }
 
 float AFirearmWeapon::GetFireRate() {
-	return (WeaponData) ? std::min(WeaponData->FireRate, 0.1f) : 1.f;
+	return (WeaponData) ? FMath::Min(WeaponData->FireRate, 0.1f) : 1.f;
 }
 
 float AFirearmWeapon::GetReloadSpeedModifier() {
 	return WeaponData ? WeaponData->ReloadSpeed : 1.f;
 }
 
-void AFirearmWeapon::ReloadWeapon(float ReloadSpeed) {
+bool AFirearmWeapon::ReloadWeapon(float ReloadSpeed) {
+	if (ReserveAmmo <= 0) return false;
 	if (WeaponData->ReloadSound && WeaponReloaded) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ReloadSound, GetActorLocation());
 	WeaponReloaded = false;
 	GetWorld()->GetTimerManager().SetTimer(InitiateReloadHandler, this, &AFirearmWeapon::WeaponReloadStop, ReloadSpeed);
+	return true;
 }
 
 int AFirearmWeapon::MaxAmmoInMagazine() {
@@ -118,6 +123,10 @@ int AFirearmWeapon::MaxAmmoInMagazine() {
 
 void AFirearmWeapon::UpgradeDamageModifier(float additionalModifier) {
 	DamageModifier += additionalModifier;
+}
+
+void AFirearmWeapon::RefillAmmo(int Amount) {
+	ReserveAmmo = Amount;
 }
 
 FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult) {

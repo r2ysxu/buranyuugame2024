@@ -15,6 +15,8 @@ UCLASS(Abstract)
 class NECOGOBLIN_API ANecoSpirit : public AHumanoid {
 	GENERATED_BODY()
 
+private:
+
 protected:
 	AFirearmWeapon* Firearm;
 	
@@ -29,7 +31,7 @@ public:
 	FORCEINLINE uint8 GetTeam() override { return 1; }
 	virtual TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return nullptr; }
 
-	void OnFireWeapon();
+	virtual void OnFireWeapon();
 
 	UFUNCTION()
 	void OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;

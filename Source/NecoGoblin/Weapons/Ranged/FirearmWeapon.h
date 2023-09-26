@@ -58,7 +58,6 @@ private:
 	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult);
 
 protected:
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	FName WeaponKey = FName("AK-47");
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -73,9 +72,10 @@ protected:
 	FTimerHandle InitiateReloadHandler;
 	volatile bool IsFiring = false;
 	volatile bool WeaponReloaded = true;
-
+	
 	float MaxRange = 5000.f;
 	int CurrentAmmoInMagazine = 0;
+	int ReserveAmmo = 30;
 
 	float DamageModifier = 1.f;
 
@@ -94,12 +94,14 @@ public:
 	bool IsSemiAutomatic();
 	float GetFireRate();
 	float GetReloadSpeedModifier();
-	void ReloadWeapon(float ReloadSpeed);
+	bool ReloadWeapon(float ReloadSpeed);
 	int MaxAmmoInMagazine();
+	void UpgradeDamageModifier(float additionalModifier);
+	void RefillAmmo(int Amount);
+	FORCEINLINE int GetReserveAmmo() { return ReserveAmmo; }
 	FORCEINLINE int GetAmmoMagazine() { return CurrentAmmoInMagazine; }
 	FORCEINLINE bool GetIsFiring() { return IsFiring; }
 	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
-	void UpgradeDamageModifier(float additionalModifier);
 	
 	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult);
 	FVector2D GenerateRecoil();

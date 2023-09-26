@@ -21,7 +21,7 @@ APickupable::APickupable() {
 	PickupRangeBox->AddLocalOffset(FVector(0.f, 15.f, 0.f));
 	PickupRangeBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	PickupRangeBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	PickupRangeBox->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+	PickupRangeBox->SetupAttachment(GetRootComponent());
 	// PickupRangeBox->bHiddenInGame = false;
 }
 

@@ -8,13 +8,8 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class NECOGOBLIN_API UNecoCharacterStat : public UActorComponent
-{
+class NECOGOBLIN_API UNecoCharacterStat : public UActorComponent {
 	GENERATED_BODY()
-
-public:	
-	// Sets default values for this component's properties
-	UNecoCharacterStat();
 
 protected:
 	// Called when the game starts
@@ -22,7 +17,8 @@ protected:
 
 	int KillCount = 0;
 
-public:	
+public:
+	UNecoCharacterStat();
 
 	int IncrementKillCount();
 	UFUNCTION(BlueprintCallable) FORCEINLINE int GetKillCount() { return KillCount; }

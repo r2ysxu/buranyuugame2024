@@ -2,6 +2,7 @@
 
 #include "MainCharacter.h"
 #include "../Goblin/Goblin.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -55,9 +56,8 @@ AMainCharacter::AMainCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	stats = CreateDefaultSubobject<UNecoCharacterStat>(TEXT("CharacterStats"));
-	upgradeComponent = CreateDefaultSubobject<UUpgradeShopComponent>(TEXT("UpgradeShopComponent"));
+	upgradeComponent = CreateDefaultSubobject<UUpgradeSkillComponent>(TEXT("UpgradeSkillComponent"));
 	upgradeComponent->SetParentCharacter(this);
-
 	
 	Tags.Add(FName("MainPlayer"));
 }
@@ -86,10 +86,10 @@ void AMainCharacter::SetupHuds() {
 		CrosshairHudWidget->AddToViewport();
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
-	ShopHudWidget = CreateWidget<UUserWidget>(GetWorld(), ShopHudWidgetClass);
-	if (ShopHudWidget) {
-		ShopHudWidget->AddToViewport();
-		ShopHudWidget->SetVisibility(ESlateVisibility::Hidden);
+	SkillHudWidget = CreateWidget<UUserWidget>(GetWorld(), SkillHudWidgetClass);
+	if (SkillHudWidget) {
+		SkillHudWidget->AddToViewport();
+		SkillHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -115,8 +115,7 @@ void AMainCharacter::OnAimModeStart() {
 	if (!IsAimMode) {
 		if (IsSprinting) OnSprintStop();
 		IsAimMode = true;
-		FVector offset = FVector(0, 50, 50);
-		GetCameraBoom()->SetRelativeLocation(offset);
+		GetCameraBoom()->SetRelativeLocation(FVector(0, 50, 50));
 		GetCameraBoom()->TargetArmLength -= CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
@@ -172,9 +171,8 @@ void AMainCharacter::OnReloadWeapon() {
 }
 
 void AMainCharacter::OnInteract() {
-	if (upgradeComponent->GetCanShop()) {
-		upgradeComponent->EnterShopScreen(ShopHudWidget);
-		GetMovementComponent()->StopActiveMovement();
+	if (CanFillAmmo) {
+		Firearm->RefillAmmo(RESERVE_AMMO);
 	}
 }
 
@@ -193,13 +191,24 @@ void AMainCharacter::OnSprintStop() {
 	}
 }
 
+void AMainCharacter::CanRefillAmmo(bool Fillable) {
+	CanFillAmmo = Fillable;
+}
+
+void AMainCharacter::RefillAmmo() {
+	if (CanFillAmmo) {
+		if (RefillSound) UGameplayStatics::PlaySound2D(GetWorld(), RefillSound, 5.f);
+		Firearm->RefillAmmo(RESERVE_AMMO);
+	}
+}
+
 void AMainCharacter::StaminaGen() {
 	if (Stamina >= MAX_STAMINA) {
 		GetWorld()->GetTimerManager().PauseTimer(OnSprintHandler);
 	} else if (Stamina <= 0) {
 		OnSprintStop();
 	}
-	Stamina = std::max(0.f, std::min(MAX_STAMINA, Stamina + (IsSprinting ? -1.f : 1.f)));
+	Stamina = FMath::Max(0.f, std::min(MAX_STAMINA, Stamina + (IsSprinting ? -1.f : 1.f)));
 }
 
 void AMainCharacter::GameRestart() {
@@ -258,7 +267,7 @@ void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 }
 
 void AMainCharacter::Move(const FInputActionValue& Value) {
-	if (ShopHudWidget->GetVisibility() == ESlateVisibility::Visible) return;
+	if (SkillHudWidget->GetVisibility() == ESlateVisibility::Visible) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 

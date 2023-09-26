@@ -23,7 +23,7 @@ AMeleeWeapon::AMeleeWeapon() {
 	MeleeAttackWeaponBox->AddLocalOffset(FVector(10.f, 0, 0));
 	MeleeAttackWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MeleeAttackWeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	MeleeAttackWeaponBox->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+	MeleeAttackWeaponBox->SetupAttachment(GetRootComponent());
 	//MeleeAttackWeaponBox->bHiddenInGame = false;
 }
 

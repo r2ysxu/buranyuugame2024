@@ -15,7 +15,7 @@ AHumanoid::AHumanoid() {
 
 	HeadBox = CreateDefaultSubobject<USphereComponent>(TEXT("HeadBox"));
 	HeadBox->SetSphereRadius(20.f);
-	HeadBox->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HeadSocketName);
+	HeadBox->SetupAttachment(GetMesh(), HeadSocketName);
 }
 
 // Called when the game starts or when spawned

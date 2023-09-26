@@ -7,7 +7,7 @@
 #include "InputActionValue.h"
 #include "NecoSpirit.h"
 #include "NecoCharacterStat.h"
-#include "UpgradeShopComponent.h"
+#include "UpgradeSkillComponent.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BehaviorTreeComponent.h>
 #include "MainCharacter.generated.h"
@@ -60,12 +60,13 @@ private:
 
 	const float CameraArmLengthOffset = 100.f;
 	const float FRAMES_PER_MAG = 2.f;
-	const int POINTS_PER_KILL = 10;
 	const float RELOAD_SPEED = 1.5f;
 	const float WALK_SPEED = 300.f;
 	const float SPRINT_SPEED = 500.f;
 	const float MAX_STAMINA = 20.f;
 	const float WATER_LEVEL = 1200.f;
+	const int POINTS_PER_KILL = 10;
+	const int RESERVE_AMMO = 30 * 10;
 
 	void SetupHuds();
 
@@ -77,6 +78,7 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	bool CanFillAmmo = false;
 	bool IsSprinting = false;
 	bool IsAimMode = false;
 	float PlayerPitch = 0.f;
@@ -111,11 +113,14 @@ public:
 	UUserWidget* HudWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UUserWidget> ShopHudWidgetClass;
-	UUserWidget* ShopHudWidget;
+	TSubclassOf<class UUserWidget> SkillHudWidgetClass;
+	UUserWidget* SkillHudWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	USoundBase* RefillSound;
 
 	UNecoCharacterStat* stats;
-	UUpgradeShopComponent* upgradeComponent;
+	UUpgradeSkillComponent* upgradeComponent;
 
 	AMainCharacter();
 
@@ -127,7 +132,7 @@ public:
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
 	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / MaxHealth; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE UNecoCharacterStat* GetStats() { return stats; }
-	UFUNCTION(BlueprintCallable) FORCEINLINE UUpgradeShopComponent* GetShopUpgrades() { return upgradeComponent; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE UUpgradeSkillComponent* GetSkillUpgrades() { return upgradeComponent; }
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -144,8 +149,13 @@ public:
 	void OnInteract();
 	void OnSprint();
 	void OnSprintStop();
+	void CanRefillAmmo(bool Fillable);
+	void RefillAmmo();
 	void StaminaGen();
 
 	void GameRestart();
+
+	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
+
 };
 

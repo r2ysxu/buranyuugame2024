@@ -14,7 +14,7 @@ ANecoGoblinGameMode::ANecoGoblinGameMode() {
 
 void ANecoGoblinGameMode::NextRound() {
 	CurrentRound++;
-	GoblinPerRound = std::min(MAX_GOBLIN, CurrentRound * GOBLIN_PER_ROUND);
+	GoblinPerRound = FMath::Min(MAX_GOBLIN, CurrentRound * GOBLIN_PER_ROUND);
 	GoblinSpawned = 0;
 	GoblinCount = 0;
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("Round: %d, Goblins: %d"), CurrentRound, GoblinPerRound));
@@ -34,7 +34,7 @@ bool ANecoGoblinGameMode::IncrementGoblin() {
 
 bool ANecoGoblinGameMode::DecrementGoblin() {
 	if (GoblinCount == 0) return false;
-	GoblinCount = std::max(GoblinCount - 1, 0);
+	GoblinCount = FMath::Max(GoblinCount - 1, 0);
 	if (GoblinCount == 0) {
 		GetWorld()->GetTimerManager().SetTimer(NextRoundHandler, this, &ANecoGoblinGameMode::NextRound, 5.f, false);
 	}
