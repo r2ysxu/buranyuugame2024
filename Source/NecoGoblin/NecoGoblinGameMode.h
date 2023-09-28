@@ -33,6 +33,7 @@ public:
 	
 	bool IncrementGoblin();
 	bool DecrementGoblin();
+	FORCEINLINE int GetCurrentRound() { return CurrentRound; }
 	FORCEINLINE int GetGoblinCount() { return GoblinCount; }
 	FORCEINLINE int GetGoblinPerRound() { return GoblinPerRound; }
 	FORCEINLINE float GetGoblinSpawnRate() { return GoblinSpawnRate; }

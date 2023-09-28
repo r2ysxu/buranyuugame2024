@@ -87,10 +87,7 @@ void AMainCharacter::SetupHuds() {
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 	SkillHudWidget = CreateWidget<UUserWidget>(GetWorld(), SkillHudWidgetClass);
-	if (SkillHudWidget) {
-		SkillHudWidget->AddToViewport();
-		SkillHudWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
+	upgradeComponent->SetupWidget(SkillHudWidget);
 }
 
 bool AMainCharacter::CheckAlive() {
@@ -112,7 +109,7 @@ void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
 }
 
 void AMainCharacter::OnAimModeStart() {
-	if (!IsAimMode) {
+	if (!IsAimMode && !IsSkillMenuOpen) {
 		if (IsSprinting) OnSprintStop();
 		IsAimMode = true;
 		GetCameraBoom()->SetRelativeLocation(FVector(0, 50, 50));
@@ -139,11 +136,18 @@ void AMainCharacter::OnFireWeaponOnce() {
 	collisionParams.AddIgnoredActor(GetOwner());
 
 	FHitResult result;
-	const FireType fireResponse = Firearm->OnFire(camStart, FollowCamera->GetForwardVector(), collisionParams, result);
+	const FireType fireResponse = Firearm->OnFire(
+		camStart,
+		FollowCamera->GetForwardVector(),
+		collisionParams,
+		result,
+		upgradeComponent->GetFireRateModifier(),
+		upgradeComponent->GetHeadshotModifier()
+	);
 	switch(fireResponse) {
 	case FireType::VE_Killed:
 		stats->IncrementKillCount();
-		upgradeComponent->IncrementPoints(POINTS_PER_KILL);
+		upgradeComponent->AddExpPoints(POINTS_PER_KILL);
 	case FireType::VE_Fired:
 		FVector2D recoil = Firearm->GenerateRecoil();
 		Look(FInputActionValue(recoil));
@@ -151,7 +155,7 @@ void AMainCharacter::OnFireWeaponOnce() {
 }
 
 void AMainCharacter::OnFireWeapon() {
-	if (Firearm && IsAimMode) {
+	if (Firearm && IsAimMode && !IsSkillMenuOpen) {
 		OnFireWeaponOnce();
 		if (!Firearm->IsSemiAutomatic()) {
 			GetWorld()->GetTimerManager().SetTimer(OnFireWeaponHandler, this, &AMainCharacter::OnFireWeaponOnce, Firearm->GetFireRate(), true);
@@ -166,21 +170,21 @@ void AMainCharacter::OnFireStop() {
 }
 
 void AMainCharacter::OnReloadWeapon() {
-	float animationDelay = RELOAD_SPEED * Firearm->GetReloadSpeedModifier();
+	float animationDelay = RELOAD_SPEED * Firearm->GetReloadSpeedModifier() * upgradeComponent->GetReloadSpeedModifier();
 	Firearm->ReloadWeapon(animationDelay);
 }
 
 void AMainCharacter::OnInteract() {
 	if (CanFillAmmo) {
-		Firearm->RefillAmmo(RESERVE_AMMO);
+		Firearm->RefillAmmo(RESERVE_AMMO * upgradeComponent->GetAdditionalReserveAmmoModifier());
 	}
 }
 
 void AMainCharacter::OnSprint() {
-	if (Stamina <= MAX_STAMINA * 0.75f) return;
+	if (Stamina <= MAX_STAMINA * upgradeComponent->GetStaminaModifier()) return;
 	OnAimModeStop();
 	IsSprinting = true;
-	GetCharacterMovement()->MaxWalkSpeed = SPRINT_SPEED;
+	GetCharacterMovement()->MaxWalkSpeed = SPRINT_SPEED * upgradeComponent->GetMovementSpeedModifer();
 	GetWorld()->GetTimerManager().UnPauseTimer(OnSprintHandler);
 }
 
@@ -208,7 +212,32 @@ void AMainCharacter::StaminaGen() {
 	} else if (Stamina <= 0) {
 		OnSprintStop();
 	}
-	Stamina = FMath::Max(0.f, std::min(MAX_STAMINA, Stamina + (IsSprinting ? -1.f : 1.f)));
+	Stamina = FMath::Max(0.f, FMath::Min(MAX_STAMINA, Stamina + (IsSprinting ? -1.f : 1.f * upgradeComponent->GetStaminaRegenModifier())));
+}
+
+void AMainCharacter::SetRunSpeed(float MovementSpeedModifier) {
+	GetCharacterMovement()->MaxWalkSpeed = WALK_SPEED * MovementSpeedModifier;
+}
+
+void AMainCharacter::AddMaxHP(float AdditionalHP) {
+	MaxHealth += AdditionalHP;
+	CurrentHealth += AdditionalHP;
+}
+
+void AMainCharacter::HealthPot(float HealAmount) {
+	const float totalHealAmount = HealAmount + upgradeComponent->GetAdditionalHeal();
+		CurrentHealth = FMath::Min(CurrentHealth + totalHealAmount, MaxHealth);
+}
+
+void AMainCharacter::OnShowSkills() {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnShowSkills"));
+	if (!IsSkillMenuOpen) {
+		upgradeComponent->EnterScreen();
+		IsSkillMenuOpen = true;
+	} else {
+		upgradeComponent->ExitScreen();
+		IsSkillMenuOpen = false;
+	}
 }
 
 void AMainCharacter::GameRestart() {
@@ -263,11 +292,13 @@ void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 		//Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnInteract);
+
+		//Info
+		EnhancedInputComponent->BindAction(InfoAction, ETriggerEvent::Completed, this, &AMainCharacter::OnShowSkills);
 	}
 }
 
 void AMainCharacter::Move(const FInputActionValue& Value) {
-	if (SkillHudWidget->GetVisibility() == ESlateVisibility::Visible) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 

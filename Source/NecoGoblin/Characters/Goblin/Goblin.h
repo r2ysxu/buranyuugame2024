@@ -28,6 +28,7 @@ protected:
 public:
 	FORCEINLINE uint8 GetTeam() { return 2; };
 	virtual bool CheckAlive() override;
+	virtual void SetRunSpeed(float MovementSpeedModiifer);
 
 	void OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 	void OnBodyHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;

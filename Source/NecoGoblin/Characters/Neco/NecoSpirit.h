@@ -32,6 +32,7 @@ public:
 	virtual TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return nullptr; }
 
 	virtual void OnFireWeapon();
+	virtual void HealthPot(float HealAmount);
 
 	UFUNCTION()
 	void OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;

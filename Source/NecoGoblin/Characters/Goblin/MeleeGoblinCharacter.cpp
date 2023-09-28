@@ -12,7 +12,7 @@ AMeleeGoblinCharacter::AMeleeGoblinCharacter() {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	GetCharacterMovement()->MaxWalkSpeed = 350.f;
 	// GetCharacterMovement()->UseAccelerationForPathFollowing() => true
 
 	MeleeDetectionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("MeleeDetectionSphere"));
@@ -58,6 +58,10 @@ void AMeleeGoblinCharacter::OnOutsideMeleeAttackRange(UPrimitiveComponent* Overl
 	if (target && target->GetTeam() != GetTeam()) {
 		GetWorld()->GetTimerManager().ClearTimer(InitateAttackHandler);
 	}
+}
+
+void AMeleeGoblinCharacter::SetRunSpeed(float MovementSpeedModifier) {
+	GetCharacterMovement()->MaxWalkSpeed = FMath::Min(350.f + MovementSpeedModifier, 600.f);
 }
 
 void AMeleeGoblinCharacter::InitiateMeleeAttack() {

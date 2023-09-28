@@ -34,7 +34,6 @@ protected:
 
 public:
 	
-	void HealToFull();
 	void IncreaseMaxHealth(float additionalHealth);
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAlive() { return IsAlive; }
 	virtual void OnDecompose();

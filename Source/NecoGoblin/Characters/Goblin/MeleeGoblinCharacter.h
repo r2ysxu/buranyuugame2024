@@ -48,6 +48,7 @@ public:
 	UFUNCTION()
 	void OnOutsideMeleeAttackRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
 
+	void SetRunSpeed(float MovementSpeedModifier) override;
 	void InitiateMeleeAttack();
 	void OnAttackStop();
 	void TakeHitDamage(float damage, AActor* DamageCauser) override;

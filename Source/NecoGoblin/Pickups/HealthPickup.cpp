@@ -12,7 +12,7 @@ void AHealthPickup::BeginPlay() {
 
 void AHealthPickup::OnPickup(ANecoSpirit* actor) {
 	if (IsValid(actor)) {
-		actor->HealToFull();
+		actor->HealthPot(60);
 		Destroy();
 	}
 }

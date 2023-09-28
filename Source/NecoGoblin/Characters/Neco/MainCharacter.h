@@ -56,6 +56,9 @@ class AMainCharacter : public ANecoSpirit {
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InfoAction;
+
 private:
 
 	const float CameraArmLengthOffset = 100.f;
@@ -65,7 +68,7 @@ private:
 	const float SPRINT_SPEED = 500.f;
 	const float MAX_STAMINA = 20.f;
 	const float WATER_LEVEL = 1200.f;
-	const int POINTS_PER_KILL = 10;
+	const int POINTS_PER_KILL = 1;
 	const int RESERVE_AMMO = 30 * 10;
 
 	void SetupHuds();
@@ -78,6 +81,7 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	bool IsSkillMenuOpen = false;
 	bool CanFillAmmo = false;
 	bool IsSprinting = false;
 	bool IsAimMode = false;
@@ -152,6 +156,11 @@ public:
 	void CanRefillAmmo(bool Fillable);
 	void RefillAmmo();
 	void StaminaGen();
+	void SetRunSpeed(float MovementSpeedModifier);
+	void AddMaxHP(float AdditionalHP);
+	
+	virtual void HealthPot(float HealAmount);
+	UFUNCTION(BlueprintCallable) void OnShowSkills();
 
 	void GameRestart();
 

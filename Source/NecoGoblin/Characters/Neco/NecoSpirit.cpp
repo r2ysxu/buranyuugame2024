@@ -35,3 +35,5 @@ void ANecoSpirit::SetupFirearmWeapon() {
 }
 
 void ANecoSpirit::OnFireWeapon() {}
+
+void ANecoSpirit::HealthPot(float HealAmount) {}

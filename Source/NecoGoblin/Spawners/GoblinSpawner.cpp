@@ -21,6 +21,7 @@ void AGoblinSpawner::SpawnGoblin() {
 			goblinTransform.SetRotation(FQuat(FRotator::ZeroRotator));
 
 			AMeleeGoblinCharacter* goblin = GetWorld()->SpawnActor<AMeleeGoblinCharacter>(GoblinClass, goblinTransform);
+			goblin->SetRunSpeed((GameMode->GetCurrentRound() / 3) * 20);
 		}
 	}
 }

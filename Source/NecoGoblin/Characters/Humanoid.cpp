@@ -34,10 +34,6 @@ void AHumanoid::OnMeleeHit(AActor* actor, float modifier) {
 	}
 }
 
-void AHumanoid::HealToFull() {
-	CurrentHealth = MaxHealth;
-}
-
 void AHumanoid::IncreaseMaxHealth(float additionalHealth) {
 	MaxHealth += additionalHealth;
 	CurrentHealth += additionalHealth;

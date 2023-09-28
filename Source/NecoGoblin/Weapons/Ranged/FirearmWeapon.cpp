@@ -56,10 +56,10 @@ void AFirearmWeapon::WeaponReloadStop() {
 	WeaponReloaded = true;
 	const int reloadedAmmo = MaxAmmoInMagazine() - CurrentAmmoInMagazine;
 	CurrentAmmoInMagazine = FMath::Min(ReserveAmmo, MaxAmmoInMagazine());
-	ReserveAmmo -= reloadedAmmo;
+	ReserveAmmo -= FMath::Min(ReserveAmmo, reloadedAmmo);
 }
 
-FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult) {
+FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float HeadshotDmgModifier) {
 	if (!WeaponData) return FireType::VE_NotFired;
 	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
 		WeaponFireStart();
@@ -73,7 +73,9 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 			// DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
-				targetActor->TakeHitDamage(GetWeaponDamage(), this);
+				float finalDamage = GetWeaponDamage();
+				if (FName("head").IsEqual(OutResult.BoneName)) finalDamage *= (2 + HeadshotDmgModifier);
+				targetActor->TakeHitDamage(finalDamage, this);
 				if (!targetActor->CheckAlive()) {
 					return FireType::VE_Killed;
 				}
@@ -129,10 +131,10 @@ void AFirearmWeapon::RefillAmmo(int Amount) {
 	ReserveAmmo = Amount;
 }
 
-FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult) {
+FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier, float HeadshotDmgModifier) {
 	if (!IsFiring) {
 		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate, false);
-		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult);
+		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult, FireRateModifier, HeadshotDmgModifier);
 	}
 	return FireType::VE_NotFired;
 }

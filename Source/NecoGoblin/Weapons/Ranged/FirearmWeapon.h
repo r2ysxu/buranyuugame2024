@@ -55,7 +55,7 @@ class NECOGOBLIN_API AFirearmWeapon : public AWeapon
 	GENERATED_BODY()
 
 private:
-	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult);
+	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float HeadshotDmgModifier);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -103,6 +103,6 @@ public:
 	FORCEINLINE bool GetIsFiring() { return IsFiring; }
 	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
 	
-	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult);
+	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier = 1.f, float HeadshotDmgModifier = 1.f);
 	FVector2D GenerateRecoil();
 };
