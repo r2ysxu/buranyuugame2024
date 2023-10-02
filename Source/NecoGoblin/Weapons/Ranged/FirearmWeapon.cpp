@@ -29,18 +29,22 @@ AFirearmWeapon::AFirearmWeapon() {
 	box->SetupAttachment(GetRootComponent());
 }
 
-void AFirearmWeapon::BeginPlay() {
-	Super::BeginPlay();
-	WeaponData = weaponDataTable->FindRow<FFirearmWeaponData>(WeaponKey, FString("MainFirearm"), true);
+void AFirearmWeapon::ChangeWeapon(FName WeaponKey) {
+	WeaponData = WeaponDataTable->FindRow<FFirearmWeaponData>(WeaponKey, FString("MainFirearm"), true);
 	if (WeaponData) {
-		CurrentAmmoInMagazine = WeaponData->MagazineSize;
-		RefillAmmo(30 * 10);
+		WeaponReloadStop();
 		if (WeaponData->WeaponMesh) {
-			WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
 			WeaponMeshComponent->SetSkeletalMesh(WeaponData->WeaponMesh);
-			WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
 		}
 	}
+}
+
+void AFirearmWeapon::BeginPlay() {
+	Super::BeginPlay();
+	ChangeWeapon(FName("AK-47"));
+	WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
+	WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
+	RefillAmmo(30 * 10);
 }
 
 void AFirearmWeapon::WeaponFireStart() {
@@ -129,6 +133,18 @@ void AFirearmWeapon::UpgradeDamageModifier(float additionalModifier) {
 
 void AFirearmWeapon::RefillAmmo(int Amount) {
 	ReserveAmmo = Amount;
+}
+
+FFirearmStats* AFirearmWeapon::GetStats() {
+	FFirearmStats* stats = new FFirearmStats();
+	if (WeaponData) {
+		stats->Name = WeaponData->WeaponName;
+		stats->DamageP = WeaponData->BaseDamage / stats->DamageP;
+		stats->FireRateP = 1.f - WeaponData->FireRate * stats->FireRateP;
+		stats->HandlingP = stats->HandlingP - (WeaponData->RecoilYawVariance + WeaponData->RecoiPitchVariance);
+		stats->InfoText = WeaponData->StatInfo;
+	}
+	return stats;
 }
 
 FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier, float HeadshotDmgModifier) {

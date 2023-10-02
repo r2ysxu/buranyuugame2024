@@ -36,6 +36,23 @@ struct FFirearmWeaponData : public FTableRowBase {
 		float RecoiPitchVariance;
 	UPROPERTY(EditAnywhere)
 		float BaseDamage;
+	UPROPERTY(EditAnywhere)
+		FString StatInfo;
+};
+
+USTRUCT(BlueprintType)
+struct FFirearmStats {
+	GENERATED_BODY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FString Name;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float DamageP = 40.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float FireRateP = 4.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float HandlingP = 1.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FString InfoText;
 };
 
 UENUM(BlueprintType)
@@ -50,22 +67,20 @@ enum class FireType : uint8 {
  * 
  */
 UCLASS()
-class NECOGOBLIN_API AFirearmWeapon : public AWeapon
-{
+class NECOGOBLIN_API AFirearmWeapon : public AWeapon {
 	GENERATED_BODY()
 
 private:
+
 	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float HeadshotDmgModifier);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	FName WeaponKey = FName("AK-47");
+	class UNiagaraSystem* BloodHitFX = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	class UNiagaraSystem* BloodHitFX;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	class UNiagaraSystem* MuzzleFX;
+	class UNiagaraSystem* MuzzleFX = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	class UDataTable* weaponDataTable;
+	class UDataTable* WeaponDataTable = nullptr;
 	class USkeletalMeshComponent* WeaponMeshComponent;
 	FFirearmWeaponData* WeaponData;
 	FTimerHandle InitiateFireHandler;
@@ -88,6 +103,7 @@ protected:
 
 public:
 	AFirearmWeapon();
+	void ChangeWeapon(FName WeaponKey);
 	void EquipWeapon(FName SocketName) override;
 	float GetWeaponDamage() override;
 	uint8 GetWeaponTeam() override;
@@ -98,6 +114,7 @@ public:
 	int MaxAmmoInMagazine();
 	void UpgradeDamageModifier(float additionalModifier);
 	void RefillAmmo(int Amount);
+	FFirearmStats* GetStats();
 	FORCEINLINE int GetReserveAmmo() { return ReserveAmmo; }
 	FORCEINLINE int GetAmmoMagazine() { return CurrentAmmoInMagazine; }
 	FORCEINLINE bool GetIsFiring() { return IsFiring; }

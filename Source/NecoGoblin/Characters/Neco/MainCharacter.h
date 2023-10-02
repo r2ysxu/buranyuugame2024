@@ -85,6 +85,7 @@ protected:
 	bool CanFillAmmo = false;
 	bool IsSprinting = false;
 	bool IsAimMode = false;
+	FName SelectableWeaponKey = FName();
 	float PlayerPitch = 0.f;
 	float Stamina = MAX_STAMINA;
 	FTimerHandle OnSprintHandler;
@@ -154,6 +155,7 @@ public:
 	void OnSprint();
 	void OnSprintStop();
 	void CanRefillAmmo(bool Fillable);
+	void SetChangableWeapon(FName WeaponKey);
 	void RefillAmmo();
 	void StaminaGen();
 	void SetRunSpeed(float MovementSpeedModifier);
@@ -161,6 +163,7 @@ public:
 	
 	virtual void HealthPot(float HealAmount);
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
+	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 
 	void GameRestart();
 

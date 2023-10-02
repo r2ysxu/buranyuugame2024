@@ -177,6 +177,8 @@ void AMainCharacter::OnReloadWeapon() {
 void AMainCharacter::OnInteract() {
 	if (CanFillAmmo) {
 		Firearm->RefillAmmo(RESERVE_AMMO * upgradeComponent->GetAdditionalReserveAmmoModifier());
+	} else if (SelectableWeaponKey != FName()) {
+		Firearm->ChangeWeapon(SelectableWeaponKey);
 	}
 }
 
@@ -197,6 +199,10 @@ void AMainCharacter::OnSprintStop() {
 
 void AMainCharacter::CanRefillAmmo(bool Fillable) {
 	CanFillAmmo = Fillable;
+}
+
+void AMainCharacter::SetChangableWeapon(FName WeaponKey) {
+	SelectableWeaponKey = WeaponKey;
 }
 
 void AMainCharacter::RefillAmmo() {
@@ -222,6 +228,10 @@ void AMainCharacter::SetRunSpeed(float MovementSpeedModifier) {
 void AMainCharacter::AddMaxHP(float AdditionalHP) {
 	MaxHealth += AdditionalHP;
 	CurrentHealth += AdditionalHP;
+}
+
+FFirearmStats AMainCharacter::GetFirearmStats() {
+	return (IsValid(Firearm)) ? *Firearm->GetStats() : FFirearmStats();
 }
 
 void AMainCharacter::HealthPot(float HealAmount) {
