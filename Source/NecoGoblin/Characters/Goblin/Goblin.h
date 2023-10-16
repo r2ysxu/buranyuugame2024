@@ -14,7 +14,7 @@ class NECOGOBLIN_API AGoblin : public AHumanoid {
 	GENERATED_BODY()
 
 protected:
-	float AttackDelay = 3.f;
+	float AttackDelay = 2.f;
 	class ANecoGoblinGameMode* GameMode;
 
 

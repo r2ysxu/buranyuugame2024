@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
 #include "../Characters/Humanoid.h"
 #include "Weapon.generated.h"
 
 UCLASS(Abstract)
-class NECOGOBLIN_API AWeapon : public APawn {
+class NECOGOBLIN_API AWeapon : public AActor {
 	GENERATED_BODY()
 
 public:
