@@ -23,7 +23,7 @@ AMeleeWeapon::AMeleeWeapon() {
 	MeleeAttackWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MeleeAttackWeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	MeleeAttackWeaponBox->SetupAttachment(GetRootComponent());
-	MeleeAttackWeaponBox->bHiddenInGame = false;
+	//MeleeAttackWeaponBox->bHiddenInGame = false;
 }
 
 // Called when the game starts or when spawned
@@ -32,7 +32,6 @@ void AMeleeWeapon::BeginPlay() {
 	if (Mesh) WeaponMeshComponent->SetStaticMesh(Mesh);
 	WeaponMeshComponent->AddLocalOffset(FVector(0.f, 50.f, 0));
 	WeaponMeshComponent->AddLocalRotation(FRotator(180.f, 90.f, 90.f));
-	//MeleeAttackWeaponBox->AddLocalRotation(FRotator(0.f, 90.f, 90.f));
 }
 
 void AMeleeWeapon::EquipWeapon(FName SocketName) {

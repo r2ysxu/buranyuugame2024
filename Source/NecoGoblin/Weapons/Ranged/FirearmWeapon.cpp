@@ -81,6 +81,7 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 				if (FName("head").IsEqual(OutResult.BoneName)) finalDamage *= (2 + HeadshotDmgModifier);
 				targetActor->TakeHitDamage(finalDamage, this);
 				if (!targetActor->CheckAlive()) {
+					targetActor->GetMesh()->AddImpulse(OutResult.ImpactNormal * 1000.f , OutResult.BoneName);
 					return FireType::VE_Killed;
 				}
 				if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
