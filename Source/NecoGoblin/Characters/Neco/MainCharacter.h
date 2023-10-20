@@ -92,8 +92,8 @@ protected:
 	FTimerHandle OnFireWeaponHandler;
 	FTimerHandle GameOverHandler;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		class UAnimMontage* ReloadFirearmMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+		class UAnimMontage* FlinchMontage;
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -130,6 +130,7 @@ public:
 	AMainCharacter();
 
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsFlinching() { return IsFlinching; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAimMode() { return IsAimMode; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
 	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
@@ -154,13 +155,13 @@ public:
 	void OnInteract();
 	void OnSprint();
 	void OnSprintStop();
-	void CanRefillAmmo(bool Fillable);
 	void SetChangableWeapon(FName WeaponKey);
-	void RefillAmmo();
+	int RefillAmmo(int AmmoAmount);
 	void StaminaGen();
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
 	
+	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();

@@ -33,7 +33,6 @@ void AWeaponCrate::OnWithinRange(UPrimitiveComponent* OverlappedComponent, AActo
 void AWeaponCrate::OnOutsideRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex) {
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(actor);
 	if (IsValid(mainCharacter)) {
-		mainCharacter->CanRefillAmmo(false);
 		mainCharacter->SetChangableWeapon(FName());
 		InfoHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}

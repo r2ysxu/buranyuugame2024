@@ -44,7 +44,7 @@ void AFirearmWeapon::BeginPlay() {
 	ChangeWeapon(FName("AK-47"));
 	WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
 	WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
-	RefillAmmo(30 * 10);
+	RefillAmmo(30 * 3);
 }
 
 void AFirearmWeapon::WeaponFireStart() {
@@ -133,7 +133,7 @@ void AFirearmWeapon::UpgradeDamageModifier(float additionalModifier) {
 }
 
 void AFirearmWeapon::RefillAmmo(int Amount) {
-	ReserveAmmo = Amount;
+	ReserveAmmo += Amount;
 }
 
 FFirearmStats* AFirearmWeapon::GetStats() {

@@ -16,9 +16,13 @@ class NECOGOBLIN_API ANecoSpirit : public AHumanoid {
 	GENERATED_BODY()
 
 private:
+	FTimerHandle OnFlinchHandler;
+
+	void OnStopFlinching();
 
 protected:
 	AFirearmWeapon* Firearm;
+	bool IsFlinching = false;
 	
 	virtual void BeginPlay() override;
 	void SetupFirearmWeapon();

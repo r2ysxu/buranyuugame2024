@@ -14,6 +14,10 @@ void ANecoSpirit::OnBodyHit(UPrimitiveComponent* OverlappedComponent, AActor* ac
 	OnMeleeHit(actor, 1.f);
 }
 
+void ANecoSpirit::OnStopFlinching() {
+	IsFlinching = false;
+}
+
 void ANecoSpirit::BeginPlay() {
 	Super::BeginPlay();
 	SetupFirearmWeapon();

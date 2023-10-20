@@ -197,19 +197,15 @@ void AMainCharacter::OnSprintStop() {
 	}
 }
 
-void AMainCharacter::CanRefillAmmo(bool Fillable) {
-	CanFillAmmo = Fillable;
-}
-
 void AMainCharacter::SetChangableWeapon(FName WeaponKey) {
 	SelectableWeaponKey = WeaponKey;
 }
 
-void AMainCharacter::RefillAmmo() {
-	if (CanFillAmmo) {
-		if (RefillSound) UGameplayStatics::PlaySound2D(GetWorld(), RefillSound, 5.f);
-		Firearm->RefillAmmo(RESERVE_AMMO);
-	}
+int AMainCharacter::RefillAmmo(int AmmoAmount) {
+	if (RefillSound) UGameplayStatics::PlaySound2D(GetWorld(), RefillSound, 5.f);
+	int refillAmount = FMath::Min(AmmoAmount, RESERVE_AMMO * upgradeComponent->GetAdditionalReserveAmmoModifier() - GetReserveAmmo());
+	Firearm->RefillAmmo(refillAmount);
+	return refillAmount;
 }
 
 void AMainCharacter::StaminaGen() {
@@ -232,6 +228,11 @@ void AMainCharacter::AddMaxHP(float AdditionalHP) {
 
 FFirearmStats AMainCharacter::GetFirearmStats() {
 	return (IsValid(Firearm)) ? *Firearm->GetStats() : FFirearmStats();
+}
+
+void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
+	Super::TakeHitDamage(damage, DamageCauser);
+	if (FlinchMontage) PlayAnimMontage(FlinchMontage, 1.f);
 }
 
 void AMainCharacter::HealthPot(float HealAmount) {

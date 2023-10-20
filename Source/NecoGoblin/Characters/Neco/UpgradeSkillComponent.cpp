@@ -105,7 +105,7 @@ bool UUpgradeSkillComponent::AddSkillPoint(FNecoSkills Skill) {
 		break;
 	}
 	SkillPoints--;
-	Skills[(uint8)Skill]++;
+	Skills[(uint8)Skill] = Skills[(uint8)Skill] + 1;
 	return true;
 }
 
