@@ -101,7 +101,6 @@ bool AMainCharacter::CheckAlive() {
 
 void AMainCharacter::OnCharacterStart() {
 	GetMesh()->SetVisibility(true);
-	SetupHuds();
 }
 
 void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
@@ -224,6 +223,10 @@ void AMainCharacter::SetRunSpeed(float MovementSpeedModifier) {
 void AMainCharacter::AddMaxHP(float AdditionalHP) {
 	MaxHealth += AdditionalHP;
 	CurrentHealth += AdditionalHP;
+}
+
+void AMainCharacter::PlayGetupMontage() {
+	if (GetupMontage) PlayAnimMontage(GetupMontage, 1.f);
 }
 
 FFirearmStats AMainCharacter::GetFirearmStats() {

@@ -88,7 +88,7 @@ bool UUpgradeSkillComponent::AddSkillPoint(FNecoSkills Skill) {
 		ParentCharacter->SetRunSpeed(MovementSpeedModifier);
 		break;
 	case FNecoSkills::VE_ChangeDodge:
-		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1 || Skills[(uint8)FNecoSkills::VE_ChangeDodge]) return false;
+		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1 || Skills[(uint8)FNecoSkills::VE_ChangeDodge] < 1) return false;
 		DodgeChanceModifier += DODGE_CHANCE_AMOUNT;
 		break;
 	case FNecoSkills::VE_MaxHP:

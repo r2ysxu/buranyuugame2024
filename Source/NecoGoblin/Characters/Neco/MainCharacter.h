@@ -71,8 +71,6 @@ private:
 	const int POINTS_PER_KILL = 1;
 	const int RESERVE_AMMO = 30 * 10;
 
-	void SetupHuds();
-
 protected:
 
 	/** Called for movement input */
@@ -93,7 +91,9 @@ protected:
 	FTimerHandle GameOverHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
-		class UAnimMontage* FlinchMontage;
+	class UAnimMontage* FlinchMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	class UAnimMontage* GetupMontage;
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -163,6 +163,8 @@ public:
 	
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
+	UFUNCTION(BlueprintCallable) void PlayGetupMontage();
+	UFUNCTION(BlueprintCallable) void SetupHuds();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 
