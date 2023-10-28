@@ -65,7 +65,7 @@ private:
 	const float FRAMES_PER_MAG = 2.f;
 	const float RELOAD_SPEED = 1.5f;
 	const float WALK_SPEED = 300.f;
-	const float SPRINT_SPEED = 500.f;
+	const float SPRINT_SPEED = 600.f;
 	const float MAX_STAMINA = 20.f;
 	const float WATER_LEVEL = 1200.f;
 	const int POINTS_PER_KILL = 1;

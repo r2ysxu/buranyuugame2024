@@ -24,7 +24,7 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void SetupMeleeWeapon();
+	void SetupWeapon();
 
 public:
 	// Sets default values for this character's properties
@@ -37,7 +37,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		class UAnimMontage* MeleeAttackMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		FName WeaponSocketName = FName("Base-HumanRPalm");
+		FName WeaponSocketName = FName("weapon_r");
 
 	FORCEINLINE AMeleeGoblinController* GetAIController() { return AiController; }
 	FORCEINLINE void SetAIController(AMeleeGoblinController* controller) { AiController = controller; }

@@ -12,17 +12,20 @@ class ANecoGoblinGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 private:
-	const int GOBLIN_PER_ROUND = 10;
-	const int MAX_GOBLIN = 200;
+	const int MELEE_ENEMY_PER_ROUND = 8;
+	const int RANGE_ENEMY_PER_ROUND = 2;
+	const int MAX_ENEMY = 1000;
 
 protected:
 	FTimerHandle NextRoundHandler;
 
 	int CurrentRound = 0;
-	int GoblinSpawned = 0;
-	int GoblinPerRound;
-	int GoblinCount;
-	float GoblinSpawnRate = 5.f;
+	int RangeEnemySpawned = 0;
+	int MeleeEnemySpawned = 0;
+	int MeleeEnemyPerRound;
+	int RangeEnemyPerRound;
+	int EnemyCount;
+	float EnemySpawnRate = 5.f;
 
 	void NextRound();
 
@@ -31,12 +34,16 @@ public:
 
 	void StartPlay() override;
 	
-	bool IncrementGoblin();
-	bool DecrementGoblin();
+	bool IncrementMeleeEnemy();
+	bool IncrementRangeEnemy();
+	bool DecrementEnemy();
 	FORCEINLINE int GetCurrentRound() { return CurrentRound; }
-	FORCEINLINE int GetGoblinCount() { return GoblinCount; }
-	FORCEINLINE int GetGoblinPerRound() { return GoblinPerRound; }
-	FORCEINLINE float GetGoblinSpawnRate() { return GoblinSpawnRate; }
+	FORCEINLINE int GetGoblinCount() { return EnemyCount; }
+	FORCEINLINE int GetMeleeGoblinPerRound() { return MeleeEnemyPerRound; }
+	FORCEINLINE int GetRangeEnemyPerRound() { return RangeEnemyPerRound; }
+	FORCEINLINE float GetGoblinSpawnRate() { return EnemySpawnRate; }
+
+	UFUNCTION(BlueprintCallable) FString GetRoundText();
 };
 
 

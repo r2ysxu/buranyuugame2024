@@ -2,9 +2,10 @@
 
 #pragma once
 
+#include "../Neco/NecoSpirit.h"
+
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "../Neco/NecoSpirit.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BehaviorTreeComponent.h>
 #include "MeleeGoblinController.generated.h"
 
@@ -16,7 +17,8 @@ class NECOGOBLIN_API AMeleeGoblinController : public AAIController {
 	GENERATED_BODY()
 
 private:
-	void InitializeAIPerception();
+	const FName MainPlayer = FName("MainPlayer");
+	ANecoSpirit* GetNecoSpiritByTag(const UObject* WorldContextObject, FName tagName);
 
 protected:
 	FTimerHandle MoveHandler;
@@ -26,9 +28,6 @@ protected:
 public:
 	AMeleeGoblinController();
 	virtual void OnPossess(APawn* InPawn) override;
-
-	UFUNCTION()
-	void PawnDetected(TArray<AActor*> const& DetectedPawn);
 
 	FORCEINLINE bool GetIsAttacking() { return IsAttacking; }
 	FORCEINLINE void SetIsAttacking(bool isAttacking) { IsAttacking = isAttacking; }

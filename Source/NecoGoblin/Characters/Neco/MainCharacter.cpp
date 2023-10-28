@@ -25,7 +25,7 @@
 AMainCharacter::AMainCharacter()
 {
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(30.f, 60.0f);
+	GetCapsuleComponent()->InitCapsuleSize(15.f, 30.f);
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;

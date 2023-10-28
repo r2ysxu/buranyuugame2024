@@ -15,6 +15,8 @@ class NECOGOBLIN_API AGoblinSpawner : public AActor
 private:
 	class ANecoGoblinGameMode* GameMode;
 
+	void SpawnEnemyType(uint8 Type);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -22,11 +24,13 @@ protected:
 	FTimerHandle OnSpawnHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	TSubclassOf<class AGoblin> GoblinClass;
+	TSubclassOf<class AMeleeGoblinCharacter> MeleeGoblinClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	TSubclassOf<class ARangeGoblinCharacter> RangeGoblinClass;
 	
 public:	
 	// Sets default values for this actor's properties
 	AGoblinSpawner();
 
-	void SpawnGoblin();
+	void SpawnEnemy();
 };

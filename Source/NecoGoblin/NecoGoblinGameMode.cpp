@@ -14,10 +14,12 @@ ANecoGoblinGameMode::ANecoGoblinGameMode() {
 
 void ANecoGoblinGameMode::NextRound() {
 	CurrentRound++;
-	GoblinPerRound = FMath::Min(MAX_GOBLIN, CurrentRound * GOBLIN_PER_ROUND);
-	GoblinSpawned = 0;
-	GoblinCount = 0;
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, FString::Printf(TEXT("Round: %d, Goblins: %d"), CurrentRound, GoblinPerRound));
+	MeleeEnemyPerRound = FMath::Min(MAX_ENEMY, CurrentRound * MELEE_ENEMY_PER_ROUND);
+	RangeEnemyPerRound = FMath::Min(MAX_ENEMY, FMath::Max(CurrentRound - 2, 0) * RANGE_ENEMY_PER_ROUND);
+	MeleeEnemySpawned = 0;
+	RangeEnemySpawned = 0;
+	EnemyCount = 0;
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, GetRoundText());
 }
 
 void ANecoGoblinGameMode::StartPlay() {
@@ -25,18 +27,29 @@ void ANecoGoblinGameMode::StartPlay() {
 	NextRound();
 }
 
-bool ANecoGoblinGameMode::IncrementGoblin() {
-	if (GoblinSpawned >= GoblinPerRound) return false;
-	GoblinSpawned++;
-	GoblinCount++;
+bool ANecoGoblinGameMode::IncrementMeleeEnemy() {
+	if (MeleeEnemySpawned >= MeleeEnemyPerRound) return false;
+	MeleeEnemySpawned++;
+	EnemyCount++;
 	return true;
 }
 
-bool ANecoGoblinGameMode::DecrementGoblin() {
-	if (GoblinCount == 0) return false;
-	GoblinCount = FMath::Max(GoblinCount - 1, 0);
-	if (GoblinCount == 0) {
+bool ANecoGoblinGameMode::IncrementRangeEnemy() {
+	if (RangeEnemySpawned >= RangeEnemyPerRound) return false;
+	RangeEnemySpawned++;
+	EnemyCount++;
+	return true;
+}
+
+bool ANecoGoblinGameMode::DecrementEnemy() {
+	if (EnemyCount == 0) return false;
+	EnemyCount = FMath::Max(EnemyCount - 1, 0);
+	if (EnemyCount == 0) {
 		GetWorld()->GetTimerManager().SetTimer(NextRoundHandler, this, &ANecoGoblinGameMode::NextRound, 5.f, false);
 	}
 	return true;
+}
+
+FString ANecoGoblinGameMode::GetRoundText() {
+	return FString::Printf(TEXT("Round %d"), CurrentRound);
 }

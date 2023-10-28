@@ -24,7 +24,7 @@ AMeleeGoblinCharacter::AMeleeGoblinCharacter() {
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AMeleeGoblinCharacter::SetupMeleeWeapon() {
+void AMeleeGoblinCharacter::SetupWeapon() {
 	FTransform weaponTransform;
 	weaponTransform.SetLocation(FVector::ZeroVector);
 	weaponTransform.SetRotation(FQuat(FRotator::ZeroRotator));
@@ -39,7 +39,7 @@ void AMeleeGoblinCharacter::SetupMeleeWeapon() {
 void AMeleeGoblinCharacter::BeginPlay() {
 	Super::BeginPlay();
 	SpawnDefaultController();
-	SetupMeleeWeapon();
+	SetupWeapon();
 	MeleeDetectionBox->OnComponentBeginOverlap.AddDynamic(this, &AMeleeGoblinCharacter::OnWithinMeleeAttackRange);
 	MeleeDetectionBox->OnComponentEndOverlap.AddDynamic(this, &AMeleeGoblinCharacter::OnOutsideMeleeAttackRange);
 }
