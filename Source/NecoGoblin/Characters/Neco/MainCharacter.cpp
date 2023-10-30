@@ -73,7 +73,7 @@ void AMainCharacter::BeginPlay() {
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
 	GetMesh()->SetVisibility(false);
 
-	GetWorld()->GetTimerManager().SetTimer(OnSprintHandler, this, &AMainCharacter::StaminaGen, 0.1, true);
+	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 }
 
 void AMainCharacter::SetupHuds() {
@@ -182,17 +182,19 @@ void AMainCharacter::OnInteract() {
 }
 
 void AMainCharacter::OnSprint() {
-	if (Stamina <= MAX_STAMINA * upgradeComponent->GetStaminaModifier()) return;
+	if (Stamina <= 0 || IsSprinting) return;
 	OnAimModeStop();
 	IsSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SPRINT_SPEED * upgradeComponent->GetMovementSpeedModifer();
-	GetWorld()->GetTimerManager().UnPauseTimer(OnSprintHandler);
+	GetWorld()->GetTimerManager().SetTimer(OnSprintHandler, this, &AMainCharacter::StaminaDrain, 0.1f, true);
 }
 
 void AMainCharacter::OnSprintStop() {
 	if (IsSprinting) {
 		IsSprinting = false;
 		GetCharacterMovement()->MaxWalkSpeed = WALK_SPEED;
+		GetWorld()->GetTimerManager().UnPauseTimer(OnSprintRegenHandler);
+		GetWorld()->GetTimerManager().ClearTimer(OnSprintHandler);
 	}
 }
 
@@ -207,13 +209,21 @@ int AMainCharacter::RefillAmmo(int AmmoAmount) {
 	return refillAmount;
 }
 
-void AMainCharacter::StaminaGen() {
-	if (Stamina >= MAX_STAMINA) {
-		GetWorld()->GetTimerManager().PauseTimer(OnSprintHandler);
-	} else if (Stamina <= 0) {
-		OnSprintStop();
+void AMainCharacter::StaminaRegen() {
+	if (IsSprinting || Stamina >= MAX_STAMINA * upgradeComponent->GetStaminaModifier()) {
+		GetWorld()->GetTimerManager().PauseTimer(OnSprintRegenHandler);
+	} else {
+		Stamina = FMath::Min(MAX_STAMINA * upgradeComponent->GetStaminaModifier(), Stamina + 1.f);
 	}
-	Stamina = FMath::Max(0.f, FMath::Min(MAX_STAMINA, Stamina + (IsSprinting ? -1.f : 1.f * upgradeComponent->GetStaminaRegenModifier())));
+}
+
+void AMainCharacter::StaminaDrain() {
+	if (Stamina <= 0) {
+		OnSprintStop();
+	} else {
+		IsSprinting = true;
+		Stamina = FMath::Max(0.f, Stamina - 1.f);
+	}
 }
 
 void AMainCharacter::SetRunSpeed(float MovementSpeedModifier) {

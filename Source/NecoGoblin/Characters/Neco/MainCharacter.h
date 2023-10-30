@@ -65,7 +65,7 @@ private:
 	const float FRAMES_PER_MAG = 2.f;
 	const float RELOAD_SPEED = 1.5f;
 	const float WALK_SPEED = 300.f;
-	const float SPRINT_SPEED = 600.f;
+	const float SPRINT_SPEED = 500.f;
 	const float MAX_STAMINA = 20.f;
 	const float WATER_LEVEL = 1200.f;
 	const int POINTS_PER_KILL = 1;
@@ -87,6 +87,7 @@ protected:
 	float PlayerPitch = 0.f;
 	float Stamina = MAX_STAMINA;
 	FTimerHandle OnSprintHandler;
+	FTimerHandle OnSprintRegenHandler;
 	FTimerHandle OnFireWeaponHandler;
 	FTimerHandle GameOverHandler;
 
@@ -137,6 +138,7 @@ public:
 	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
 	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / MaxHealth; }
+	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
 	UFUNCTION(BlueprintCallable) FORCEINLINE UNecoCharacterStat* GetStats() { return stats; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE UUpgradeSkillComponent* GetSkillUpgrades() { return upgradeComponent; }
 
@@ -156,10 +158,11 @@ public:
 	void OnSprint();
 	void OnSprintStop();
 	void SetChangableWeapon(FName WeaponKey);
-	int RefillAmmo(int AmmoAmount);
-	void StaminaGen();
+	void StaminaRegen();
+	void StaminaDrain();
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
+	int RefillAmmo(int AmmoAmount);
 	
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
@@ -173,4 +176,3 @@ public:
 	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
 
 };
-
