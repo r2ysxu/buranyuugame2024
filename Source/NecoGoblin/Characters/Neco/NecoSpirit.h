@@ -28,6 +28,7 @@ protected:
 	void SetupFirearmWeapon();
 
 public:
+	ANecoSpirit();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FName FirearmSocketName = FName("hand_l");

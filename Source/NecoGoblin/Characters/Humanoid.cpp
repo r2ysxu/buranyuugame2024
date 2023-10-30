@@ -3,6 +3,7 @@
 
 #include "Humanoid.h"
 #include "../Weapons/Melee/MeleeWeapon.h"
+
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -14,8 +15,8 @@ AHumanoid::AHumanoid() {
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	HeadBox = CreateDefaultSubobject<USphereComponent>(TEXT("HeadBox"));
-	HeadBox->SetSphereRadius(20.f);
 	HeadBox->SetupAttachment(GetMesh(), HeadSocketName);
+	HeadBox->SetCollisionEnabled(ECollisionEnabled::QueryAndProbe);
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +53,7 @@ bool AHumanoid::CheckAlive() {
 	if (CurrentHealth <= 0) {
 		IsAlive = false;
 		if (!UseDeathAnimation) {
+			HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 			GetMesh()->SetSimulatePhysics(true);
 		}

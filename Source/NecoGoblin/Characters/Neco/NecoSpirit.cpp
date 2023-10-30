@@ -4,6 +4,13 @@
 #include "NecoSpirit.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
 
+#include "Components/SphereComponent.h"
+
+
+ANecoSpirit::ANecoSpirit() {
+	HeadBox->SetSphereRadius(1.f);
+}
+
 void ANecoSpirit::OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (actor == this) return;
 	OnMeleeHit(actor, 1.f);

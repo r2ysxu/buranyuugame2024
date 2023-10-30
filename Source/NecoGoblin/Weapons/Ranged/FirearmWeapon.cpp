@@ -78,13 +78,12 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
 				float finalDamage = GetWeaponDamage();
-				if (FName("head").IsEqual(OutResult.BoneName)) finalDamage *= (2 + HeadshotDmgModifier);
+				if (FString(TEXT("HeadBox")) == OutResult.GetComponent()->GetName()) finalDamage *= (2 + HeadshotDmgModifier);
 				targetActor->TakeHitDamage(finalDamage, this);
+				if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
 				if (!targetActor->CheckAlive()) {
-					targetActor->GetMesh()->AddImpulse(OutResult.ImpactNormal * 1000.f , OutResult.BoneName);
 					return FireType::VE_Killed;
 				}
-				if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
 			}
 		}
 		return FireType::VE_Fired;

@@ -2,11 +2,18 @@
 
 
 #include "Goblin.h"
-#include "Kismet/GameplayStatics.h"
 #include "../../Pickups/HealthPickup.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "Components/SphereComponent.h"
 #include "NecoGoblin/NecoGoblinGameMode.h"
 #include "Components/CapsuleComponent.h"
 
+
+AGoblin::AGoblin() {
+	HeadBox->SetSphereRadius(3.f);
+	HeadBox->AddLocalOffset(FVector(0.f, -2.f, 0.f));
+}
 
 void AGoblin::BeginPlay() {
 	Super::BeginPlay();
@@ -29,8 +36,6 @@ bool AGoblin::CheckAlive() {
 
 void AGoblin::SetRunSpeed(float MovementSpeedModiifer) {}
 
-void AGoblin::OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-}
+void AGoblin::OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {}
 
-void AGoblin::OnBodyHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-}
+void AGoblin::OnBodyHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {}

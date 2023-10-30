@@ -17,8 +17,9 @@ public:
 
 protected:
 	FName HeadSocketName = FName("head");
-	class USphereComponent* HeadBox;
 
+	UPROPERTY(EditAnywhere ,BlueprintReadWrite, Category = Collision)
+	class USphereComponent* HeadBox;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	bool UseDeathAnimation;
 
