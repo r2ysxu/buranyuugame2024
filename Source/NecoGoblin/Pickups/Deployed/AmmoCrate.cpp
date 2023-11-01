@@ -21,11 +21,6 @@ AAmmoCrate::AAmmoCrate() {
 void AAmmoCrate::BeginPlay() {
 	Super::BeginPlay();
 	if (Mesh) MeshComponent->SetStaticMesh(Mesh);
-	InteractHudWidget = CreateWidget<UUserWidget>(GetWorld(), InteractHudWidgetClass);
-	if (InteractHudWidget) {
-		InteractHudWidget->AddToViewport();
-		InteractHudWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
 	GetWorld()->GetTimerManager().SetTimer(OnAmmoRegenHandler, this, &AAmmoCrate::RegenBullets, AmmoRegenRate, true, FMath::FRandRange(0.f, 1.f));
 }
 

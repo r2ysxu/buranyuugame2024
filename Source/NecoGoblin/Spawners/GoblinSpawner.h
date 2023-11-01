@@ -15,7 +15,7 @@ class NECOGOBLIN_API AGoblinSpawner : public AActor
 private:
 	class ANecoGoblinGameMode* GameMode;
 
-	void SpawnEnemyType(uint8 Type);
+	bool SpawnEnemyType(uint8 Type);
 
 protected:
 	// Called when the game starts or when spawned

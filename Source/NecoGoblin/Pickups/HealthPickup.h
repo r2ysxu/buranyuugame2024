@@ -14,7 +14,12 @@ class NECOGOBLIN_API AHealthPickup : public APickupable
 {
 	GENERATED_BODY()
 
+private:
+	FTimerHandle OnDecomposeHandler;
+	float DECOMPOSE_DELAY = 5.f;
+
 public:
 	virtual void BeginPlay() override;
 	virtual void OnPickup(ANecoSpirit* actor) override;
+	void OnDecompose();
 };

@@ -58,9 +58,9 @@ void AFirearmWeapon::WeaponFireStop() {
 
 void AFirearmWeapon::WeaponReloadStop() {
 	WeaponReloaded = true;
-	const int reloadedAmmo = MaxAmmoInMagazine() - CurrentAmmoInMagazine;
-	CurrentAmmoInMagazine = FMath::Min(ReserveAmmo, MaxAmmoInMagazine());
-	ReserveAmmo -= FMath::Min(ReserveAmmo, reloadedAmmo);
+	const int reloadedAmmo = FMath::Min(ReserveAmmo, MaxAmmoInMagazine() - CurrentAmmoInMagazine);
+	CurrentAmmoInMagazine += reloadedAmmo;
+	ReserveAmmo -= reloadedAmmo;
 }
 
 FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float HeadshotDmgModifier) {

@@ -12,9 +12,9 @@ class ANecoGoblinGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 private:
-	const int MELEE_ENEMY_PER_ROUND = 8;
-	const int RANGE_ENEMY_PER_ROUND = 2;
-	const int MAX_ENEMY = 1000;
+	const int MELEE_ENEMY_PER_ROUND = 20;
+	const int RANGE_ENEMY_PER_ROUND = 5;
+	const int MAX_ENEMY = 100;
 
 protected:
 	FTimerHandle NextRoundHandler;

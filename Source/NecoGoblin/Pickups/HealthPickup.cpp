@@ -8,6 +8,7 @@ void AHealthPickup::BeginPlay() {
 	Super::BeginPlay();
 
 	PickupRangeBox->OnComponentBeginOverlap.AddDynamic(this, &APickupable::OnWithinPickupRange);
+	GetWorld()->GetTimerManager().SetTimer(OnDecomposeHandler, this, &AHealthPickup::OnDecompose, DECOMPOSE_DELAY, false);
 }
 
 void AHealthPickup::OnPickup(ANecoSpirit* actor) {
@@ -15,4 +16,8 @@ void AHealthPickup::OnPickup(ANecoSpirit* actor) {
 		actor->HealthPot(60);
 		Destroy();
 	}
+}
+
+void AHealthPickup::OnDecompose() {
+	Destroy();
 }

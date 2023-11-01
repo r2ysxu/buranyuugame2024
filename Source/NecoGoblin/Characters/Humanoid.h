@@ -24,7 +24,7 @@ protected:
 	bool UseDeathAnimation;
 
 	FTimerHandle OnDeadHandler;
-	const float DECOMPOSE_DELAY = 20.f;
+	const float DECOMPOSE_DELAY = 5.f;
 	float MaxHealth = 100.f;
 	float CurrentHealth = 100.f;
 	bool IsAlive = true;

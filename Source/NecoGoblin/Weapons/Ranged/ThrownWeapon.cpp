@@ -74,7 +74,7 @@ void AThrownWeapon::OnHitBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if (IsValid(hitTarget)) {
 		hitTarget->TakeHitDamage(GetWeaponDamage(), Wielder);
 	}
-	GetWorld()->GetTimerManager().SetTimer(FlightResetHandler, this, &AThrownWeapon::OnResetProjectile, 10.f, false);
+	GetWorld()->GetTimerManager().SetTimer(FlightResetHandler, this, &AThrownWeapon::OnResetProjectile, 2.f, false);
 }
 
 void AThrownWeapon::OnResetProjectile() {
