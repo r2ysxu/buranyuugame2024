@@ -70,11 +70,10 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 		CurrentAmmoInMagazine--;
 		if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
 		if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), FRotator(), EAttachLocation::SnapToTargetIncludingScale, true);
-		if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation());
+		if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation(), GunVolume);
 		FVector endLocation = startLocation + (forwardVector * MaxRange);
 		collisionParams.AddIgnoredActor(this);
 		if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
-			// DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
 				float finalDamage = GetWeaponDamage() * WeaponDamageModifier;
@@ -137,6 +136,10 @@ void AFirearmWeapon::RefillAmmo(int Amount) {
 
 void AFirearmWeapon::SetVisible(bool Visible) {
 	if (WeaponMeshComponent) WeaponMeshComponent->SetVisibility(Visible);
+}
+
+void AFirearmWeapon::SetGunVolume(const float VolumeMultiplier) {
+	GunVolume = VolumeMultiplier;
 }
 
 FFirearmStats* AFirearmWeapon::GetStats() {

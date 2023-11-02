@@ -16,7 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/UserWidget.h"
-#include <Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h>
+#include "Niagara/Public/NiagaraFunctionLibrary.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -249,6 +249,7 @@ FFirearmStats AMainCharacter::GetFirearmStats() {
 void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 	Super::TakeHitDamage(damage, DamageCauser);
 	if (FlinchMontage) PlayAnimMontage(FlinchMontage, 1.f);
+	if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, GetActorLocation());
 }
 
 void AMainCharacter::HealthPot(float HealAmount) {
@@ -268,6 +269,15 @@ void AMainCharacter::OnShowSkills() {
 
 void AMainCharacter::GameRestart() {
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
+void AMainCharacter::SetGameVolume(float VolumeMultiplier) {
+	GameVolume = VolumeMultiplier;
+	Firearm->SetGunVolume(GameVolume);
+}
+
+void AMainCharacter::SetMusicVolume(float VolumeMultiplier) {
+	MusicVolume = VolumeMultiplier;
 }
 
 float AMainCharacter::GetReloadUIFrame() {

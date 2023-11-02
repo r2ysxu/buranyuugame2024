@@ -93,6 +93,7 @@ protected:
 	int ReserveAmmo = 30;
 
 	float DamageModifier = 1.f;
+	float GunVolume = 1.f;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -115,6 +116,7 @@ public:
 	void UpgradeDamageModifier(float additionalModifier);
 	void RefillAmmo(int Amount);
 	void SetVisible(bool Visible);
+	void SetGunVolume(const float VolumeMultiplier);
 	FFirearmStats* GetStats();
 	FORCEINLINE int GetReserveAmmo() { return ReserveAmmo; }
 	FORCEINLINE int GetAmmoMagazine() { return CurrentAmmoInMagazine; }

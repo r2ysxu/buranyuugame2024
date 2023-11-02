@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "InputActionValue.h"
 #include "NecoSpirit.h"
 #include "NecoCharacterStat.h"
 #include "UpgradeSkillComponent.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
-#include <Runtime/AIModule/Classes/BehaviorTree/BehaviorTreeComponent.h>
+
+#include "CoreMinimal.h"
+#include "InputActionValue.h"
+#include "GameFramework/Character.h"
 #include "MainCharacter.generated.h"
 
 
@@ -91,6 +91,9 @@ protected:
 	FTimerHandle OnFireWeaponHandler;
 	FTimerHandle GameOverHandler;
 
+	float GameVolume = 1.f;
+	float MusicVolume = 1.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	class UAnimMontage* FlinchMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
@@ -124,6 +127,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* RefillSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	class UNiagaraSystem* BloodHitFX = nullptr;
 
 	UNecoCharacterStat* stats;
 	UUpgradeSkillComponent* upgradeComponent;
@@ -170,9 +176,12 @@ public:
 	UFUNCTION(BlueprintCallable) void SetupHuds();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
-
+	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
 	void GameRestart();
 
-	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
+	UFUNCTION(BlueprintCallable) FORCEINLINE float GetMusicVolume() { return MusicVolume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE float GetGameVolume() { return GameVolume; }
+	UFUNCTION(BlueprintCallable) void SetGameVolume(float VolumeMultiplier);
+	UFUNCTION(BlueprintCallable) void SetMusicVolume(float VolumeMultiplier);
 
 };
