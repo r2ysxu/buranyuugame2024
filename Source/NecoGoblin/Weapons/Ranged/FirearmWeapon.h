@@ -72,7 +72,7 @@ class NECOGOBLIN_API AFirearmWeapon : public AWeapon {
 
 private:
 
-	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float HeadshotDmgModifier);
+	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -114,12 +114,13 @@ public:
 	int MaxAmmoInMagazine();
 	void UpgradeDamageModifier(float additionalModifier);
 	void RefillAmmo(int Amount);
+	void SetVisible(bool Visible);
 	FFirearmStats* GetStats();
 	FORCEINLINE int GetReserveAmmo() { return ReserveAmmo; }
 	FORCEINLINE int GetAmmoMagazine() { return CurrentAmmoInMagazine; }
 	FORCEINLINE bool GetIsFiring() { return IsFiring; }
 	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
 	
-	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier = 1.f, float HeadshotDmgModifier = 1.f);
+	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
 	FVector2D GenerateRecoil();
 };

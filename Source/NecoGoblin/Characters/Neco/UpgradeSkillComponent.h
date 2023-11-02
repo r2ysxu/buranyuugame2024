@@ -15,7 +15,7 @@ enum class FNecoSkills : uint8 {
 	VE_Stamina			UMETA(Displayname = "Upgrade Stamina"),
 	VE_StaminaRegen		UMETA(Displayname = "Upgrade Stamina Regen"),
 	VE_MovementSpeed	UMETA(Displayname = "Upgrade Movement Speed"),
-	VE_ChangeDodge		UMETA(Displayname = "Upgrade Dodge"),
+	VE_WeaponDamage		UMETA(Displayname = "Upgrade Damage"),
 	VE_MaxHP			UMETA(Displayname = "Upgrade Max HP"),
 	VE_HealHP			UMETA(Displayname = "Upgrade Heal Pot"),
 	VE_RegenHP			UMETA(Displayname = "Upgrade HP Regen"),
@@ -50,7 +50,7 @@ protected:
 	float StaminaModifier = 1.f;
 	float StaminaRegenModifier = 1.f;
 	float MovementSpeedModifier = 1.f;
-	float DodgeChanceModifier = 1.f;
+	float WeaponDamageModifier = 1.f;
 	float AdditionalHP = 0.f;
 	float AdditionalHeal = 0.f;
 	float RegenHP = 0.f;
@@ -79,7 +79,7 @@ public:
 	FORCEINLINE float GetStaminaModifier() { return StaminaModifier; }
 	FORCEINLINE float GetStaminaRegenModifier() { return StaminaRegenModifier; }
 	FORCEINLINE float GetMovementSpeedModifer() { return MovementSpeedModifier; }
-	FORCEINLINE float GetDodgeChance() { return DodgeChanceModifier; }
+	FORCEINLINE float GetWeaponDamageModifier() { return WeaponDamageModifier; }
 	FORCEINLINE float GetAdditionalHP() { return AdditionalHP; }
 	FORCEINLINE float GetAdditionalHeal() { return AdditionalHeal; }
 	FORCEINLINE float GetRegenHP() { return RegenHP; }

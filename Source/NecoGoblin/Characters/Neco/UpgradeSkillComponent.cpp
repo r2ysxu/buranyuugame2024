@@ -10,11 +10,11 @@
 const static float RESERVE_AMMO_AMOUNT = 0.1f;
 const static float FIRE_RATE_AMOUNT = 0.02f;
 const static float RELOAD_SPEED_AMOUNT = 0.02f;
-const static float HEADSHOT_DMG_AMOUNT = 0.1f;
+const static float HEADSHOT_DMG_AMOUNT = 0.2f;
 const static float STAMINA_AMOUNT = 0.05f;
 const static float STAMINA_REGEN_AMOUNT = 0.05f;
 const static float MOVEMENT_SPEED_AMOUNT = 0.1f;
-const static float DODGE_CHANCE_AMOUNT = 0.1f;
+const static float WEAPON_DMG_AMOUNT = 0.2f;
 const static float ADDITIONAL_HP_AMOUNT = 15.f;
 const static float ADDITIONAL_HEAL_AMOUNT = 30.f;
 const static float REGEN_HP_AMOUNT = 0.01f;
@@ -51,7 +51,7 @@ void UUpgradeSkillComponent::ResetSkills() {
 	StaminaModifier = 1.f;
 	StaminaRegenModifier = 1.f;
 	MovementSpeedModifier = 1.f;
-	DodgeChanceModifier = 1.f;
+	WeaponDamageModifier = 1.f;
 	AdditionalHP = 0.f;
 	AdditionalHeal = 0.f;
 	RegenHP = 0.f;
@@ -87,9 +87,9 @@ bool UUpgradeSkillComponent::AddSkillPoint(FNecoSkills Skill) {
 		MovementSpeedModifier += MOVEMENT_SPEED_AMOUNT;
 		ParentCharacter->SetRunSpeed(MovementSpeedModifier);
 		break;
-	case FNecoSkills::VE_ChangeDodge:
-		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1 || Skills[(uint8)FNecoSkills::VE_ChangeDodge] < 1) return false;
-		DodgeChanceModifier += DODGE_CHANCE_AMOUNT;
+	case FNecoSkills::VE_WeaponDamage:
+		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1 || Skills[(uint8)FNecoSkills::VE_HealHP] < 1) return false;
+		WeaponDamageModifier += WEAPON_DMG_AMOUNT;
 		break;
 	case FNecoSkills::VE_MaxHP:
 		AdditionalHP += ADDITIONAL_HP_AMOUNT;

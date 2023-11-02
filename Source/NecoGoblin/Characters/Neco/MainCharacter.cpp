@@ -72,6 +72,7 @@ void AMainCharacter::BeginPlay() {
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
 	GetMesh()->SetVisibility(false);
+	if (Firearm) Firearm->SetVisible(false);
 
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 }
@@ -101,6 +102,7 @@ bool AMainCharacter::CheckAlive() {
 
 void AMainCharacter::OnCharacterStart() {
 	GetMesh()->SetVisibility(true);
+	if (Firearm) Firearm->SetVisible(true);
 }
 
 void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
@@ -141,6 +143,7 @@ void AMainCharacter::OnFireWeaponOnce() {
 		collisionParams,
 		result,
 		upgradeComponent->GetFireRateModifier(),
+		upgradeComponent->GetWeaponDamageModifier(),
 		upgradeComponent->GetHeadshotModifier()
 	);
 	switch(fireResponse) {
@@ -254,7 +257,6 @@ void AMainCharacter::HealthPot(float HealAmount) {
 }
 
 void AMainCharacter::OnShowSkills() {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnShowSkills"));
 	if (!IsSkillMenuOpen) {
 		upgradeComponent->EnterScreen();
 		IsSkillMenuOpen = true;

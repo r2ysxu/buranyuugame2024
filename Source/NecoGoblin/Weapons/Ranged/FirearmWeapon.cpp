@@ -63,7 +63,7 @@ void AFirearmWeapon::WeaponReloadStop() {
 	ReserveAmmo -= reloadedAmmo;
 }
 
-FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float HeadshotDmgModifier) {
+FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
 	if (!WeaponData) return FireType::VE_NotFired;
 	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
 		WeaponFireStart();
@@ -77,7 +77,7 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 			// DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Emerald, false, 3.0f);
 			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
 			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
-				float finalDamage = GetWeaponDamage();
+				float finalDamage = GetWeaponDamage() * WeaponDamageModifier;
 				if (FString(TEXT("HeadBox")) == OutResult.GetComponent()->GetName()) finalDamage *= (2 + HeadshotDmgModifier);
 				targetActor->TakeHitDamage(finalDamage, this);
 				if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
@@ -135,6 +135,10 @@ void AFirearmWeapon::RefillAmmo(int Amount) {
 	ReserveAmmo += Amount;
 }
 
+void AFirearmWeapon::SetVisible(bool Visible) {
+	if (WeaponMeshComponent) WeaponMeshComponent->SetVisibility(Visible);
+}
+
 FFirearmStats* AFirearmWeapon::GetStats() {
 	FFirearmStats* stats = new FFirearmStats();
 	if (WeaponData) {
@@ -147,10 +151,10 @@ FFirearmStats* AFirearmWeapon::GetStats() {
 	return stats;
 }
 
-FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier, float HeadshotDmgModifier) {
+FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
 	if (!IsFiring) {
 		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate, false);
-		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult, FireRateModifier, HeadshotDmgModifier);
+		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult, FireRateModifier, WeaponDamageModifier, HeadshotDmgModifier);
 	}
 	return FireType::VE_NotFired;
 }
