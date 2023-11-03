@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "HUDs/RoundHUD.h"
 #include "NecoGoblinGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -27,6 +28,10 @@ protected:
 	int EnemyCount;
 	float EnemySpawnRate = 5.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class URoundHUD> RoundHudWidgetClass;
+	URoundHUD* RoundHudWidget;
+
 	void NextRound();
 
 public:
@@ -37,14 +42,10 @@ public:
 	bool IncrementMeleeEnemy();
 	bool IncrementRangeEnemy();
 	bool DecrementEnemy();
+	UFUNCTION(BlueprintCallable) void ShowHuds();
 	FORCEINLINE int GetCurrentRound() { return CurrentRound; }
 	FORCEINLINE int GetGoblinCount() { return EnemyCount; }
 	FORCEINLINE int GetMeleeGoblinPerRound() { return MeleeEnemyPerRound; }
 	FORCEINLINE int GetRangeEnemyPerRound() { return RangeEnemyPerRound; }
 	FORCEINLINE float GetGoblinSpawnRate() { return EnemySpawnRate; }
-
-	UFUNCTION(BlueprintCallable) FString GetRoundText();
 };
-
-
-

@@ -249,7 +249,9 @@ FFirearmStats AMainCharacter::GetFirearmStats() {
 void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 	Super::TakeHitDamage(damage, DamageCauser);
 	if (FlinchMontage) PlayAnimMontage(FlinchMontage, 1.f);
-	if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, GetActorLocation());
+	if (BloodHitFX) {
+		UNiagaraFunctionLibrary::SpawnSystemAttached(BloodHitFX, GetCapsuleComponent(), NAME_None, FVector(0.f, 0.f, 10.f), GetActorRotation(), EAttachLocation::Type::SnapToTarget, true);
+	}
 }
 
 void AMainCharacter::HealthPot(float HealAmount) {

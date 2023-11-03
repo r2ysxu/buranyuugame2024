@@ -19,11 +19,16 @@ void ANecoGoblinGameMode::NextRound() {
 	MeleeEnemySpawned = 0;
 	RangeEnemySpawned = 0;
 	EnemyCount = 0;
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, GetRoundText());
+	RoundHudWidget->SetCurrentRound(CurrentRound);
 }
 
 void ANecoGoblinGameMode::StartPlay() {
 	Super::StartPlay();
+	RoundHudWidget = CreateWidget<URoundHUD>(GetWorld(), RoundHudWidgetClass);
+	if (RoundHudWidget) {
+		RoundHudWidget->AddToViewport();
+		RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 	NextRound();
 }
 
@@ -50,6 +55,6 @@ bool ANecoGoblinGameMode::DecrementEnemy() {
 	return true;
 }
 
-FString ANecoGoblinGameMode::GetRoundText() {
-	return FString::Printf(TEXT("Round %d"), CurrentRound);
+void ANecoGoblinGameMode::ShowHuds() {
+	if (RoundHudWidget)	RoundHudWidget->SetVisibility(ESlateVisibility::Visible);
 }
