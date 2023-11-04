@@ -13,9 +13,10 @@ class ANecoGoblinGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 private:
-	const int MELEE_ENEMY_PER_ROUND = 20;
-	const int RANGE_ENEMY_PER_ROUND = 5;
+	const int MELEE_ENEMY_PER_ROUND = 10;
+	const int RANGE_ENEMY_PER_ROUND = 3;
 	const int MAX_ENEMY = 100;
+	const int FINAL_ROUND = 10;
 
 protected:
 	FTimerHandle NextRoundHandler;
@@ -43,6 +44,8 @@ public:
 	bool IncrementRangeEnemy();
 	bool DecrementEnemy();
 	UFUNCTION(BlueprintCallable) void ShowHuds();
+	UFUNCTION(BlueprintCallable) void HideHuds();
+	UFUNCTION(BlueprintImplementableEvent) void OnVictoryAchieved();
 	FORCEINLINE int GetCurrentRound() { return CurrentRound; }
 	FORCEINLINE int GetGoblinCount() { return EnemyCount; }
 	FORCEINLINE int GetMeleeGoblinPerRound() { return MeleeEnemyPerRound; }

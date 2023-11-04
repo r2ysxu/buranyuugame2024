@@ -90,6 +90,7 @@ protected:
 	FTimerHandle OnSprintRegenHandler;
 	FTimerHandle OnFireWeaponHandler;
 	FTimerHandle GameOverHandler;
+	FTimerHandle BloodSplatterHandler;
 
 	float GameVolume = 1.f;
 	float MusicVolume = 1.f;
@@ -130,6 +131,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	class UNiagaraSystem* BloodHitFX = nullptr;
+	class UNiagaraComponent* BloodSplatter = nullptr;
 
 	UNecoCharacterStat* stats;
 	UUpgradeSkillComponent* upgradeComponent;
@@ -183,5 +185,6 @@ public:
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetGameVolume() { return GameVolume; }
 	UFUNCTION(BlueprintCallable) void SetGameVolume(float VolumeMultiplier);
 	UFUNCTION(BlueprintCallable) void SetMusicVolume(float VolumeMultiplier);
+	void OnRemoveBloodSplatter();
 
 };

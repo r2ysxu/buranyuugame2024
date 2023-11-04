@@ -249,8 +249,9 @@ FFirearmStats AMainCharacter::GetFirearmStats() {
 void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 	Super::TakeHitDamage(damage, DamageCauser);
 	if (FlinchMontage) PlayAnimMontage(FlinchMontage, 1.f);
-	if (BloodHitFX) {
-		UNiagaraFunctionLibrary::SpawnSystemAttached(BloodHitFX, GetCapsuleComponent(), NAME_None, FVector(0.f, 0.f, 10.f), GetActorRotation(), EAttachLocation::Type::SnapToTarget, true);
+	if (BloodHitFX && BloodSplatter == nullptr) {
+		BloodSplatter = UNiagaraFunctionLibrary::SpawnSystemAttached(BloodHitFX, GetCapsuleComponent(), NAME_None, FVector(0.f, 0.f, 10.f), GetActorRotation(), EAttachLocation::Type::SnapToTarget, true);
+		GetWorld()->GetTimerManager().SetTimer(BloodSplatterHandler, this, &AMainCharacter::OnRemoveBloodSplatter, 1.f, false);
 	}
 }
 
@@ -280,6 +281,13 @@ void AMainCharacter::SetGameVolume(float VolumeMultiplier) {
 
 void AMainCharacter::SetMusicVolume(float VolumeMultiplier) {
 	MusicVolume = VolumeMultiplier;
+}
+
+void AMainCharacter::OnRemoveBloodSplatter() {
+	if (BloodSplatter) {
+		BloodSplatter->DestroyComponent();
+		BloodSplatter = nullptr;
+	}
 }
 
 float AMainCharacter::GetReloadUIFrame() {

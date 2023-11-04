@@ -33,11 +33,11 @@ void ARangeGoblinController::OnMoveToTarget() {
 	} else if (CurrentTarget && CurrentTarget->GetIsAlive()) {
 		FVector tossVelocity;
 		if (PossessedPawn->CheckRangeAttack(CurrentTarget, tossVelocity)) {
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Checked Range Passed"));
 			PossessedPawn->InitiateRangeAttack(tossVelocity);
 		} else if (GetPawn()->GetDistanceTo(CurrentTarget) > MinimumTargetDistance) {
 			MoveToActor(CurrentTarget);
 		} else {
+			PossessedPawn->TrackTargetStopMovement(CurrentTarget);
 			StopMovement();
 		}
 	} else {

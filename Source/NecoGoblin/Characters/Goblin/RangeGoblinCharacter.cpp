@@ -41,7 +41,7 @@ void ARangeGoblinCharacter::SetRunSpeed(float MovementSpeedModifier) {
 
 bool ARangeGoblinCharacter::CheckRangeAttack(ANecoSpirit* TargetCharacter, FVector& OutTossVelocity) {
 	if (!IsValid(Weapon) || IsAttackCooldown) return false;
-	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetTargetLocation());
+	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetActorLocation());
 	SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
 
 	TArray<AActor*> ignores = { this, TargetCharacter };
@@ -49,7 +49,8 @@ bool ARangeGoblinCharacter::CheckRangeAttack(ANecoSpirit* TargetCharacter, FVect
 		GetWorld(),
 		OutTossVelocity,
 		Weapon->GetActorLocation(),
-		TargetCharacter->GetActorLocation(),
+		// Ignore projectile speed in calculation to make it less accurate
+		TargetCharacter->GetActorLocation() + TargetCharacter->GetVelocity(),
 		TossVelocity,
 		false,
 		0.f,
@@ -69,6 +70,11 @@ void ARangeGoblinCharacter::InitiateRangeAttack(FVector& OutTossVelocity) {
 		Weapon = nullptr;
 		IsAttackCooldown = true;
 	}
+}
+
+void ARangeGoblinCharacter::TrackTargetStopMovement(ANecoSpirit* TargetCharacter) {
+	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetActorLocation());
+	SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
 }
 
 void ARangeGoblinCharacter::OnAttackReset() {

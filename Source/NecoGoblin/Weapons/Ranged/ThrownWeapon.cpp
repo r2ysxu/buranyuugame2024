@@ -69,9 +69,9 @@ void AThrownWeapon::OnHitBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if (actor != Wielder) IsInFlight = false;
 	if (Cast<AThrownWeapon>(actor)) return;
 	ProjectileMovement->Deactivate();
-	AttachToActor(actor, FAttachmentTransformRules::KeepWorldTransform);
 	AHumanoid* hitTarget = Cast<AHumanoid>(actor);
 	if (IsValid(hitTarget)) {
+		AttachToActor(actor, FAttachmentTransformRules::KeepWorldTransform);
 		hitTarget->TakeHitDamage(GetWeaponDamage(), Wielder);
 	}
 	GetWorld()->GetTimerManager().SetTimer(FlightResetHandler, this, &AThrownWeapon::OnResetProjectile, 2.f, false);

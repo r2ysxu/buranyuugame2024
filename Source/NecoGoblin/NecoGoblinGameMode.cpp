@@ -14,12 +14,16 @@ ANecoGoblinGameMode::ANecoGoblinGameMode() {
 
 void ANecoGoblinGameMode::NextRound() {
 	CurrentRound++;
-	MeleeEnemyPerRound = FMath::Min(MAX_ENEMY, CurrentRound * MELEE_ENEMY_PER_ROUND);
-	RangeEnemyPerRound = FMath::Min(MAX_ENEMY, FMath::Max(CurrentRound - 2, 0) * RANGE_ENEMY_PER_ROUND);
-	MeleeEnemySpawned = 0;
-	RangeEnemySpawned = 0;
-	EnemyCount = 0;
-	RoundHudWidget->SetCurrentRound(CurrentRound);
+	if (CurrentRound > FINAL_ROUND) {
+		OnVictoryAchieved();
+	} else {
+		MeleeEnemyPerRound = FMath::Min(MAX_ENEMY, CurrentRound * MELEE_ENEMY_PER_ROUND);
+		RangeEnemyPerRound = FMath::Min(MAX_ENEMY, FMath::Max(CurrentRound, 0) * RANGE_ENEMY_PER_ROUND);
+		MeleeEnemySpawned = 0;
+		RangeEnemySpawned = 0;
+		EnemyCount = 0;
+		RoundHudWidget->SetCurrentRound(CurrentRound);
+	}
 }
 
 void ANecoGoblinGameMode::StartPlay() {
@@ -57,4 +61,8 @@ bool ANecoGoblinGameMode::DecrementEnemy() {
 
 void ANecoGoblinGameMode::ShowHuds() {
 	if (RoundHudWidget)	RoundHudWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void ANecoGoblinGameMode::HideHuds() {
+	if (RoundHudWidget)	RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
 }

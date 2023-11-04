@@ -25,7 +25,7 @@ private:
 protected:
 	class ARangeGoblinController* AiController;
 	class AThrownWeapon* Weapon;
-	float AttackCooldownRate = 3.f;
+	float AttackCooldownRate = 2.f;
 
 	virtual void BeginPlay() override;
 	void SetupWeapon();
@@ -40,7 +40,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		class UAnimMontage* RangeAttackMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		float TossVelocity = 1000.f;
+		float TossVelocity = 2000.f;
 
 	FORCEINLINE class ARangeGoblinController* GetAIController() { return AiController; }
 	FORCEINLINE void SetAIController(class ARangeGoblinController* controller) { AiController = controller; }
@@ -48,6 +48,7 @@ public:
 	void SetRunSpeed(float MovementSpeedModifier) override;
 	bool CheckRangeAttack(ANecoSpirit* TargetCharacter, FVector& OutTossVelocity);
 	void InitiateRangeAttack(FVector& OutTossVelocity);
+	void TrackTargetStopMovement(ANecoSpirit* TargetCharacter);
 	void OnAttackReset();
 	void OnAttackCooldownReset();
 	bool CheckAlive() override;

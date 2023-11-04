@@ -24,7 +24,7 @@ protected:
 	volatile bool IsAttacking = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	float MinimumTargetDistance = 1000.f;
+	float MinimumTargetDistance = 2000.f;
 	
 public:
 	ARangeGoblinController();
