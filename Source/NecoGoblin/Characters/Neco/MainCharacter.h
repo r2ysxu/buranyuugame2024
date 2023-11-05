@@ -59,8 +59,12 @@ class AMainCharacter : public ANecoSpirit {
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* InfoAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ScrollAction;
+
 private:
 
+	const float CAMERA_SCROLL_SPEED = 5.f;
 	const float CameraArmLengthOffset = 100.f;
 	const float FRAMES_PER_MAG = 2.f;
 	const float RELOAD_SPEED = 1.5f;
@@ -142,6 +146,7 @@ public:
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsFlinching() { return IsFlinching; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAimMode() { return IsAimMode; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
+	UFUNCTION() void OnScrollAxis(const FInputActionValue& Value);
 	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
 	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();

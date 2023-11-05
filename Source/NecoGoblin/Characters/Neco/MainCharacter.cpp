@@ -290,6 +290,10 @@ void AMainCharacter::OnRemoveBloodSplatter() {
 	}
 }
 
+void AMainCharacter::OnScrollAxis(const FInputActionValue& Value) {
+	CameraBoom->TargetArmLength = FMath::Min(400, FMath::Max(50, CameraBoom->TargetArmLength - (Value.Get<float>() * CAMERA_SCROLL_SPEED)));
+}
+
 float AMainCharacter::GetReloadUIFrame() {
 	if (!Firearm) return 0.f;
 	return float(Firearm->MaxAmmoInMagazine() - Firearm->GetAmmoMagazine()) * FRAMES_PER_MAG;
@@ -341,6 +345,8 @@ void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 
 		//Info
 		EnhancedInputComponent->BindAction(InfoAction, ETriggerEvent::Completed, this, &AMainCharacter::OnShowSkills);
+
+		EnhancedInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnScrollAxis);
 	}
 }
 
