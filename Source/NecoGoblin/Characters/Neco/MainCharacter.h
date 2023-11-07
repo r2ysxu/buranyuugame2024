@@ -83,10 +83,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	bool IsCharacterStart = false;
 	bool IsSkillMenuOpen = false;
 	bool CanFillAmmo = false;
 	bool IsSprinting = false;
-	bool IsAimMode = false;
+	volatile bool IsAimMode = false;
 	FName SelectableWeaponKey = FName();
 	float PlayerPitch = 0.f;
 	float Stamina = MAX_STAMINA;
@@ -111,7 +112,6 @@ protected:
 	virtual void BeginPlay();
 	
 	bool CheckAlive() override;
-	UFUNCTION(BlueprintCallable) void OnCharacterStart();
 
 public:
 
@@ -132,6 +132,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* RefillSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	USoundBase* BGMSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	class UNiagaraSystem* BloodHitFX = nullptr;
@@ -142,18 +144,22 @@ public:
 
 	AMainCharacter();
 
+	UFUNCTION() void OnScrollAxis(const FInputActionValue& Value);
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsFlinching() { return IsFlinching; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAimMode() { return IsAimMode; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
-	UFUNCTION() void OnScrollAxis(const FInputActionValue& Value);
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsSkillMenuOpen() { return IsSkillMenuOpen; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE UNecoCharacterStat* GetStats() { return stats; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE UUpgradeSkillComponent* GetSkillUpgrades() { return upgradeComponent; }
+	UFUNCTION(BlueprintCallable) void OnCharacterShow();
+	UFUNCTION(BlueprintCallable) void OnCharacterStart();
+	UFUNCTION(BlueprintCallable) void PlayBGMusic();
 	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
 	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
 	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / MaxHealth; }
 	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
-	UFUNCTION(BlueprintCallable) FORCEINLINE UNecoCharacterStat* GetStats() { return stats; }
-	UFUNCTION(BlueprintCallable) FORCEINLINE UUpgradeSkillComponent* GetSkillUpgrades() { return upgradeComponent; }
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -191,5 +197,4 @@ public:
 	UFUNCTION(BlueprintCallable) void SetGameVolume(float VolumeMultiplier);
 	UFUNCTION(BlueprintCallable) void SetMusicVolume(float VolumeMultiplier);
 	void OnRemoveBloodSplatter();
-
 };

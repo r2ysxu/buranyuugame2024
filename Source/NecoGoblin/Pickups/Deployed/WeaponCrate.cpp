@@ -2,7 +2,7 @@
 
 
 #include "WeaponCrate.h"
-#include "../../HUDs/WeaponHUD.h"
+#include "../../Widgets/HUDs/WeaponHUD.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
 #include "../../Characters/Neco/MainCharacter.h"
 

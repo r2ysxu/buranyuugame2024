@@ -18,7 +18,7 @@ void ANecoGoblinGameMode::NextRound() {
 		OnVictoryAchieved();
 	} else {
 		MeleeEnemyPerRound = FMath::Min(MAX_ENEMY, CurrentRound * MELEE_ENEMY_PER_ROUND);
-		RangeEnemyPerRound = FMath::Min(MAX_ENEMY, FMath::Max(CurrentRound, 0) * RANGE_ENEMY_PER_ROUND);
+		RangeEnemyPerRound = FMath::Min(MAX_ENEMY, FMath::Max(CurrentRound - 1, 0) * RANGE_ENEMY_PER_ROUND);
 		MeleeEnemySpawned = 0;
 		RangeEnemySpawned = 0;
 		EnemyCount = 0;

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "HUDs/RoundHUD.h"
+#include "Widgets/HUDs/RoundHUD.h"
 #include "NecoGoblinGameMode.generated.h"
 
 UCLASS(minimalapi)

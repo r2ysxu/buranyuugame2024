@@ -2,6 +2,7 @@
 
 #include "MainCharacter.h"
 #include "../Goblin/Goblin.h"
+#include "../../NecoGoblinGameMode.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -78,6 +79,7 @@ void AMainCharacter::BeginPlay() {
 }
 
 void AMainCharacter::SetupHuds() {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("SetupHUDs"));
 	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
 		HudWidget->AddToViewport();
@@ -100,9 +102,22 @@ bool AMainCharacter::CheckAlive() {
 	return true;
 }
 
-void AMainCharacter::OnCharacterStart() {
+void AMainCharacter::OnCharacterShow() {
 	GetMesh()->SetVisibility(true);
 	if (Firearm) Firearm->SetVisible(true);
+}
+
+void AMainCharacter::OnCharacterStart() {
+	if (!IsCharacterStart) {
+		SetupHuds();
+		PlayBGMusic();
+		Cast<APlayerController>(GetController())->SetInputMode(FInputModeGameOnly());
+		IsCharacterStart = true;
+	}
+}
+
+void AMainCharacter::PlayBGMusic() {
+	if (BGMSound) UGameplayStatics::PlaySound2D(GetWorld(), BGMSound, MusicVolume);
 }
 
 void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
@@ -111,8 +126,8 @@ void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
 
 void AMainCharacter::OnAimModeStart() {
 	if (!IsAimMode && !IsSkillMenuOpen) {
-		if (IsSprinting) OnSprintStop();
 		IsAimMode = true;
+		if (IsSprinting) OnSprintStop();
 		GetCameraBoom()->SetRelativeLocation(FVector(0, 50, 50));
 		GetCameraBoom()->TargetArmLength -= CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
@@ -126,7 +141,7 @@ void AMainCharacter::OnAimModeStop() {
 		GetCameraBoom()->SetRelativeLocation(FVector::ZeroVector);
 		GetCameraBoom()->TargetArmLength += CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
-		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
+		CrosshairHudWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 

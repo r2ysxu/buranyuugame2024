@@ -83,7 +83,7 @@ bool UUpgradeSkillComponent::AddSkillPoint(FNecoSkills Skill) {
 		StaminaRegenModifier += STAMINA_REGEN_AMOUNT;
 		break;
 	case FNecoSkills::VE_MovementSpeed:
-		if (Skills[(uint8)FNecoSkills::VE_MovementSpeed] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1) return false;
 		MovementSpeedModifier += MOVEMENT_SPEED_AMOUNT;
 		ParentCharacter->SetRunSpeed(MovementSpeedModifier);
 		break;
@@ -100,7 +100,7 @@ bool UUpgradeSkillComponent::AddSkillPoint(FNecoSkills Skill) {
 		AdditionalHeal += ADDITIONAL_HEAL_AMOUNT;
 		break;
 	case FNecoSkills::VE_RegenHP:
-		if (Skills[(uint8)FNecoSkills::VE_RegenHP] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_HealHP] < 1) return false;
 		RegenHP += REGEN_HP_AMOUNT;
 		break;
 	}
