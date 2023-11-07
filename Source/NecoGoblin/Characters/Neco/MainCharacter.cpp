@@ -123,7 +123,17 @@ void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
 	if (Firearm) Firearm->UpgradeDamageModifier(additionalDamage);
 }
 
-void AMainCharacter::OnAimModeStart() {
+void AMainCharacter::OnStopAim() {
+	if (IsAimMode) {
+		IsAimMode = false;
+		GetCameraBoom()->SetRelativeLocation(FVector::ZeroVector);
+		GetCameraBoom()->TargetArmLength += CameraArmLengthOffset;
+		bUseControllerRotationYaw = IsAimMode;
+		CrosshairHudWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
+}
+
+void AMainCharacter::OnStartAim() {
 	if (!IsAimMode && !IsSkillMenuOpen) {
 		IsAimMode = true;
 		if (IsSprinting) OnSprintStop();
@@ -134,13 +144,17 @@ void AMainCharacter::OnAimModeStart() {
 	}
 }
 
+void AMainCharacter::OnAimModeStart() {
+	if (!IsToggleAim) {
+		OnStartAim();
+	}
+}
+
 void AMainCharacter::OnAimModeStop() {
-	if (IsAimMode) {
-		IsAimMode = false;
-		GetCameraBoom()->SetRelativeLocation(FVector::ZeroVector);
-		GetCameraBoom()->TargetArmLength += CameraArmLengthOffset;
-		bUseControllerRotationYaw = IsAimMode;
-		CrosshairHudWidget->SetVisibility(ESlateVisibility::Collapsed);
+	if (!IsToggleAim || IsAimMode) {
+		OnStopAim();
+	} else if (!IsAimMode) {
+		OnStartAim();
 	}
 }
 
@@ -182,6 +196,7 @@ void AMainCharacter::OnFireWeapon() {
 void AMainCharacter::OnFireStop() {
 	if (Firearm) {
 		GetWorld()->GetTimerManager().ClearTimer(OnFireWeaponHandler);
+		if (IsAutoReload && Firearm->GetAmmoMagazine() == 0) OnReloadWeapon();
 	}
 }
 
@@ -200,7 +215,7 @@ void AMainCharacter::OnInteract() {
 
 void AMainCharacter::OnSprint() {
 	if (Stamina <= 0 || IsSprinting) return;
-	OnAimModeStop();
+	OnStopAim();
 	IsSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SPRINT_SPEED * upgradeComponent->GetMovementSpeedModifer();
 	GetWorld()->GetTimerManager().SetTimer(OnSprintHandler, this, &AMainCharacter::StaminaDrain, 0.1f, true);

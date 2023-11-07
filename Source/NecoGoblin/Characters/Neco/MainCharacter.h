@@ -75,6 +75,9 @@ private:
 	const int POINTS_PER_KILL = 1;
 	const int RESERVE_AMMO = 30 * 10;
 
+	void OnStopAim();
+	void OnStartAim();
+
 protected:
 
 	/** Called for movement input */
@@ -83,6 +86,8 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	bool IsToggleAim = false;
+	bool IsAutoReload = false;
 	bool IsCharacterStart = false;
 	bool IsSkillMenuOpen = false;
 	bool CanFillAmmo = false;
@@ -148,6 +153,10 @@ public:
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsFlinching() { return IsFlinching; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAimMode() { return IsAimMode; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsToggleAim() { return IsToggleAim; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetIsToggleAim(bool isToggleAim) { IsToggleAim = isToggleAim; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAutoReload() { return IsAutoReload; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetIsAutoReload(bool isAutoReload) { IsAutoReload = isAutoReload; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsSkillMenuOpen() { return IsSkillMenuOpen; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE UNecoCharacterStat* GetStats() { return stats; }
