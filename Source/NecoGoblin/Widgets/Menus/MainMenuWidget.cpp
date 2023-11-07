@@ -17,8 +17,8 @@ void UMainMenuWidget::OnStartGame() {
 	controller->DisableInput(controller);
 	RemoveFromParent();
 	SkipIntroWidget->AddToViewport();
-	FInputModeUIOnly inputMode = FInputModeUIOnly();
-	inputMode.SetWidgetToFocus(SkipIntroWidget->GetCachedWidget());
-	controller->SetInputMode(inputMode);
+	FInputModeUIOnly* inputMode = new FInputModeUIOnly();
+	inputMode->SetWidgetToFocus(SkipIntroWidget->GetCachedWidget());
+	controller->SetInputMode(*inputMode);
 	controller->bShowMouseCursor = false;
 }

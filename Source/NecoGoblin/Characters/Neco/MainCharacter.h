@@ -135,6 +135,10 @@ public:
 	TSubclassOf<class UUserWidget> SkillHudWidgetClass;
 	UUserWidget* SkillHudWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UUserWidget> GameOverWidgetClass;
+	UUserWidget* GameOverWidget;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* RefillSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))

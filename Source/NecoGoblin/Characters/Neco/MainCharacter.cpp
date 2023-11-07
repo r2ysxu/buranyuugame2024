@@ -90,11 +90,13 @@ void AMainCharacter::SetupHuds() {
 	}
 	SkillHudWidget = CreateWidget<UUserWidget>(GetWorld(), SkillHudWidgetClass);
 	upgradeComponent->SetupWidget(SkillHudWidget);
+	GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
 }
 
 bool AMainCharacter::CheckAlive() {
 	if (!Super::CheckAlive()) {
 		GetCharacterMovement()->StopMovementImmediately();
+		if (GameOverWidget) GameOverWidget->AddToViewport();
 		GetWorld()->GetTimerManager().SetTimer(GameOverHandler, this, &AMainCharacter::GameRestart, 2.f, false);
 		return false;
 	}
