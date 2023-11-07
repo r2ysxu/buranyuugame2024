@@ -305,15 +305,6 @@ void AMainCharacter::GameRestart() {
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
-void AMainCharacter::SetGameVolume(float VolumeMultiplier) {
-	GameVolume = VolumeMultiplier;
-	Firearm->SetGunVolume(GameVolume);
-}
-
-void AMainCharacter::SetMusicVolume(float VolumeMultiplier) {
-	MusicVolume = VolumeMultiplier;
-}
-
 void AMainCharacter::OnRemoveBloodSplatter() {
 	if (BloodSplatter) {
 		BloodSplatter->DestroyComponent();

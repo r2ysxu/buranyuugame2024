@@ -75,6 +75,9 @@ private:
 	const int POINTS_PER_KILL = 1;
 	const int RESERVE_AMMO = 30 * 10;
 
+	const float GameVolume = 1.f;
+	const float MusicVolume = 1.f;
+
 	void OnStopAim();
 	void OnStartAim();
 
@@ -102,8 +105,6 @@ protected:
 	FTimerHandle GameOverHandler;
 	FTimerHandle BloodSplatterHandler;
 
-	float GameVolume = 1.f;
-	float MusicVolume = 1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	class UAnimMontage* FlinchMontage;
@@ -205,9 +206,5 @@ public:
 	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
 	void GameRestart();
 
-	UFUNCTION(BlueprintCallable) FORCEINLINE float GetMusicVolume() { return MusicVolume; }
-	UFUNCTION(BlueprintCallable) FORCEINLINE float GetGameVolume() { return GameVolume; }
-	UFUNCTION(BlueprintCallable) void SetGameVolume(float VolumeMultiplier);
-	UFUNCTION(BlueprintCallable) void SetMusicVolume(float VolumeMultiplier);
 	void OnRemoveBloodSplatter();
 };
