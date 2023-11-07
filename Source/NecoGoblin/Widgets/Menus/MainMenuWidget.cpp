@@ -13,14 +13,12 @@ void UMainMenuWidget::NativeConstruct() {
 
 void UMainMenuWidget::OnStartGame() {
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
-	bIsFocusable = true;
 	APlayerController* controller = GetOwningPlayer();
 	controller->DisableInput(controller);
+	RemoveFromParent();
 	SkipIntroWidget->AddToViewport();
 	FInputModeUIOnly inputMode = FInputModeUIOnly();
-	inputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
 	inputMode.SetWidgetToFocus(SkipIntroWidget->GetCachedWidget());
 	controller->SetInputMode(inputMode);
 	controller->bShowMouseCursor = false;
-	RemoveFromParent();
 }

@@ -79,7 +79,6 @@ void AMainCharacter::BeginPlay() {
 }
 
 void AMainCharacter::SetupHuds() {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("SetupHUDs"));
 	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
 		HudWidget->AddToViewport();
@@ -221,8 +220,8 @@ void AMainCharacter::SetChangableWeapon(FName WeaponKey) {
 }
 
 int AMainCharacter::RefillAmmo(int AmmoAmount) {
-	if (RefillSound) UGameplayStatics::PlaySound2D(GetWorld(), RefillSound, 5.f);
 	int refillAmount = FMath::Min(AmmoAmount, RESERVE_AMMO * upgradeComponent->GetAdditionalReserveAmmoModifier() - GetReserveAmmo());
+	if (RefillSound && refillAmount > 0) UGameplayStatics::PlaySound2D(GetWorld(), RefillSound, 5.f);
 	Firearm->RefillAmmo(refillAmount);
 	return refillAmount;
 }

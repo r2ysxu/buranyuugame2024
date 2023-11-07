@@ -16,7 +16,7 @@ class NECOGOBLIN_API AHealthPickup : public APickupable
 
 private:
 	FTimerHandle OnDecomposeHandler;
-	float DECOMPOSE_DELAY = 5.f;
+	float DECOMPOSE_DELAY = 20.f;
 
 public:
 	virtual void BeginPlay() override;

@@ -29,7 +29,7 @@ class NECOGOBLIN_API UUpgradeSkillComponent : public UActorComponent {
 private:
 	const static size_t SKILLS_SIZE = 11;
 	const static size_t MAX_SKILL_POINTS = SKILLS_SIZE * 5;
-	const static int EXP_PER_LEVEL = 3;
+	const static int EXP_PER_LEVEL = 8;
 
 protected:
 	// Called when the game starts

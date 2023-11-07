@@ -158,7 +158,7 @@ public:
 	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
 	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
-	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / MaxHealth; }
+	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / (MaxHealth + upgradeComponent->GetAdditionalHP()); }
 	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
 
 	/** Returns CameraBoom subobject **/
