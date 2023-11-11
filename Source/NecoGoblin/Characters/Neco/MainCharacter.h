@@ -102,7 +102,6 @@ protected:
 	FTimerHandle OnSprintHandler;
 	FTimerHandle OnSprintRegenHandler;
 	FTimerHandle OnFireWeaponHandler;
-	FTimerHandle GameOverHandler;
 	FTimerHandle BloodSplatterHandler;
 
 
@@ -196,6 +195,7 @@ public:
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
 	int RefillAmmo(int AmmoAmount);
+	virtual void OnDecompose() override;
 	
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);

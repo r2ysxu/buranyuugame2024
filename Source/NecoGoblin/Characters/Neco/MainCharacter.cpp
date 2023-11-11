@@ -96,8 +96,8 @@ void AMainCharacter::SetupHuds() {
 bool AMainCharacter::CheckAlive() {
 	if (!Super::CheckAlive()) {
 		GetCharacterMovement()->StopMovementImmediately();
+		DisableInput(Cast<APlayerController>(GetController()));
 		if (GameOverWidget) GameOverWidget->AddToViewport();
-		GetWorld()->GetTimerManager().SetTimer(GameOverHandler, this, &AMainCharacter::GameRestart, 2.f, false);
 		return false;
 	}
 	return true;
@@ -241,6 +241,12 @@ int AMainCharacter::RefillAmmo(int AmmoAmount) {
 	if (RefillSound && refillAmount > 0) UGameplayStatics::PlaySound2D(GetWorld(), RefillSound, 5.f);
 	Firearm->RefillAmmo(refillAmount);
 	return refillAmount;
+}
+
+void AMainCharacter::OnDecompose() {
+	GetWorld()->GetTimerManager().ClearTimer(OnDeadHandler);
+	if (GameOverWidget) GameOverWidget->RemoveFromParent();
+	GameRestart();
 }
 
 void AMainCharacter::StaminaRegen() {

@@ -50,7 +50,7 @@ void AHumanoid::TakeHitDamage(float damage, AActor* DamageCauser) {
 }
 
 bool AHumanoid::CheckAlive() {
-	if (CurrentHealth <= 0) {
+	if (CurrentHealth <= 0 && IsAlive) {
 		IsAlive = false;
 		if (!UseDeathAnimation) {
 			HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
