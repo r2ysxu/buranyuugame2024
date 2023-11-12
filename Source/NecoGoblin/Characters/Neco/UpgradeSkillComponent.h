@@ -38,6 +38,7 @@ protected:
 	UUserWidget* SkillHudWidget;
 
 	class AMainCharacter* ParentCharacter;
+	int AddedSkillPoints = 0;
 	int SkillPoints = 0;
 	int ExpPoints = 0;
 

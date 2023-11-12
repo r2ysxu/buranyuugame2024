@@ -67,7 +67,7 @@ private:
 	const float CAMERA_SCROLL_SPEED = 5.f;
 	const float CameraArmLengthOffset = 100.f;
 	const float FRAMES_PER_MAG = 2.f;
-	const float RELOAD_SPEED = 1.5f;
+	const float RELOAD_SPEED = 2.f;
 	const float WALK_SPEED = 300.f;
 	const float SPRINT_SPEED = 500.f;
 	const float MAX_STAMINA = 20.f;

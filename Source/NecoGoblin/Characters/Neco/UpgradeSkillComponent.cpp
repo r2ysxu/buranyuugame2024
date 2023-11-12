@@ -64,31 +64,31 @@ bool UUpgradeSkillComponent::AddSkillPoint(FNecoSkills Skill) {
 		ReserveAmmoModifier += RESERVE_AMMO_AMOUNT;
 		break;
 	case FNecoSkills::VE_FireRate:
-		if (Skills[(uint8)FNecoSkills::VE_ReserveAmmo] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_ReserveAmmo] < 5) return false;
 		FireRateModifier += FIRE_RATE_AMOUNT;
 		break;
 	case FNecoSkills::VE_ReloadSpeed:
-		if (Skills[(uint8)FNecoSkills::VE_FireRate] < 1 || Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_FireRate] < 5 || Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 5) return false;
 		ReloadSpeedModifier -= RELOAD_SPEED_AMOUNT;
 		break;
 	case FNecoSkills::VE_Headshot:
-		if (Skills[(uint8)FNecoSkills::VE_FireRate] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_FireRate] < 5) return false;
 		HeadshotDmgModfiier += HEADSHOT_DMG_AMOUNT;
 		break;
 	case FNecoSkills::VE_Stamina:
 		StaminaModifier += STAMINA_AMOUNT;
 		break;
 	case FNecoSkills::VE_StaminaRegen:
-		if (Skills[(uint8)FNecoSkills::VE_Stamina] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_Stamina] < 5) return false;
 		StaminaRegenModifier += STAMINA_REGEN_AMOUNT;
 		break;
 	case FNecoSkills::VE_MovementSpeed:
-		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 5) return false;
 		MovementSpeedModifier += MOVEMENT_SPEED_AMOUNT;
 		ParentCharacter->SetRunSpeed(MovementSpeedModifier);
 		break;
 	case FNecoSkills::VE_WeaponDamage:
-		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 1 || Skills[(uint8)FNecoSkills::VE_HealHP] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_StaminaRegen] < 5 || Skills[(uint8)FNecoSkills::VE_HealHP] < 5) return false;
 		WeaponDamageModifier += WEAPON_DMG_AMOUNT;
 		break;
 	case FNecoSkills::VE_MaxHP:
@@ -96,15 +96,16 @@ bool UUpgradeSkillComponent::AddSkillPoint(FNecoSkills Skill) {
 		ParentCharacter->AddMaxHP(ADDITIONAL_HP_AMOUNT);
 		break;
 	case FNecoSkills::VE_HealHP:
-		if (Skills[(uint8)FNecoSkills::VE_MaxHP] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_MaxHP] < 5) return false;
 		AdditionalHeal += ADDITIONAL_HEAL_AMOUNT;
 		break;
 	case FNecoSkills::VE_RegenHP:
-		if (Skills[(uint8)FNecoSkills::VE_HealHP] < 1) return false;
+		if (Skills[(uint8)FNecoSkills::VE_HealHP] < 5) return false;
 		RegenHP += REGEN_HP_AMOUNT;
 		break;
 	}
 	SkillPoints--;
+	AddedSkillPoints++;
 	Skills[(uint8)Skill] = Skills[(uint8)Skill] + 1;
 	return true;
 }
@@ -116,7 +117,7 @@ void UUpgradeSkillComponent::EnterScreen() {
 	controller->SetInputMode(FInputModeGameAndUI());
 	controller->SetIgnoreMoveInput(true);
 	controller->SetIgnoreLookInput(true);
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.01f);
 }
 
 void UUpgradeSkillComponent::ExitScreen() {
@@ -134,7 +135,7 @@ int UUpgradeSkillComponent::GetSkillLevel(FNecoSkills Skill) {
 }
 
 bool UUpgradeSkillComponent::AddExpPoints(int points) {
-	if (SkillPoints >= MAX_SKILL_POINTS) return false;
+	if (SkillPoints + AddedSkillPoints >= MAX_SKILL_POINTS) return false;
 	ExpPoints += points;
 	if (ExpPoints > GetExpPointToLevel()) {
 		SkillPoints++;

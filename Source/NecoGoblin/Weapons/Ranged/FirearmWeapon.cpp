@@ -156,7 +156,7 @@ FFirearmStats* AFirearmWeapon::GetStats() {
 
 FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
 	if (!IsFiring) {
-		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate, false);
+		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate * FireRateModifier, false);
 		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult, FireRateModifier, WeaponDamageModifier, HeadshotDmgModifier);
 	}
 	return FireType::VE_NotFired;
