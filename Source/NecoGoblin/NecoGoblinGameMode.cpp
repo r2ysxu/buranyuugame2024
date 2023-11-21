@@ -3,6 +3,7 @@
 #include "NecoGoblinGameMode.h"
 #include "Characters/Neco/MainCharacter.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
 ANecoGoblinGameMode::ANecoGoblinGameMode() {
@@ -11,6 +12,10 @@ ANecoGoblinGameMode::ANecoGoblinGameMode() {
 	if (PlayerPawnBPClass.Class != NULL) {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+}
+
+void ANecoGoblinGameMode::GameRestart() {
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), true);
 }
 
 void ANecoGoblinGameMode::NextRound() {
@@ -35,6 +40,10 @@ void ANecoGoblinGameMode::StartPlay() {
 		RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 	NextRound();
+}
+
+void ANecoGoblinGameMode::RestartPlay(float TimeDelay) {
+	GetWorld()->GetTimerManager().SetTimer(RestartHandler, this, &ANecoGoblinGameMode::GameRestart, TimeDelay, false);
 }
 
 bool ANecoGoblinGameMode::IncrementMeleeEnemy() {

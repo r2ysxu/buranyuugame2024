@@ -30,7 +30,7 @@ void AHumanoid::OnMeleeHit(AActor* actor, float modifier) {
 		if (weaponActor->GetLastHitCharacter() != this) {
 			weaponActor->SetLastHitCharacter(this);
 			TakeHitDamage(weaponActor->GetWeaponDamage() * modifier, actor);
-			CheckAlive();
+			if (!CheckAlive()) weaponActor->SetLastHitCharacter(nullptr);
 		}
 	}
 }

@@ -23,8 +23,8 @@
 //////////////////////////////////////////////////////////////////////////
 // AMainCharacter
 
-AMainCharacter::AMainCharacter()
-{
+AMainCharacter::AMainCharacter() {
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(15.f, 30.f);
 		
@@ -76,6 +76,7 @@ void AMainCharacter::BeginPlay() {
 	if (Firearm) Firearm->SetVisible(false);
 
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
+	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
 }
 
 void AMainCharacter::SetupHuds() {
@@ -94,13 +95,27 @@ void AMainCharacter::SetupHuds() {
 }
 
 bool AMainCharacter::CheckAlive() {
-	if (!Super::CheckAlive()) {
+	if (!IsAlive) return false;
+	UE_LOG(LogTemp, Warning, TEXT("CheckAlive"));
+	if (CurrentHealth <= 0) {
+		IsAlive = false;
+		if (HudWidget)	HudWidget->RemoveFromViewport();
+		if (SkillHudWidget) SkillHudWidget->RemoveFromViewport();
+		if (CrosshairHudWidget) CrosshairHudWidget->RemoveFromViewport();
 		GetCharacterMovement()->StopMovementImmediately();
+		GetMovementComponent()->Deactivate();
 		DisableInput(Cast<APlayerController>(GetController()));
+		HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+		GetMesh()->SetSimulatePhysics(true);
 		if (GameOverWidget) GameOverWidget->AddToViewport();
-		return false;
+		GetWorld()->GetTimerManager().ClearTimer(OnWaterLevelCheckHandler);
+		ANecoGoblinGameMode* gameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (IsValid(gameMode)) {
+			gameMode->RestartPlay(DECOMPOSE_DELAY);
+		}
 	}
-	return true;
+	return IsAlive;
 }
 
 void AMainCharacter::OnCharacterShow() {
@@ -143,6 +158,13 @@ void AMainCharacter::OnStartAim() {
 		GetCameraBoom()->TargetArmLength -= CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void AMainCharacter::OnBelowWaterLevel() {
+	if (GetActorLocation().Z < WATER_LEVEL && IsAlive) {
+		TakeHitDamage(CurrentHealth, nullptr);
+		CheckAlive();
 	}
 }
 
@@ -243,12 +265,6 @@ int AMainCharacter::RefillAmmo(int AmmoAmount) {
 	return refillAmount;
 }
 
-void AMainCharacter::OnDecompose() {
-	GetWorld()->GetTimerManager().ClearTimer(OnDeadHandler);
-	if (GameOverWidget) GameOverWidget->RemoveFromParent();
-	GameRestart();
-}
-
 void AMainCharacter::StaminaRegen() {
 	if (IsSprinting || Stamina >= MAX_STAMINA * upgradeComponent->GetStaminaModifier()) {
 		GetWorld()->GetTimerManager().PauseTimer(OnSprintRegenHandler);
@@ -307,10 +323,6 @@ void AMainCharacter::OnShowSkills() {
 	}
 }
 
-void AMainCharacter::GameRestart() {
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
-}
-
 void AMainCharacter::OnRemoveBloodSplatter() {
 	if (BloodSplatter) {
 		BloodSplatter->DestroyComponent();
@@ -320,6 +332,11 @@ void AMainCharacter::OnRemoveBloodSplatter() {
 
 void AMainCharacter::OnScrollAxis(const FInputActionValue& Value) {
 	CameraBoom->TargetArmLength = FMath::Min(400, FMath::Max(50, CameraBoom->TargetArmLength - (Value.Get<float>() * CAMERA_SCROLL_SPEED)));
+	OnCameraDistanceChanged();
+}
+
+float AMainCharacter::GetCameraDistance() {
+	return CameraBoom->TargetArmLength;
 }
 
 float AMainCharacter::GetReloadUIFrame() {
@@ -396,11 +413,6 @@ void AMainCharacter::Move(const FInputActionValue& Value) {
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
-
-		if (GetActorLocation().Z < WATER_LEVEL) {
-			TakeHitDamage(CurrentHealth, nullptr);
-			CheckAlive();
-		}
 	}
 }
 

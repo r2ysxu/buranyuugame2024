@@ -18,8 +18,11 @@ private:
 	const int MAX_ENEMY = 100;
 	const int FINAL_ROUND = 10;
 
+	void GameRestart();
+
 protected:
 	FTimerHandle NextRoundHandler;
+	FTimerHandle RestartHandler;
 
 	int CurrentRound = 0;
 	int RangeEnemySpawned = 0;
@@ -39,6 +42,7 @@ public:
 	ANecoGoblinGameMode();
 
 	void StartPlay() override;
+	void RestartPlay(float TimeDelay);
 	
 	bool IncrementMeleeEnemy();
 	bool IncrementRangeEnemy();

@@ -80,6 +80,7 @@ private:
 
 	void OnStopAim();
 	void OnStartAim();
+	void OnBelowWaterLevel();
 
 protected:
 
@@ -103,6 +104,7 @@ protected:
 	FTimerHandle OnSprintRegenHandler;
 	FTimerHandle OnFireWeaponHandler;
 	FTimerHandle BloodSplatterHandler;
+	FTimerHandle OnWaterLevelCheckHandler;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
@@ -155,6 +157,8 @@ public:
 
 	UFUNCTION() void OnScrollAxis(const FInputActionValue& Value);
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
+	UFUNCTION(BlueprintImplementableEvent) void OnCameraDistanceChanged();
+	UFUNCTION(BLueprintCallable) float GetCameraDistance();
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsFlinching() { return IsFlinching; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAimMode() { return IsAimMode; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsToggleAim() { return IsToggleAim; }
@@ -195,7 +199,6 @@ public:
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
 	int RefillAmmo(int AmmoAmount);
-	virtual void OnDecompose() override;
 	
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
@@ -204,7 +207,6 @@ public:
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
-	void GameRestart();
 
 	void OnRemoveBloodSplatter();
 };

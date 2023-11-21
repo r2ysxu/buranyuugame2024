@@ -27,7 +27,7 @@ protected:
 	const float DECOMPOSE_DELAY = 5.f;
 	float MaxHealth = 100.f;
 	float CurrentHealth = 100.f;
-	bool IsAlive = true;
+	volatile bool IsAlive = true;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
