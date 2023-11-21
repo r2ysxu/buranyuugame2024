@@ -81,6 +81,7 @@ private:
 	void OnStopAim();
 	void OnStartAim();
 	void OnBelowWaterLevel();
+	float GetMaxHealth();
 
 protected:
 
@@ -105,6 +106,7 @@ protected:
 	FTimerHandle OnFireWeaponHandler;
 	FTimerHandle BloodSplatterHandler;
 	FTimerHandle OnWaterLevelCheckHandler;
+	FTimerHandle OnHealthRegenHandler;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
@@ -175,7 +177,7 @@ public:
 	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
 	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
-	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / (MaxHealth + upgradeComponent->GetAdditionalHP()); }
+	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / GetMaxHealth(); }
 	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
 
 	/** Returns CameraBoom subobject **/
@@ -193,6 +195,7 @@ public:
 	void OnInteract();
 	void OnSprint();
 	void OnSprintStop();
+	void OnHealthRegen();
 	void SetChangableWeapon(FName WeaponKey);
 	void StaminaRegen();
 	void StaminaDrain();

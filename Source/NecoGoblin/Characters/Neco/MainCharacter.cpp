@@ -77,6 +77,7 @@ void AMainCharacter::BeginPlay() {
 
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
+	GetWorld()->GetTimerManager().SetTimer(OnHealthRegenHandler, this, &AMainCharacter::OnHealthRegen, 10.f, true);
 }
 
 void AMainCharacter::SetupHuds() {
@@ -168,6 +169,10 @@ void AMainCharacter::OnBelowWaterLevel() {
 	}
 }
 
+float AMainCharacter::GetMaxHealth() {
+	return (MaxHealth + upgradeComponent->GetAdditionalHP());
+}
+
 void AMainCharacter::OnAimModeStart() {
 	if (!IsToggleAim) {
 		OnStartAim();
@@ -254,6 +259,10 @@ void AMainCharacter::OnSprintStop() {
 	}
 }
 
+void AMainCharacter::OnHealthRegen() {
+	CurrentHealth = FMath::Min(CurrentHealth + upgradeComponent->GetRegenHP(), GetMaxHealth());
+}
+
 void AMainCharacter::SetChangableWeapon(FName WeaponKey) {
 	SelectableWeaponKey = WeaponKey;
 }
@@ -310,7 +319,7 @@ void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 
 void AMainCharacter::HealthPot(float HealAmount) {
 	const float totalHealAmount = HealAmount + upgradeComponent->GetAdditionalHeal();
-		CurrentHealth = FMath::Min(CurrentHealth + totalHealAmount, MaxHealth);
+	CurrentHealth = FMath::Min(CurrentHealth + totalHealAmount, GetMaxHealth());
 }
 
 void AMainCharacter::OnShowSkills() {

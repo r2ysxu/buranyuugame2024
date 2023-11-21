@@ -17,7 +17,7 @@ const static float MOVEMENT_SPEED_AMOUNT = 0.1f;
 const static float WEAPON_DMG_AMOUNT = 0.2f;
 const static float ADDITIONAL_HP_AMOUNT = 15.f;
 const static float ADDITIONAL_HEAL_AMOUNT = 30.f;
-const static float REGEN_HP_AMOUNT = 0.01f;
+const static float REGEN_HP_AMOUNT = 1.f;
 
 // Sets default values for this component's properties
 UUpgradeSkillComponent::UUpgradeSkillComponent() {
