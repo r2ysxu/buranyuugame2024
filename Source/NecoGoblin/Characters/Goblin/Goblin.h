@@ -21,6 +21,8 @@ protected:
 	int32 HealthPickupSpawnRate = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
 	TSubclassOf<class AHealthPickup> HealthPickupClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FRotator HeadRotation;
 
 	virtual void BeginPlay() override;
 

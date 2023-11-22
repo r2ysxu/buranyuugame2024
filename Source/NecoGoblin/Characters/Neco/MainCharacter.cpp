@@ -100,9 +100,9 @@ bool AMainCharacter::CheckAlive() {
 	UE_LOG(LogTemp, Warning, TEXT("CheckAlive"));
 	if (CurrentHealth <= 0) {
 		IsAlive = false;
-		if (HudWidget)	HudWidget->RemoveFromViewport();
-		if (SkillHudWidget) SkillHudWidget->RemoveFromViewport();
-		if (CrosshairHudWidget) CrosshairHudWidget->RemoveFromViewport();
+		if (HudWidget)	HudWidget->RemoveFromParent();
+		if (SkillHudWidget) SkillHudWidget->RemoveFromParent();
+		if (CrosshairHudWidget) CrosshairHudWidget->RemoveFromParent();
 		GetCharacterMovement()->StopMovementImmediately();
 		GetMovementComponent()->Deactivate();
 		DisableInput(Cast<APlayerController>(GetController()));

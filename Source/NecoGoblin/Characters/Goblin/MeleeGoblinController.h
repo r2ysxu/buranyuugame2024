@@ -23,6 +23,7 @@ private:
 protected:
 	FTimerHandle MoveHandler;
 	ANecoSpirit* CurrentTarget;
+	class AMeleeGoblinCharacter* PossessedPawn;
 	volatile bool IsAttacking = false;
 
 public:
@@ -31,6 +32,7 @@ public:
 
 	FORCEINLINE bool GetIsAttacking() { return IsAttacking; }
 	FORCEINLINE void SetIsAttacking(bool isAttacking) { IsAttacking = isAttacking; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE FRotator FindTargetHeadRotation();
 
 	void OnMoveToTarget();
 };

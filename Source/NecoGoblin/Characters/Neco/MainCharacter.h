@@ -75,8 +75,8 @@ private:
 	const int POINTS_PER_KILL = 1;
 	const int RESERVE_AMMO = 30 * 10;
 
-	const float GameVolume = 1.f;
-	const float MusicVolume = 1.f;
+	float GameVolume = 1.f;
+	float MusicVolume = 1.f;
 
 	void OnStopAim();
 	void OnStartAim();
@@ -179,6 +179,10 @@ public:
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
 	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / GetMaxHealth(); }
 	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
+	UFUNCTION(BlueprintCallable) FORCEINLINE float GetGameVolume() { return GameVolume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetGameVolume(float Volume) { GameVolume = Volume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE float GetMusicVolume() { return MusicVolume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetMusicVolume(float Volume) { MusicVolume = Volume; }
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

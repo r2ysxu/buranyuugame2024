@@ -44,6 +44,14 @@ void AMeleeGoblinCharacter::BeginPlay() {
 	MeleeDetectionBox->OnComponentEndOverlap.AddDynamic(this, &AMeleeGoblinCharacter::OnOutsideMeleeAttackRange);
 }
 
+void AMeleeGoblinCharacter::LookAtTarget(FRotator Rotation) {
+	HeadRotation = FRotator(
+		0.f, // Roll
+		Rotation.Yaw - GetActorRotation().Yaw,
+		GetActorRotation().Pitch - Rotation.Pitch + 90.f // Pitch
+	);
+}
+
 void AMeleeGoblinCharacter::OnWithinMeleeAttackRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	if (actor == this || !GetIsAlive()) return;
 	AHumanoid* target = Cast<AHumanoid>(actor);
@@ -66,10 +74,10 @@ void AMeleeGoblinCharacter::SetRunSpeed(float MovementSpeedModifier) {
 
 void AMeleeGoblinCharacter::InitiateMeleeAttack() {
 	if (!GetIsAlive()) {
-		GetAIController()->SetIsAttacking(false);
+		GetAIMeleeController()->SetIsAttacking(false);
 		GetWorld()->GetTimerManager().ClearTimer(InitateAttackHandler);
-	} else if (MeleeAttackMontage && !GetAIController()->GetIsAttacking()) {
-		GetAIController()->SetIsAttacking(true);
+	} else if (MeleeAttackMontage && !GetAIMeleeController()->GetIsAttacking()) {
+		GetAIMeleeController()->SetIsAttacking(true);
 		if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(true);
 		float animationDelay = PlayAnimMontage(MeleeAttackMontage);
 		GetWorld()->GetTimerManager().SetTimer(OnMeleeAttackHandler, this, &AMeleeGoblinCharacter::OnAttackStop, animationDelay, false);
@@ -77,7 +85,7 @@ void AMeleeGoblinCharacter::InitiateMeleeAttack() {
 }
 
 void AMeleeGoblinCharacter::OnAttackStop() {
-	GetAIController()->SetIsAttacking(false);
+	GetAIMeleeController()->SetIsAttacking(false);
 	if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
 }
 
@@ -89,7 +97,7 @@ bool AMeleeGoblinCharacter::CheckAlive() {
 	if (Super::CheckAlive()) {
 		if (MeleeAttackMontage) StopAnimMontage(MeleeAttackMontage);
 		if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
-		GetAIController()->SetIsAttacking(false);
+		GetAIMeleeController()->SetIsAttacking(false);
 		return true;
 	}
 	return false;
