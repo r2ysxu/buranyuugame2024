@@ -7,6 +7,7 @@
 #include "../Humanoid.h"
 #include "../Neco/NecoSpirit.h"
 
+#include "Components/SplineComponent.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BehaviorTree.h>
 #include <Runtime/AIModule/Classes/BehaviorTree/BlackboardComponent.h>
 #include <Runtime/AIModule/Classes/Perception/AISenseConfig_Sight.h>
@@ -32,6 +33,7 @@ void AMeleeGoblinController::OnPossess(APawn* InPawn) {
 	PossessedPawn = Cast<AMeleeGoblinCharacter>(InPawn);
 	PossessedPawn->SetAIController(this);
 	CurrentTarget = GetNecoSpiritByTag(GetWorld(), MainPlayer);
+	Theta = FMath::RandRange(-45.f, 45.f);
 	GetWorld()->GetTimerManager().SetTimer(MoveHandler, this, &AMeleeGoblinController::OnMoveToTarget, 0.1f, true);
 }
 
@@ -39,7 +41,13 @@ void AMeleeGoblinController::OnMoveToTarget() {
 	if (GetIsAttacking()) {
 	} else if (CurrentTarget && CurrentTarget->GetIsAlive()) {
 		PossessedPawn->LookAtTarget(FindTargetHeadRotation());
-		MoveToActor(CurrentTarget);
+		float distance = CurrentTarget->GetDistanceTo(PossessedPawn);
+		if (distance < TargetHomingRadius * 2 && distance > TargetHomingRadius) {
+			FVector actorLocation = CurrentTarget->GetActorLocation();
+			float thetaByDistance = Theta * (distance / (TargetHomingRadius * 2));
+			FVector offset = FVector(TargetHomingRadius * FMath::Cos(thetaByDistance), TargetHomingRadius * FMath::Sin(thetaByDistance), 0.f);
+			MoveToLocation(actorLocation - offset);
+		} else MoveToActor(CurrentTarget);
 	} else {
 		CurrentTarget = GetNecoSpiritByTag(GetWorld(), MainPlayer);
 	}

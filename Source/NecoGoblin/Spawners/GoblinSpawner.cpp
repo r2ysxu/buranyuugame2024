@@ -44,7 +44,7 @@ bool AGoblinSpawner::SpawnEnemyType(uint8 Type) {
 	if (Type == 1) {
 		AMeleeGoblinCharacter* goblin = GetWorld()->SpawnActor<AMeleeGoblinCharacter>(MeleeGoblinClass, goblinTransform);
 		if (IsValid(goblin)) {
-			goblin->SetRunSpeed((GameMode->GetCurrentRound() / 3) * 20.f);
+			goblin->SetRunSpeed((GameMode->GetCurrentRound() / 2) * 25.f);
 			return true;
 		} else return false;
 	} else if (Type == 2) {

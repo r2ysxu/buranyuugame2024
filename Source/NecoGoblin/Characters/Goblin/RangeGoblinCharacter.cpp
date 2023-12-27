@@ -66,7 +66,7 @@ void ARangeGoblinCharacter::InitiateRangeAttack(FVector& OutTossVelocity) {
 		float animationDelay = PlayAnimMontage(RangeAttackMontage, 1.f) + 0.2f;
 		GetWorld()->GetTimerManager().SetTimer(AttackResetHandler, this, &ARangeGoblinCharacter::OnAttackReset, animationDelay, false);
 		GetAIController()->SetIsAttacking(true);
-		Weapon->OnFire(OutTossVelocity);
+		Weapon->OnFire(OutTossVelocity, animationDelay - 0.5f);
 		Weapon = nullptr;
 		IsAttackCooldown = true;
 	}

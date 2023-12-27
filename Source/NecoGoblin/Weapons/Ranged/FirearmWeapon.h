@@ -122,6 +122,7 @@ public:
 	FORCEINLINE int GetAmmoMagazine() { return CurrentAmmoInMagazine; }
 	FORCEINLINE bool GetIsFiring() { return IsFiring; }
 	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
+	FORCEINLINE float GetGunVolume() { return GunVolume; }
 	
 	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
 	FVector2D GenerateRecoil();

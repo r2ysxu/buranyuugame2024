@@ -19,6 +19,8 @@ class NECOGOBLIN_API AMeleeGoblinController : public AAIController {
 private:
 	const FName MainPlayer = FName("MainPlayer");
 	ANecoSpirit* GetNecoSpiritByTag(const UObject* WorldContextObject, FName tagName);
+	float TargetHomingRadius = 500.f;
+	float Theta = 0.f;
 
 protected:
 	FTimerHandle MoveHandler;

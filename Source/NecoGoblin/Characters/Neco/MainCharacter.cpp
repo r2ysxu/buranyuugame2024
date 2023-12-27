@@ -24,6 +24,7 @@
 // AMainCharacter
 
 AMainCharacter::AMainCharacter() {
+	PrimaryActorTick.bCanEverTick = true;
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(15.f, 30.f);
@@ -80,6 +81,12 @@ void AMainCharacter::BeginPlay() {
 	GetWorld()->GetTimerManager().SetTimer(OnHealthRegenHandler, this, &AMainCharacter::OnHealthRegen, 10.f, true);
 }
 
+void AMainCharacter::Tick(float DeltaSeconds) {
+	FVector2D recoilRate =  FMath::Vector2DInterpTo(FVector2D(), Recoil, DeltaSeconds, 3.f);
+	Recoil -= recoilRate;
+	Look(FInputActionValue(recoilRate));
+}
+
 void AMainCharacter::SetupHuds() {
 	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
@@ -97,7 +104,6 @@ void AMainCharacter::SetupHuds() {
 
 bool AMainCharacter::CheckAlive() {
 	if (!IsAlive) return false;
-	UE_LOG(LogTemp, Warning, TEXT("CheckAlive"));
 	if (CurrentHealth <= 0) {
 		IsAlive = false;
 		if (HudWidget)	HudWidget->RemoveFromParent();
@@ -108,9 +114,9 @@ bool AMainCharacter::CheckAlive() {
 		DisableInput(Cast<APlayerController>(GetController()));
 		HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		GetMesh()->SetSimulatePhysics(true);
 		if (GameOverWidget) GameOverWidget->AddToViewport();
-		GetWorld()->GetTimerManager().ClearTimer(OnWaterLevelCheckHandler);
 		ANecoGoblinGameMode* gameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (IsValid(gameMode)) {
 			gameMode->RestartPlay(DECOMPOSE_DELAY);
@@ -208,8 +214,9 @@ void AMainCharacter::OnFireWeaponOnce() {
 		stats->IncrementKillCount();
 		upgradeComponent->AddExpPoints(POINTS_PER_KILL);
 	case FireType::VE_Fired:
-		FVector2D recoil = Firearm->GenerateRecoil();
-		Look(FInputActionValue(recoil));
+		Recoil += Firearm->GenerateRecoil();
+		break;
+	case FireType::VE_NotFired: break;
 	}
 }
 
@@ -225,7 +232,10 @@ void AMainCharacter::OnFireWeapon() {
 void AMainCharacter::OnFireStop() {
 	if (Firearm) {
 		GetWorld()->GetTimerManager().ClearTimer(OnFireWeaponHandler);
-		if (IsAutoReload && Firearm->GetAmmoMagazine() == 0) OnReloadWeapon();
+		if (IsAutoReload && Firearm->GetAmmoMagazine() <= 0) OnReloadWeapon();
+		else if (Firearm->GetAmmoMagazine() <= 0 && EmptyMagSound) {
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptyMagSound, GetActorLocation(), Firearm->GetGunVolume());
+		}
 	}
 }
 

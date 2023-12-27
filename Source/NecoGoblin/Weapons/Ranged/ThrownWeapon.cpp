@@ -2,6 +2,7 @@
 
 
 #include "ThrownWeapon.h"
+#include "../../Characters/Neco/MainCharacter.h"
 
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -13,7 +14,7 @@ AThrownWeapon::AThrownWeapon() {
 	PrimaryActorTick.bCanEverTick = false;
 
 	MeleeAttackWeaponBox = CreateDefaultSubobject<UBoxComponent>("OneHandWeaponAttackBox");
-	MeleeAttackWeaponBox->SetBoxExtent(FVector(50.f, 1.f, 0));
+	MeleeAttackWeaponBox->SetBoxExtent(FVector(50.f, 5.f, 5.f));
 	MeleeAttackWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	MeleeAttackWeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	MeleeAttackWeaponBox->SetupAttachment(GetRootComponent());
@@ -51,17 +52,20 @@ uint8 AThrownWeapon::GetWeaponTeam() {
 	return Wielder->GetTeam();
 }
 
-bool AThrownWeapon::OnFire(FVector TossVelocity) {
-	if (!IsInFlight) {
-		IsInFlight = true;
-		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+void AThrownWeapon::ThrowWeapon() {
+	IsInFlight = true;
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	WeaponMeshComponent->AddLocalOffset(FVector(50.f, -80.f, 0));
+	WeaponMeshComponent->AddLocalRotation(FRotator(0, 90.f, 0));
+	ProjectileMovement->Activate();
+}
 
-		WeaponMeshComponent->AddLocalOffset(FVector(50.f, -80.f, 0));
-		WeaponMeshComponent->AddLocalRotation(FRotator(0, 90.f, 0));
+bool AThrownWeapon::OnFire(FVector TossVelocity, float Delay) {
+	if (!IsInFlight) {
 		ProjectileMovement->Velocity = TossVelocity;
-		ProjectileMovement->Activate();
+		GetWorld()->GetTimerManager().SetTimer(OnThrowWeaponHandler, this, &AThrownWeapon::ThrowWeapon, Delay, false);
 	}
-	return true;
+	return IsInFlight;
 }
 
 void AThrownWeapon::OnHitBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
@@ -69,10 +73,11 @@ void AThrownWeapon::OnHitBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if (actor != Wielder) IsInFlight = false;
 	if (Cast<AThrownWeapon>(actor)) return;
 	ProjectileMovement->Deactivate();
-	AHumanoid* hitTarget = Cast<AHumanoid>(actor);
+	AMainCharacter* hitTarget = Cast<AMainCharacter>(actor);
 	if (IsValid(hitTarget)) {
 		AttachToActor(actor, FAttachmentTransformRules::KeepWorldTransform);
 		hitTarget->TakeHitDamage(GetWeaponDamage(), Wielder);
+		hitTarget->CheckAlive();
 	}
 	GetWorld()->GetTimerManager().SetTimer(FlightResetHandler, this, &AThrownWeapon::OnResetProjectile, 2.f, false);
 }

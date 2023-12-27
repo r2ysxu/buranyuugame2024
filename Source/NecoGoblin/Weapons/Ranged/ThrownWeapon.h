@@ -15,7 +15,10 @@ class NECOGOBLIN_API AThrownWeapon : public AWeapon {
 
 private:
 	bool IsInFlight = false;
+	FTimerHandle OnThrowWeaponHandler;
 	FTimerHandle FlightResetHandler;
+
+	void ThrowWeapon();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = Mesh)
@@ -34,6 +37,6 @@ public:
 	void EquipWeapon(FName SocketName) override;
 	float GetWeaponDamage() override;
 	uint8 GetWeaponTeam() override;
-	UFUNCTION() bool OnFire(FVector TossVelocity);
+	UFUNCTION() bool OnFire(FVector TossVelocity, float delay);
 	void OnResetProjectile();
 };

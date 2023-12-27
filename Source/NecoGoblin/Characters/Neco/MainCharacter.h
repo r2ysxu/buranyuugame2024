@@ -100,6 +100,7 @@ protected:
 	volatile bool IsAimMode = false;
 	FName SelectableWeaponKey = FName();
 	float PlayerPitch = 0.f;
+	FVector2D Recoil = FVector2D();
 	float Stamina = MAX_STAMINA;
 	FTimerHandle OnSprintHandler;
 	FTimerHandle OnSprintRegenHandler;
@@ -119,8 +120,7 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
-	
-	bool CheckAlive() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 
@@ -145,6 +145,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* RefillSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+	USoundBase* EmptyMagSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* BGMSound;
 
@@ -189,6 +191,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	bool CheckAlive() override;
 	void UpgradeWeaponDamage(float additionalDamage);
 	void OnAimModeStart();
 	void OnAimModeStop();
