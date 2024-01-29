@@ -13,6 +13,8 @@
 AGoblin::AGoblin() {
 	HeadBox->SetSphereRadius(3.f);
 	HeadBox->AddLocalOffset(FVector(0.f, -2.f, 0.f));
+	HeadBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 }
 
 void AGoblin::BeginPlay() {

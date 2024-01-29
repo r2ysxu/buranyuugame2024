@@ -82,7 +82,7 @@ void AMainCharacter::BeginPlay() {
 }
 
 void AMainCharacter::Tick(float DeltaSeconds) {
-	FVector2D recoilRate =  FMath::Vector2DInterpTo(FVector2D(), Recoil, DeltaSeconds, 3.f);
+	FVector2D recoilRate =  FMath::Vector2DInterpTo(FVector2D(), Recoil, DeltaSeconds, 5.f);
 	Recoil -= recoilRate;
 	Look(FInputActionValue(recoilRate));
 }
@@ -116,6 +116,7 @@ bool AMainCharacter::CheckAlive() {
 		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		GetMesh()->SetSimulatePhysics(true);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 		if (GameOverWidget) GameOverWidget->AddToViewport();
 		ANecoGoblinGameMode* gameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (IsValid(gameMode)) {

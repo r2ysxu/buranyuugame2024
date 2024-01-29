@@ -19,6 +19,7 @@ AMeleeGoblinCharacter::AMeleeGoblinCharacter() {
 	MeleeDetectionBox->SetBoxExtent(FVector(30.f, 30.f, 30.f));
 	MeleeDetectionBox->AddLocalOffset(FVector(50.f, 0.f, 0.f));
 	MeleeDetectionBox->SetupAttachment(GetRootComponent());
+	MeleeDetectionBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	//MeleeDetectionBox->bHiddenInGame = false;
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
