@@ -36,6 +36,9 @@ protected:
 	TSubclassOf<class URoundHUD> RoundHudWidgetClass;
 	URoundHUD* RoundHudWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
+	USoundBase* NextRoundVoice;
+
 	void NextRound();
 
 public:

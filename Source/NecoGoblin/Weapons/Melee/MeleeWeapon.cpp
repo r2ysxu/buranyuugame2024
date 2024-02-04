@@ -18,12 +18,12 @@ AMeleeWeapon::AMeleeWeapon() {
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	MeleeAttackWeaponBox = CreateDefaultSubobject<UBoxComponent>("OneHandWeaponAttackBox");
-	MeleeAttackWeaponBox->SetBoxExtent(FVector(10.f, 50.f, 0));
+	MeleeAttackWeaponBox->SetBoxExtent(FVector(20.f, 50.f, 0));
 	MeleeAttackWeaponBox->AddLocalOffset(FVector(10.f, 0, 0));
 	MeleeAttackWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MeleeAttackWeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	MeleeAttackWeaponBox->SetupAttachment(GetRootComponent());
-	//MeleeAttackWeaponBox->bHiddenInGame = false;
+	MeleeAttackWeaponBox->bHiddenInGame = false;
 }
 
 // Called when the game starts or when spawned

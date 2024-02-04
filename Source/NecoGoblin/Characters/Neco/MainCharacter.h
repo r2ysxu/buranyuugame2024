@@ -150,6 +150,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* BGMSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
+	USoundBase* HitVoice;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
+	USoundBase* LowHealthVoice;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
+	USoundBase* NoStaminaVoice;
+	class UAudioComponent* NoStaminaVoiceComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
+	USoundBase* HealthPickupVoice;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	class UNiagaraSystem* BloodHitFX = nullptr;
 	class UNiagaraComponent* BloodSplatter = nullptr;

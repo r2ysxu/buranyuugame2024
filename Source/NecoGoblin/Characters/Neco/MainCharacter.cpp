@@ -18,6 +18,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/UserWidget.h"
 #include "Niagara/Public/NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -79,6 +80,11 @@ void AMainCharacter::BeginPlay() {
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnHealthRegenHandler, this, &AMainCharacter::OnHealthRegen, 10.f, true);
+
+	if (NoStaminaVoice) {
+		NoStaminaVoiceComponent = UGameplayStatics::SpawnSound2D(GetWorld(), NoStaminaVoice);
+		NoStaminaVoiceComponent->Stop();
+	}
 }
 
 void AMainCharacter::Tick(float DeltaSeconds) {
@@ -233,8 +239,9 @@ void AMainCharacter::OnFireWeapon() {
 void AMainCharacter::OnFireStop() {
 	if (Firearm) {
 		GetWorld()->GetTimerManager().ClearTimer(OnFireWeaponHandler);
-		if (IsAutoReload && Firearm->GetAmmoMagazine() <= 0) OnReloadWeapon();
-		else if (Firearm->GetAmmoMagazine() <= 0 && EmptyMagSound) {
+		if (IsAutoReload && Firearm->GetAmmoMagazine() <= 0) {
+			OnReloadWeapon();
+		} else if (Firearm->GetAmmoMagazine() <= 0 && EmptyMagSound) {
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), EmptyMagSound, GetActorLocation(), Firearm->GetGunVolume());
 		}
 	}
@@ -254,7 +261,7 @@ void AMainCharacter::OnInteract() {
 }
 
 void AMainCharacter::OnSprint() {
-	if (Stamina <= 0 || IsSprinting) return;
+	if (Stamina <= (MAX_STAMINA * 0.4f) || IsSprinting) return;
 	OnStopAim();
 	IsSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SPRINT_SPEED * upgradeComponent->GetMovementSpeedModifer();
@@ -267,6 +274,8 @@ void AMainCharacter::OnSprintStop() {
 		GetCharacterMovement()->MaxWalkSpeed = WALK_SPEED;
 		GetWorld()->GetTimerManager().UnPauseTimer(OnSprintRegenHandler);
 		GetWorld()->GetTimerManager().ClearTimer(OnSprintHandler);
+		
+		if (Stamina <= 0 && !NoStaminaVoiceComponent->IsPlaying()) NoStaminaVoiceComponent->Play();
 	}
 }
 
@@ -326,11 +335,14 @@ void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 		BloodSplatter = UNiagaraFunctionLibrary::SpawnSystemAttached(BloodHitFX, GetCapsuleComponent(), NAME_None, FVector(0.f, 0.f, 10.f), GetActorRotation(), EAttachLocation::Type::SnapToTarget, true);
 		GetWorld()->GetTimerManager().SetTimer(BloodSplatterHandler, this, &AMainCharacter::OnRemoveBloodSplatter, 1.f, false);
 	}
+	if (CurrentHealth == 20.f && LowHealthVoice) UGameplayStatics::PlaySound2D(GetWorld(), LowHealthVoice);
+	else if (HitVoice) UGameplayStatics::PlaySound2D(GetWorld(), HitVoice);
 }
 
 void AMainCharacter::HealthPot(float HealAmount) {
 	const float totalHealAmount = HealAmount + upgradeComponent->GetAdditionalHeal();
 	CurrentHealth = FMath::Min(CurrentHealth + totalHealAmount, GetMaxHealth());
+	if (HealthPickupVoice) UGameplayStatics::PlaySound2D(GetWorld(), HealthPickupVoice);
 }
 
 void AMainCharacter::OnShowSkills() {
