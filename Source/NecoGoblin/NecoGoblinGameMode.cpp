@@ -29,7 +29,7 @@ void ANecoGoblinGameMode::NextRound() {
 		RangeEnemySpawned = 0;
 		EnemyCount = 0;
 		RoundHudWidget->SetCurrentRound(CurrentRound);
-		if (NextRoundVoice && CurrentRound > 1) UGameplayStatics::PlaySound2D(GetWorld(), NextRoundVoice);
+		if (NextRoundVoice && CurrentRound > 0) UGameplayStatics::PlaySound2D(GetWorld(), NextRoundVoice);
 	}
 }
 
