@@ -7,10 +7,12 @@
 #include "Widgets/HUDs/RoundHUD.h"
 #include "NecoGoblinGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDelegate_Gameover, float, TimeDelay);
+
 UCLASS(minimalapi)
-class ANecoGoblinGameMode : public AGameModeBase
-{
+class ANecoGoblinGameMode : public AGameModeBase {
 	GENERATED_BODY()
+
 
 private:
 	const int MELEE_ENEMY_PER_ROUND = 10;
@@ -36,6 +38,10 @@ protected:
 	TSubclassOf<class URoundHUD> RoundHudWidgetClass;
 	URoundHUD* RoundHudWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UUserWidget> GameOverWidgetClass;
+	UUserWidget* GameOverWidget;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
 	USoundBase* NextRoundVoice;
 
@@ -44,14 +50,17 @@ protected:
 public:
 	ANecoGoblinGameMode();
 
+	FDelegate_Gameover DelegateGameOver;
+
 	void StartPlay() override;
-	void RestartPlay(float TimeDelay);
 	
 	bool IncrementMeleeEnemy();
 	bool IncrementRangeEnemy();
 	bool DecrementEnemy();
+
 	UFUNCTION(BlueprintCallable) void ShowHuds();
 	UFUNCTION(BlueprintCallable) void HideHuds();
+	UFUNCTION(BlueprintCallable) void RestartPlay(float TimeDelay);
 	UFUNCTION(BlueprintImplementableEvent) void OnVictoryAchieved();
 	FORCEINLINE int GetCurrentRound() { return CurrentRound; }
 	FORCEINLINE int GetGoblinCount() { return EnemyCount; }

@@ -18,7 +18,7 @@ AThrownWeapon::AThrownWeapon() {
 	MeleeAttackWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	MeleeAttackWeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	MeleeAttackWeaponBox->SetupAttachment(GetRootComponent());
-	MeleeAttackWeaponBox->bHiddenInGame = false;
+	//MeleeAttackWeaponBox->bHiddenInGame = false;
 
 	WeaponMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 	WeaponMeshComponent->SetupAttachment(MeleeAttackWeaponBox);

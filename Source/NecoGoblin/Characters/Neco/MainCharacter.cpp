@@ -80,11 +80,6 @@ void AMainCharacter::BeginPlay() {
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnHealthRegenHandler, this, &AMainCharacter::OnHealthRegen, 10.f, true);
-
-	if (NoStaminaVoice) {
-		NoStaminaVoiceComponent = UGameplayStatics::SpawnSound2D(GetWorld(), NoStaminaVoice);
-		NoStaminaVoiceComponent->Stop();
-	}
 }
 
 void AMainCharacter::Tick(float DeltaSeconds) {
@@ -105,7 +100,6 @@ void AMainCharacter::SetupHuds() {
 	}
 	SkillHudWidget = CreateWidget<UUserWidget>(GetWorld(), SkillHudWidgetClass);
 	upgradeComponent->SetupWidget(SkillHudWidget);
-	GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
 }
 
 bool AMainCharacter::CheckAlive() {
@@ -119,15 +113,12 @@ bool AMainCharacter::CheckAlive() {
 		GetMovementComponent()->Deactivate();
 		DisableInput(Cast<APlayerController>(GetController()));
 		HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
-		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-		GetMesh()->SetSimulatePhysics(true);
-		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
-		if (GameOverWidget) GameOverWidget->AddToViewport();
 		ANecoGoblinGameMode* gameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (IsValid(gameMode)) {
-			gameMode->RestartPlay(DECOMPOSE_DELAY);
+			gameMode->DelegateGameOver.Broadcast(DECOMPOSE_DELAY);
 		}
+		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+		GetMesh()->SetSimulatePhysics(true);
 	}
 	return IsAlive;
 }
@@ -275,7 +266,13 @@ void AMainCharacter::OnSprintStop() {
 		GetWorld()->GetTimerManager().UnPauseTimer(OnSprintRegenHandler);
 		GetWorld()->GetTimerManager().ClearTimer(OnSprintHandler);
 		
-		if (Stamina <= 0 && !NoStaminaVoiceComponent->IsPlaying()) NoStaminaVoiceComponent->Play();
+		if (Stamina <= 0) {
+			if (IsValid(NoStaminaVoiceComponent) && !NoStaminaVoiceComponent->IsPlaying()) {
+				NoStaminaVoiceComponent->Play();
+			} else {
+				NoStaminaVoiceComponent = UGameplayStatics::SpawnSound2D(GetWorld(), NoStaminaVoice, 1.f, 1.f, 0.f, nullptr, false, false);
+			}
+		}
 	}
 }
 
@@ -329,6 +326,7 @@ FFirearmStats AMainCharacter::GetFirearmStats() {
 }
 
 void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
+	if (!IsAlive) return;
 	Super::TakeHitDamage(damage, DamageCauser);
 	if (FlinchMontage) PlayAnimMontage(FlinchMontage, 1.f);
 	if (BloodHitFX && BloodSplatter == nullptr) {

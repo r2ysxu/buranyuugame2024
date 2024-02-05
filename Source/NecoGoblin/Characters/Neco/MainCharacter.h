@@ -126,6 +126,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TSubclassOf<class AWeapon> FirearmWeaponClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	TSubclassOf<class ANecoSpirit> DeadbodyClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> CrosshairHudWidgetClass;
@@ -138,10 +140,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> SkillHudWidgetClass;
 	UUserWidget* SkillHudWidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UUserWidget> GameOverWidgetClass;
-	UUserWidget* GameOverWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* RefillSound;

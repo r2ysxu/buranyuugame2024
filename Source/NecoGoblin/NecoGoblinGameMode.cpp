@@ -12,6 +12,7 @@ ANecoGoblinGameMode::ANecoGoblinGameMode() {
 	if (PlayerPawnBPClass.Class != NULL) {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+	DelegateGameOver.AddDynamic(this, &ANecoGoblinGameMode::RestartPlay);
 }
 
 void ANecoGoblinGameMode::GameRestart() {
@@ -29,7 +30,7 @@ void ANecoGoblinGameMode::NextRound() {
 		RangeEnemySpawned = 0;
 		EnemyCount = 0;
 		RoundHudWidget->SetCurrentRound(CurrentRound);
-		if (NextRoundVoice && CurrentRound > 0) UGameplayStatics::PlaySound2D(GetWorld(), NextRoundVoice);
+		if (NextRoundVoice && CurrentRound > 1) UGameplayStatics::PlaySound2D(GetWorld(), NextRoundVoice);
 	}
 }
 
@@ -40,10 +41,16 @@ void ANecoGoblinGameMode::StartPlay() {
 		RoundHudWidget->AddToViewport();
 		RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
+	GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+	if (GameOverWidget) {
+		GameOverWidget->AddToViewport();
+		GameOverWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 	NextRound();
 }
 
 void ANecoGoblinGameMode::RestartPlay(float TimeDelay) {
+	GameOverWidget->SetVisibility(ESlateVisibility::Visible);
 	GetWorld()->GetTimerManager().SetTimer(RestartHandler, this, &ANecoGoblinGameMode::GameRestart, TimeDelay, false);
 }
 

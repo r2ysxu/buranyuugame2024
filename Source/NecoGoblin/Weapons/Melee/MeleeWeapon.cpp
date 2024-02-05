@@ -23,7 +23,7 @@ AMeleeWeapon::AMeleeWeapon() {
 	MeleeAttackWeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MeleeAttackWeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	MeleeAttackWeaponBox->SetupAttachment(GetRootComponent());
-	MeleeAttackWeaponBox->bHiddenInGame = false;
+	//MeleeAttackWeaponBox->bHiddenInGame = false;
 }
 
 // Called when the game starts or when spawned
