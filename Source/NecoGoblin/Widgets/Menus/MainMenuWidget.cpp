@@ -19,3 +19,7 @@ void UMainMenuWidget::OnStartGame() {
 	SkipIntroWidget->AddToViewport();
 	controller->bShowMouseCursor = false;
 }
+
+void UMainMenuWidget::SetGameMode(bool IsEndlessMode) {
+	Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->SetEndlessMode(IsEndlessMode);
+}

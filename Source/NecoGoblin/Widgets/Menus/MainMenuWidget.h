@@ -27,4 +27,5 @@ protected:
 public:
 	
 	UFUNCTION(BlueprintCallable) void OnStartGame();
+	UFUNCTION(BlueprintCallable) void SetGameMode(bool IsEndlessMode);
 };

@@ -8,8 +8,7 @@
 #include "GoblinSpawner.generated.h"
 
 UCLASS()
-class NECOGOBLIN_API AGoblinSpawner : public AActor
-{
+class NECOGOBLIN_API AGoblinSpawner : public AActor {
 	GENERATED_BODY()
 
 private:
@@ -18,19 +17,22 @@ private:
 	bool SpawnEnemyType(uint8 Type);
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
+	float MovementSpeedModifier = 1.f;
+	float SpawnRate = 5.f;
 	FTimerHandle OnSpawnHandler;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TSubclassOf<class AMeleeGoblinCharacter> MeleeGoblinClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TSubclassOf<class ARangeGoblinCharacter> RangeGoblinClass;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 	
 public:	
 	// Sets default values for this actor's properties
 	AGoblinSpawner();
 
 	void SpawnEnemy();
+	void ChangeSpawnInfo(float EnemySpawnRate, float EnemyMovementSpeedMod);
 };

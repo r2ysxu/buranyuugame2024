@@ -19,6 +19,11 @@ void ANecoGoblinGameMode::GameRestart() {
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), true);
 }
 
+void ANecoGoblinGameMode::SetupEndlessMode() {
+	MeleeEnemyPerRound = MAX_ENEMY;
+	RangeEnemyPerRound = 35;
+}
+
 void ANecoGoblinGameMode::NextRound() {
 	CurrentRound++;
 	if (CurrentRound > FINAL_ROUND) {
@@ -30,8 +35,20 @@ void ANecoGoblinGameMode::NextRound() {
 		RangeEnemySpawned = 0;
 		EnemyCount = 0;
 		RoundHudWidget->SetCurrentRound(CurrentRound);
+		DelegateRoundChange.Broadcast(EnemySpawnRate, (CurrentRound / 2) * 25.f);
 		if (NextRoundVoice && CurrentRound > 1) UGameplayStatics::PlaySound2D(GetWorld(), NextRoundVoice);
 	}
+}
+
+void ANecoGoblinGameMode::NextEndlessRound() {
+	if (CurrentRound > 11) {
+		GetWorldTimerManager().ClearTimer(NextRoundHandler);
+		return;
+	}
+	CurrentRound++;
+	DelegateRoundChange.Broadcast(EnemySpawnRate + ((10 - CurrentRound) * 2.f), (CurrentRound / 2) * 25.f);
+	GetWorldTimerManager().SetTimer(NextRoundHandler, this, &ANecoGoblinGameMode::NextEndlessRound, EndlessNextRoundTime, false);
+	EndlessNextRoundTime += CurrentRound * 5.f;
 }
 
 void ANecoGoblinGameMode::StartPlay() {
@@ -46,7 +63,12 @@ void ANecoGoblinGameMode::StartPlay() {
 		GameOverWidget->AddToViewport();
 		GameOverWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
-	NextRound();
+
+	if (!bEndlessMode) {
+		NextRound();
+	} else {
+		NextEndlessRound();
+	}
 }
 
 void ANecoGoblinGameMode::RestartPlay(float TimeDelay) {
@@ -69,7 +91,7 @@ bool ANecoGoblinGameMode::IncrementRangeEnemy() {
 }
 
 bool ANecoGoblinGameMode::DecrementEnemy() {
-	if (EnemyCount == 0) return false;
+	if (EnemyCount == 0 || bEndlessMode) return false;
 	EnemyCount = FMath::Max(EnemyCount - 1, 0);
 	if (EnemyCount == 0) {
 		GetWorld()->GetTimerManager().SetTimer(NextRoundHandler, this, &ANecoGoblinGameMode::NextRound, 5.f, false);
@@ -77,8 +99,13 @@ bool ANecoGoblinGameMode::DecrementEnemy() {
 	return true;
 }
 
+void ANecoGoblinGameMode::SetEndlessMode(bool IsEndlessMode) {
+	bEndlessMode = IsEndlessMode;
+	if (IsEndlessMode) SetupEndlessMode();
+}
+
 void ANecoGoblinGameMode::ShowHuds() {
-	if (RoundHudWidget)	RoundHudWidget->SetVisibility(ESlateVisibility::Visible);
+	if (!bEndlessMode && RoundHudWidget) RoundHudWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void ANecoGoblinGameMode::HideHuds() {

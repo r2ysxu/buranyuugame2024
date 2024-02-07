@@ -20,7 +20,9 @@ void AGoblinSpawner::BeginPlay() {
 	Super::BeginPlay();
 	GameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GameMode) {
-		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnEnemy, GameMode->GetGoblinSpawnRate(), true);
+		SpawnRate = GameMode->GetGoblinSpawnRate();
+		GameMode->DelegateRoundChange.AddDynamic(this, &AGoblinSpawner::ChangeSpawnInfo);
+		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnEnemy, SpawnRate, false);
 	}
 }
 
@@ -33,7 +35,13 @@ void AGoblinSpawner::SpawnEnemy() {
 		} else if (GameMode->IncrementRangeEnemy()) {
 			if (SpawnEnemyType(2)) GameMode->DecrementEnemy();
 		}
+		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnEnemy, SpawnRate, false);
 	}
+}
+
+void AGoblinSpawner::ChangeSpawnInfo(float EnemySpawnRate, float EnemyMovementSpeedMod) {
+	MovementSpeedModifier = EnemyMovementSpeedMod;
+	SpawnRate = EnemySpawnRate;
 }
 
 bool AGoblinSpawner::SpawnEnemyType(uint8 Type) {
@@ -44,7 +52,7 @@ bool AGoblinSpawner::SpawnEnemyType(uint8 Type) {
 	if (Type == 1) {
 		AMeleeGoblinCharacter* goblin = GetWorld()->SpawnActor<AMeleeGoblinCharacter>(MeleeGoblinClass, goblinTransform);
 		if (IsValid(goblin)) {
-			goblin->SetRunSpeed((GameMode->GetCurrentRound() / 2) * 25.f);
+			goblin->SetRunSpeed(MovementSpeedModifier);
 			return true;
 		} else return false;
 	} else if (Type == 2) {
