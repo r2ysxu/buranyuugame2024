@@ -5,6 +5,7 @@
 #include "../../Weapons/Ranged/FirearmWeapon.h"
 
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 ANecoSpirit::ANecoSpirit() {

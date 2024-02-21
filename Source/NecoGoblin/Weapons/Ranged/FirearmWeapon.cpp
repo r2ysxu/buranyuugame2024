@@ -63,9 +63,10 @@ void AFirearmWeapon::WeaponReloadStop() {
 	ReserveAmmo -= reloadedAmmo;
 }
 
-FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
+FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
 	if (!WeaponData) return FireType::VE_NotFired;
 	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
+		FHitResult OutResult;
 		WeaponFireStart();
 		CurrentAmmoInMagazine--;
 		if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
@@ -74,8 +75,7 @@ FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector
 		FVector endLocation = startLocation + (forwardVector * MaxRange);
 		collisionParams.AddIgnoredActor(this);
 		if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
-			AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor());
-			if (targetActor && targetActor->GetTeam() != GetWeaponTeam()) {
+			if (AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor())) {
 				float finalDamage = GetWeaponDamage() * WeaponDamageModifier;
 				if (FString(TEXT("HeadBox")) == OutResult.GetComponent()->GetName()) finalDamage *= (2 + HeadshotDmgModifier);
 				targetActor->TakeHitDamage(finalDamage, this);
@@ -154,10 +154,10 @@ FFirearmStats* AFirearmWeapon::GetStats() {
 	return stats;
 }
 
-FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
+FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
 	if (!IsFiring) {
 		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate * FireRateModifier, false);
-		return FireWeapon(startLocation, forwardVector, collisionParams, OutResult, FireRateModifier, WeaponDamageModifier, HeadshotDmgModifier);
+		return FireWeapon(startLocation, forwardVector, collisionParams, FireRateModifier, WeaponDamageModifier, HeadshotDmgModifier);
 	}
 	return FireType::VE_NotFired;
 }

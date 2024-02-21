@@ -13,31 +13,31 @@ struct FFirearmWeaponData : public FTableRowBase {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-		FString WeaponName;
+	FString WeaponName;
 	UPROPERTY(EditAnywhere)
-		class USkeletalMesh* WeaponMesh;
+	class USkeletalMesh* WeaponMesh;
 	UPROPERTY(EditAnywhere)
-		class UAnimationAsset* FireAnimation;
+	class UAnimationAsset* FireAnimation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
-		USoundBase* ShotSound;
+	USoundBase* ShotSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
-		USoundBase* ReloadSound;
+	USoundBase* ReloadSound;
 	UPROPERTY(EditAnywhere)
-		int MagazineSize;
+	int MagazineSize;
 	UPROPERTY(EditAnywhere)
-		int ReloadSpeed;
+	int ReloadSpeed;
 	UPROPERTY(EditAnywhere)
-		float FireRate;
+	float FireRate;
 	UPROPERTY(EditAnywhere)
-		bool SemiAutomatic;
+	bool SemiAutomatic;
 	UPROPERTY(EditAnywhere)
-		float RecoilYawVariance;
+	float RecoilYawVariance;
 	UPROPERTY(EditAnywhere)
-		float RecoiPitchVariance;
+	float RecoiPitchVariance;
 	UPROPERTY(EditAnywhere)
-		float BaseDamage;
+	float BaseDamage;
 	UPROPERTY(EditAnywhere)
-		FString StatInfo;
+	FString StatInfo;
 };
 
 USTRUCT(BlueprintType)
@@ -72,7 +72,7 @@ class NECOGOBLIN_API AFirearmWeapon : public AWeapon {
 
 private:
 
-	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier);
+	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -124,6 +124,6 @@ public:
 	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
 	FORCEINLINE float GetGunVolume() { return GunVolume; }
 	
-	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult &OutResult, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
+	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
 	FVector2D GenerateRecoil();
 };

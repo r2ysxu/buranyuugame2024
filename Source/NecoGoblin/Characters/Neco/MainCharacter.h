@@ -112,8 +112,11 @@ protected:
 
 	void OnAimModeStart();
 	void OnAimModeStop();
+	void OnFireWeapon();
+	void OnFireStop();
 	virtual void OnStopAim();
 	virtual void OnStartAim();
+	virtual void OnFireWeaponOnce();
 
 public:
 	AMainCharacter();
@@ -153,9 +156,6 @@ public:
 
 	bool CheckAlive() override;
 	void UpgradeWeaponDamage(float additionalDamage);
-	void OnFireWeapon();
-	void OnFireWeaponOnce();
-	void OnFireStop();
 	void OnReloadWeapon();
 	void OnInteract();
 	void OnSprint();

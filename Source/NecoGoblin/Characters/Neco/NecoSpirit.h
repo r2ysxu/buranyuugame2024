@@ -21,8 +21,8 @@ private:
 	void OnStopFlinching();
 
 protected:
-	AFirearmWeapon* Firearm;
 	bool IsFlinching = false;
+	AFirearmWeapon* Firearm;
 	
 	virtual void BeginPlay() override;
 	void SetupFirearmWeapon();

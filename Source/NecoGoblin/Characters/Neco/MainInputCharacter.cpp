@@ -93,6 +93,8 @@ void AMainInputCharacter::OnStartAim() {
 	Super::OnStartAim();
 	if (!HasAuthority()) {
 		Server_OnStartAim();
+	} else {
+		Multicast_OnStartAim();
 	}
 }
 
@@ -111,6 +113,16 @@ void AMainInputCharacter::OnStopAim() {
 	Super::OnStopAim();
 	if (!HasAuthority()) {
 		Server_OnStopAim();
+	} else {
+		Multicast_OnStopAim();
+	}
+}
+
+void AMainInputCharacter::OnFireWeaponOnce() {
+	if (!HasAuthority()) {
+		Server_OnFireWeaponOnce();
+	} else {
+		Multicast_OnFireWeaponOnce();
 	}
 }
 
@@ -128,4 +140,13 @@ void AMainInputCharacter::Multicast_OnStopAim_Implementation() {
 void AMainInputCharacter::Server_SetRotation_Implementation(FRotator Rotation, float Pitch) {
 	SetActorRotation(Rotation);
 	SetPlayerPitch(Pitch);
+}
+
+void AMainInputCharacter::Server_OnFireWeaponOnce_Implementation() {
+	Super::OnFireWeaponOnce();
+	Multicast_OnFireWeaponOnce();
+}
+
+void AMainInputCharacter::Multicast_OnFireWeaponOnce_Implementation() {
+	Super::OnFireWeaponOnce();
 }

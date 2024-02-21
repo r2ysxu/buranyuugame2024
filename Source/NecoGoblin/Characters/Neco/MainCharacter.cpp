@@ -182,14 +182,12 @@ void AMainCharacter::OnFireWeaponOnce() {
 	const float targetArmLength = GetCameraBoom()->TargetArmLength;
 	FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
 	FCollisionQueryParams collisionParams;
-	collisionParams.AddIgnoredActor(GetOwner());
+	collisionParams.AddIgnoredActor(this);
 
-	FHitResult result;
 	const FireType fireResponse = Firearm->OnFire(
 		camStart,
 		FollowCamera->GetForwardVector(),
 		collisionParams,
-		result,
 		upgradeComponent->GetFireRateModifier(),
 		upgradeComponent->GetWeaponDamageModifier(),
 		upgradeComponent->GetHeadshotModifier()

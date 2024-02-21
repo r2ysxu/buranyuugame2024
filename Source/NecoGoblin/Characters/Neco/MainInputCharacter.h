@@ -43,6 +43,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	UFUNCTION(Server, Reliable) void Server_SetupCharacters();
+	UFUNCTION(Server, Unreliable) void Server_SetRotation(FRotator Rotation, float Pitch);
 
 	virtual void OnStartAim() override;
 	UFUNCTION(Server, Reliable) void Server_OnStartAim();
@@ -52,7 +53,10 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_OnStopAim();
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnStopAim();
 
-	UFUNCTION(Server, Unreliable) void Server_SetRotation(FRotator Rotation, float Pitch);
+
+	virtual void OnFireWeaponOnce() override;
+	UFUNCTION(Server, Reliable) void Server_OnFireWeaponOnce();
+	UFUNCTION(NetMulticast, Reliable) void Multicast_OnFireWeaponOnce();
 
 public:
 	
