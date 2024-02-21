@@ -6,14 +6,11 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/InputComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/UserWidget.h"
@@ -67,11 +64,7 @@ AMainCharacter::AMainCharacter() {
 
 void AMainCharacter::BeginPlay() {
 	Super::BeginPlay();
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
 	GetMesh()->SetVisibility(false);
@@ -85,7 +78,7 @@ void AMainCharacter::BeginPlay() {
 void AMainCharacter::Tick(float DeltaSeconds) {
 	FVector2D recoilRate =  FMath::Vector2DInterpTo(FVector2D(), Recoil, DeltaSeconds, 5.f);
 	Recoil -= recoilRate;
-	Look(FInputActionValue(recoilRate));
+	//Look(FInputActionValue(recoilRate));
 }
 
 void AMainCharacter::SetupHuds() {
@@ -123,6 +116,10 @@ bool AMainCharacter::CheckAlive() {
 	return IsAlive;
 }
 
+void AMainCharacter::SetPlayerPitch(float Pitch) {
+	PlayerPitch = Pitch;
+}
+
 void AMainCharacter::OnCharacterShow() {
 	GetMesh()->SetVisibility(true);
 	if (Firearm) Firearm->SetVisible(true);
@@ -132,7 +129,8 @@ void AMainCharacter::OnCharacterStart() {
 	if (!IsCharacterStart) {
 		SetupHuds();
 		PlayBGMusic();
-		Cast<APlayerController>(GetController())->SetInputMode(FInputModeGameOnly());
+		APlayerController* controller = Cast<APlayerController>(GetController());
+		if (IsValid(controller)) controller->SetInputMode(FInputModeGameOnly());
 		IsCharacterStart = true;
 	}
 }
@@ -152,17 +150,6 @@ void AMainCharacter::OnStopAim() {
 		GetCameraBoom()->TargetArmLength += CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-}
-
-void AMainCharacter::OnStartAim() {
-	if (!IsAimMode && !IsSkillMenuOpen) {
-		IsAimMode = true;
-		if (IsSprinting) OnSprintStop();
-		GetCameraBoom()->SetRelativeLocation(FVector(0, 50, 50));
-		GetCameraBoom()->TargetArmLength -= CameraArmLengthOffset;
-		bUseControllerRotationYaw = IsAimMode;
-		CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
@@ -325,6 +312,17 @@ FFirearmStats AMainCharacter::GetFirearmStats() {
 	return (IsValid(Firearm)) ? *Firearm->GetStats() : FFirearmStats();
 }
 
+void AMainCharacter::OnStartAim() {
+	if (!IsAimMode && !IsSkillMenuOpen) {
+		IsAimMode = true;
+		if (IsSprinting) OnSprintStop();
+		GetCameraBoom()->SetRelativeLocation(FVector(0, 50, 50));
+		GetCameraBoom()->TargetArmLength -= CameraArmLengthOffset;
+		bUseControllerRotationYaw = IsAimMode;
+		CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
 void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 	if (!IsAlive) return;
 	Super::TakeHitDamage(damage, DamageCauser);
@@ -380,82 +378,4 @@ bool AMainCharacter::GetIsReloading() {
 
 bool AMainCharacter::GetIsFiringWeapon() {
 	return Firearm && Firearm->GetIsFiring();
-}
-
-//////////////////////////////////////////////////////////////////////////
-// Input
-
-void AMainCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-	
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
-
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
-
-		//Sprinting
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnSprint);
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainCharacter::OnSprintStop);
-
-		//Aiming
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnAimModeStart);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMainCharacter::OnAimModeStop);
-
-		//Fire
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnFireWeapon);
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainCharacter::OnFireStop);
-
-		//Reload
-		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnReloadWeapon);
-
-		//Interact
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnInteract);
-
-		//Info
-		EnhancedInputComponent->BindAction(InfoAction, ETriggerEvent::Completed, this, &AMainCharacter::OnShowSkills);
-
-		EnhancedInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &AMainCharacter::OnScrollAxis);
-	}
-}
-
-void AMainCharacter::Move(const FInputActionValue& Value) {
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr) {
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
-}
-
-void AMainCharacter::Look(const FInputActionValue& Value) {
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr) {
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-
-		FRotator playerRotation = (GetControlRotation() - GetActorRotation()).GetNormalized();
-		PlayerPitch = playerRotation.Pitch;
-	}
 }

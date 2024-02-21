@@ -17,51 +17,6 @@ UCLASS(config=Game)
 class AMainCharacter : public ANecoSpirit {
 	GENERATED_BODY()
 
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
-
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
-	
-	/** MappingContext */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* DefaultMappingContext;
-
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpAction;
-
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* MoveAction;
-
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* SprintAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* AimAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* FireAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* ReloadAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* InteractAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* InfoAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* ScrollAction;
-
 private:
 
 	const float CAMERA_SCROLL_SPEED = 5.f;
@@ -78,56 +33,19 @@ private:
 	float GameVolume = 1.f;
 	float MusicVolume = 1.f;
 
-	void OnStopAim();
-	void OnStartAim();
 	void OnBelowWaterLevel();
 	float GetMaxHealth();
 
 protected:
-
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-
-	bool IsToggleAim = false;
-	bool IsAutoReload = false;
-	bool IsCharacterStart = false;
-	bool IsSkillMenuOpen = false;
-	bool CanFillAmmo = false;
-	bool IsSprinting = false;
-	volatile bool IsAimMode = false;
-	FName SelectableWeaponKey = FName();
-	float PlayerPitch = 0.f;
-	FVector2D Recoil = FVector2D();
-	float Stamina = MAX_STAMINA;
-	FTimerHandle OnSprintHandler;
-	FTimerHandle OnSprintRegenHandler;
-	FTimerHandle OnFireWeaponHandler;
-	FTimerHandle BloodSplatterHandler;
-	FTimerHandle OnWaterLevelCheckHandler;
-	FTimerHandle OnHealthRegenHandler;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
-	class UAnimMontage* FlinchMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
-	class UAnimMontage* GetupMontage;
-
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	// To add mapping context
-	virtual void BeginPlay();
-	virtual void Tick(float DeltaSeconds) override;
-
-public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* DefaultMappingContext;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USpringArmComponent* CameraBoom;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FollowCamera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TSubclassOf<class AWeapon> FirearmWeaponClass;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
-	TSubclassOf<class ANecoSpirit> DeadbodyClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> CrosshairHudWidgetClass;
@@ -158,6 +76,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
 	USoundBase* HealthPickupVoice;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	class UAnimMontage* FlinchMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	class UAnimMontage* GetupMontage;
+
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	class UNiagaraSystem* BloodHitFX = nullptr;
 	class UNiagaraComponent* BloodSplatter = nullptr;
@@ -165,6 +89,33 @@ public:
 	UNecoCharacterStat* stats;
 	UUpgradeSkillComponent* upgradeComponent;
 
+	bool IsToggleAim = false;
+	bool IsAutoReload = false;
+	bool IsCharacterStart = false;
+	bool IsSkillMenuOpen = false;
+	bool CanFillAmmo = false;
+	bool IsSprinting = false;
+	volatile bool IsAimMode = false;
+	FName SelectableWeaponKey = FName();
+	float PlayerPitch = 0.f;
+	FVector2D Recoil = FVector2D();
+	float Stamina = MAX_STAMINA;
+	FTimerHandle OnSprintHandler;
+	FTimerHandle OnSprintRegenHandler;
+	FTimerHandle OnFireWeaponHandler;
+	FTimerHandle BloodSplatterHandler;
+	FTimerHandle OnWaterLevelCheckHandler;
+	FTimerHandle OnHealthRegenHandler;
+
+	virtual void BeginPlay();
+	virtual void Tick(float DeltaSeconds) override;
+
+	void OnAimModeStart();
+	void OnAimModeStop();
+	virtual void OnStopAim();
+	virtual void OnStartAim();
+
+public:
 	AMainCharacter();
 
 	UFUNCTION() void OnScrollAxis(const FInputActionValue& Value);
@@ -178,6 +129,7 @@ public:
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAutoReload() { return IsAutoReload; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE void SetIsAutoReload(bool isAutoReload) { IsAutoReload = isAutoReload; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
+	void SetPlayerPitch(float Pitch);
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsSkillMenuOpen() { return IsSkillMenuOpen; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE UNecoCharacterStat* GetStats() { return stats; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE UUpgradeSkillComponent* GetSkillUpgrades() { return upgradeComponent; }
@@ -201,8 +153,6 @@ public:
 
 	bool CheckAlive() override;
 	void UpgradeWeaponDamage(float additionalDamage);
-	void OnAimModeStart();
-	void OnAimModeStop();
 	void OnFireWeapon();
 	void OnFireWeaponOnce();
 	void OnFireStop();
