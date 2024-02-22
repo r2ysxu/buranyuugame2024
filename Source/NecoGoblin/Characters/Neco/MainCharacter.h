@@ -114,7 +114,7 @@ protected:
 	void OnAimModeStop();
 	void OnFireWeapon();
 	void OnFireStop();
-	FFireResponse FireWeapon(FVector MuzzleLocation, FVector Direction, OUT FHitResult& OutResult);
+	FFireResponse FireWeapon(FVector MuzzleLocation, FVector Direction);
 	virtual void OnStopAim();
 	virtual void OnStartAim();
 	virtual void OnFireWeaponOnce();

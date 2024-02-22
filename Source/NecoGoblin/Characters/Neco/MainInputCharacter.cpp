@@ -148,8 +148,7 @@ void AMainInputCharacter::OnFireWeaponOnce() {
 }
 
 void AMainInputCharacter::Server_OnFireWeaponOnce_Implementation(FVector MuzzleLocation, FVector Direction) {
-	FHitResult result;
-	FFireResponse fireResponse = FireWeapon(MuzzleLocation, Direction, OUT result);
+	FFireResponse fireResponse = FireWeapon(MuzzleLocation, Direction);
 	switch (fireResponse.Type) {
 		case EFireType::VE_NotFired: break;
 		case EFireType::VE_Hit: OnHitTarget(fireResponse.Target, fireResponse.ImpactPoint, fireResponse.bHeadshot);

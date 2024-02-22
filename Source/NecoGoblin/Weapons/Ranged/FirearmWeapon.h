@@ -93,8 +93,6 @@ class NECOGOBLIN_API AFirearmWeapon : public AWeapon {
 
 private:
 
-	FFireResponse FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier);
-
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	class UNiagaraSystem* BloodHitFX = nullptr;
@@ -148,6 +146,6 @@ public:
 	
 	bool IsWeaponFireable();
 	void PlayFireEffects();
-	FFireResponse OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
+	FFireResponse OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
 	FVector2D GenerateRecoil();
 };

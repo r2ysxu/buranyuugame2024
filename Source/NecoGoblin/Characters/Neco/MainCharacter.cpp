@@ -78,7 +78,7 @@ void AMainCharacter::BeginPlay() {
 void AMainCharacter::Tick(float DeltaSeconds) {
 	FVector2D recoilRate =  FMath::Vector2DInterpTo(FVector2D(), Recoil, DeltaSeconds, 5.f);
 	Recoil -= recoilRate;
-	//Look(FInputActionValue(recoilRate));
+	// Look(FInputActionValue(recoilRate));
 }
 
 void AMainCharacter::SetupHuds() {
@@ -178,14 +178,13 @@ void AMainCharacter::OnAimModeStop() {
 	}
 }
 
-FFireResponse AMainCharacter::FireWeapon(FVector MuzzleLocation, FVector Direction, OUT FHitResult& OutResult) {
+FFireResponse AMainCharacter::FireWeapon(FVector MuzzleLocation, FVector Direction) {
 	FCollisionQueryParams collisionParams;
 	collisionParams.AddIgnoredActor(this);
 	return Firearm->OnFire(
 		MuzzleLocation,
 		Direction,
 		collisionParams,
-		OutResult,
 		upgradeComponent->GetFireRateModifier(),
 		upgradeComponent->GetWeaponDamageModifier(),
 		upgradeComponent->GetHeadshotModifier()
@@ -195,18 +194,14 @@ FFireResponse AMainCharacter::FireWeapon(FVector MuzzleLocation, FVector Directi
 void AMainCharacter::OnFireWeaponOnce() {
 	FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
 
-	FHitResult result;
-	FFireResponse fireResponse = FireWeapon(camStart, FollowCamera->GetForwardVector(), result);
+	FFireResponse fireResponse = FireWeapon(camStart, FollowCamera->GetForwardVector());
 	switch(fireResponse.Type) {
 	case EFireType::VE_NotFired:
 		break;
+	case EFireType::VE_Hit:
+		OnHitTarget(fireResponse.Target, fireResponse.ImpactPoint, fireResponse.bHeadshot);
 	case EFireType::VE_Fired:
 		Recoil += Firearm->GenerateRecoil();
-		break;
-	case EFireType::VE_Hit:
-		if (AHumanoid* target = Cast<AHumanoid>(result.GetActor())) {
-			OnHitTarget(target, result.ImpactPoint, FString(TEXT("HeadBox")) == result.GetComponent()->GetName());
-		}
 		break;
 	case EFireType::VE_Killed: break;
 	}
