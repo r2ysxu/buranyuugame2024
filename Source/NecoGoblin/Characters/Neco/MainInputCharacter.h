@@ -55,9 +55,11 @@ protected:
 
 
 	virtual void OnFireWeaponOnce() override;
-	UFUNCTION(Server, Reliable) void Server_OnFireWeaponOnce();
-	UFUNCTION(NetMulticast, Reliable) void Multicast_OnFireWeaponOnce();
+	UFUNCTION(Server, Reliable) void Server_OnFireWeaponOnce(FVector StartLocation, FVector Direction);
+	UFUNCTION(NetMulticast, Reliable) void Multicast_OnFireWeaponOnceFired();
+
+	virtual void OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) override;
+	UFUNCTION(NetMulticast, Reliable) void Multicast_OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
 
 public:
-	
 };

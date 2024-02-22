@@ -8,6 +8,14 @@
 #include "Engine/DataTable.h"
 #include "FirearmWeapon.generated.h"
 
+UENUM(BlueprintType)
+enum class EFireType : uint8 {
+	VE_NotFired UMETA(DisplayName = "NotFired"),
+	VE_Fired	UMETA(DisplayName = "Fired"),
+	VE_Hit		UMETA(DisplayName = "Hit"),
+	VE_Killed   UMETA(Displayname = "Killed"),
+};
+
 USTRUCT(BlueprintType)
 struct FFirearmWeaponData : public FTableRowBase {
 	GENERATED_BODY()
@@ -55,12 +63,25 @@ struct FFirearmStats {
 	FString InfoText;
 };
 
-UENUM(BlueprintType)
-enum class FireType : uint8 {
-	VE_NotFired UMETA(DisplayName = "NotFired"),
-	VE_Fired	UMETA(DisplayName = "Fired"),
-	VE_Hit		UMETA(DisplayName = "Hit"),
-	VE_Killed   UMETA(Displayname = "Killed"),
+USTRUCT(BlueprintType)
+struct FFireResponse {
+	GENERATED_BODY()
+
+	EFireType Type;
+	bool bHeadshot;
+	FVector ImpactPoint;
+	class AHumanoid* Target;
+
+	FFireResponse() { Type = EFireType::VE_NotFired; }
+	FFireResponse(EFireType ResponseType) {
+		Type = ResponseType;
+	}
+	FFireResponse(EFireType ResponseType, bool IsHeadshot, class AHumanoid* HitTarget, FVector HitImpactPoint) {
+		Type = ResponseType;
+		bHeadshot = IsHeadshot;
+		Target = HitTarget;
+		ImpactPoint = HitImpactPoint;
+	}
 };
 
 /**
@@ -72,7 +93,7 @@ class NECOGOBLIN_API AFirearmWeapon : public AWeapon {
 
 private:
 
-	FireType FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier);
+	FFireResponse FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -82,6 +103,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	class UDataTable* WeaponDataTable = nullptr;
 	class USkeletalMeshComponent* WeaponMeshComponent;
+	class UNiagaraComponent* MuzzleFXComponent;
 	FFirearmWeaponData* WeaponData;
 	FTimerHandle InitiateFireHandler;
 	FTimerHandle InitiateReloadHandler;
@@ -124,6 +146,8 @@ public:
 	FORCEINLINE bool GetIsReloading() { return !WeaponReloaded; }
 	FORCEINLINE float GetGunVolume() { return GunVolume; }
 	
-	FireType OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
+	bool IsWeaponFireable();
+	void PlayFireEffects();
+	FFireResponse OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier = 1.f, float WeaponDamageModifier = 1.f, float HeadshotDmgModifier = 1.f);
 	FVector2D GenerateRecoil();
 };

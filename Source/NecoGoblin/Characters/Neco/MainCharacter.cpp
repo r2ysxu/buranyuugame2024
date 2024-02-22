@@ -178,28 +178,50 @@ void AMainCharacter::OnAimModeStop() {
 	}
 }
 
-void AMainCharacter::OnFireWeaponOnce() {
-	const float targetArmLength = GetCameraBoom()->TargetArmLength;
-	FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
+FFireResponse AMainCharacter::FireWeapon(FVector MuzzleLocation, FVector Direction, OUT FHitResult& OutResult) {
 	FCollisionQueryParams collisionParams;
 	collisionParams.AddIgnoredActor(this);
-
-	const FireType fireResponse = Firearm->OnFire(
-		camStart,
-		FollowCamera->GetForwardVector(),
+	return Firearm->OnFire(
+		MuzzleLocation,
+		Direction,
 		collisionParams,
+		OutResult,
 		upgradeComponent->GetFireRateModifier(),
 		upgradeComponent->GetWeaponDamageModifier(),
 		upgradeComponent->GetHeadshotModifier()
 	);
-	switch(fireResponse) {
-	case FireType::VE_Killed:
-		stats->IncrementKillCount();
-		upgradeComponent->AddExpPoints(POINTS_PER_KILL);
-	case FireType::VE_Fired:
+}
+
+void AMainCharacter::OnFireWeaponOnce() {
+	FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
+
+	FHitResult result;
+	FFireResponse fireResponse = FireWeapon(camStart, FollowCamera->GetForwardVector(), result);
+	switch(fireResponse.Type) {
+	case EFireType::VE_NotFired:
+		break;
+	case EFireType::VE_Fired:
 		Recoil += Firearm->GenerateRecoil();
 		break;
-	case FireType::VE_NotFired: break;
+	case EFireType::VE_Hit:
+		if (AHumanoid* target = Cast<AHumanoid>(result.GetActor())) {
+			OnHitTarget(target, result.ImpactPoint, FString(TEXT("HeadBox")) == result.GetComponent()->GetName());
+		}
+		break;
+	case EFireType::VE_Killed: break;
+	}
+}
+
+void AMainCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+	if (AHumanoid* targetActor = Cast<AHumanoid>(Target)) {
+		float finalDamage = Firearm->GetWeaponDamage() * upgradeComponent->GetWeaponDamageModifier();
+		if (IsHeadshot) finalDamage *= (2 + upgradeComponent->GetHeadshotModifier());
+		targetActor->TakeHitDamage(finalDamage, this);
+		if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, ImpactPoint);
+		if (!targetActor->CheckAlive()) {
+			stats->IncrementKillCount();
+			upgradeComponent->AddExpPoints(POINTS_PER_KILL);
+		}
 	}
 }
 
@@ -207,7 +229,7 @@ void AMainCharacter::OnFireWeapon() {
 	if (Firearm && IsAimMode && !IsSkillMenuOpen) {
 		OnFireWeaponOnce();
 		if (!Firearm->IsSemiAutomatic()) {
-			GetWorld()->GetTimerManager().SetTimer(OnFireWeaponHandler, this, &AMainCharacter::OnFireWeaponOnce, Firearm->GetFireRate(), true);
+			GetWorld()->GetTimerManager().SetTimer(OnFireWeaponHandler, this, &AMainCharacter::OnFireWeaponOnce, Firearm->GetFireRate() * upgradeComponent->GetFireRateModifier(), true);
 		}
 	}
 }

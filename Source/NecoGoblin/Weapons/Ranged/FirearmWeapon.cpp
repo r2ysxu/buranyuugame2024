@@ -15,18 +15,12 @@ const FName MUZZLE = FName("Muzzle");
 AFirearmWeapon::AFirearmWeapon() {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
-	class USceneComponent* sceneRoot = CreateDefaultSubobject<USceneComponent>("OneHandWeaponRoot");
-	SetRootComponent(sceneRoot);
+	SetRootComponent(CreateDefaultSubobject<USceneComponent>("OneHandWeaponRoot"));
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("FirearmWeaponMesh");
 	WeaponMeshComponent->SetupAttachment(GetRootComponent());
 	WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	
-	UBoxComponent* box = CreateDefaultSubobject<UBoxComponent>("Box");
-	box->SetBoxExtent(FVector(50.f, 50.f, 0));
-	box->SetupAttachment(GetRootComponent());
+	WeaponMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AFirearmWeapon::ChangeWeapon(FName WeaponKey) {
@@ -63,31 +57,21 @@ void AFirearmWeapon::WeaponReloadStop() {
 	ReserveAmmo -= reloadedAmmo;
 }
 
-FireType AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
-	if (!WeaponData) return FireType::VE_NotFired;
-	if (CurrentAmmoInMagazine > 0 && WeaponReloaded) {
-		FHitResult OutResult;
-		WeaponFireStart();
-		CurrentAmmoInMagazine--;
-		if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
-		if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), FRotator(), EAttachLocation::SnapToTargetIncludingScale, true);
-		if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation(), GunVolume);
-		FVector endLocation = startLocation + (forwardVector * MaxRange);
-		collisionParams.AddIgnoredActor(this);
-		if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
-			if (AHumanoid* targetActor = Cast<AHumanoid>(OutResult.GetActor())) {
-				float finalDamage = GetWeaponDamage() * WeaponDamageModifier;
-				if (FString(TEXT("HeadBox")) == OutResult.GetComponent()->GetName()) finalDamage *= (2 + HeadshotDmgModifier);
-				targetActor->TakeHitDamage(finalDamage, this);
-				if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, OutResult.ImpactPoint);
-				if (!targetActor->CheckAlive()) {
-					return FireType::VE_Killed;
-				}
-			}
+FFireResponse AFirearmWeapon::FireWeapon(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
+	if (!IsWeaponFireable()) return FFireResponse(EFireType::VE_NotFired);
+	WeaponFireStart();
+	CurrentAmmoInMagazine--;
+	// GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate * FireRateModifier, false);
+	FVector endLocation = startLocation + (forwardVector * MaxRange);
+	collisionParams.AddIgnoredActor(this);
+
+	DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Green, false, 3.f, 0U, 1.f);
+	if (GetWorld()->LineTraceSingleByChannel(OUT OutResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
+		if (AHumanoid* target = Cast<AHumanoid>(OutResult.GetActor())) {
+			return FFireResponse(EFireType::VE_Hit, FString(TEXT("HeadBox")) == OutResult.GetComponent()->GetName(), target, OutResult.ImpactPoint);
 		}
-		return FireType::VE_Fired;
 	}
-	return FireType::VE_NotFired;
+	return FFireResponse(EFireType::VE_Fired);
 }
 
 void AFirearmWeapon::EquipWeapon(FName SocketName) {
@@ -154,12 +138,18 @@ FFirearmStats* AFirearmWeapon::GetStats() {
 	return stats;
 }
 
-FireType AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
-	if (!IsFiring) {
-		GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate * FireRateModifier, false);
-		return FireWeapon(startLocation, forwardVector, collisionParams, FireRateModifier, WeaponDamageModifier, HeadshotDmgModifier);
-	}
-	return FireType::VE_NotFired;
+bool AFirearmWeapon::IsWeaponFireable() {
+	return WeaponData && CurrentAmmoInMagazine > 0 && WeaponReloaded; //&& !IsFiring;
+}
+
+void AFirearmWeapon::PlayFireEffects() {
+	if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), FRotator(), EAttachLocation::SnapToTargetIncludingScale, true);
+	if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation(), GunVolume);
+	//if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
+}
+
+FFireResponse AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, FHitResult& OutResult, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {
+	return FireWeapon(startLocation, forwardVector, collisionParams, OutResult, FireRateModifier, WeaponDamageModifier, HeadshotDmgModifier);
 }
 
 FVector2D AFirearmWeapon::GenerateRecoil() {

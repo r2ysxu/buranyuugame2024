@@ -114,9 +114,11 @@ protected:
 	void OnAimModeStop();
 	void OnFireWeapon();
 	void OnFireStop();
+	FFireResponse FireWeapon(FVector MuzzleLocation, FVector Direction, OUT FHitResult& OutResult);
 	virtual void OnStopAim();
 	virtual void OnStartAim();
 	virtual void OnFireWeaponOnce();
+	virtual void OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
 
 public:
 	AMainCharacter();
@@ -154,7 +156,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	bool CheckAlive() override;
 	void UpgradeWeaponDamage(float additionalDamage);
 	void OnReloadWeapon();
 	void OnInteract();
@@ -167,7 +168,8 @@ public:
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
 	int RefillAmmo(int AmmoAmount);
-	
+
+	virtual bool CheckAlive() override;
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
 	UFUNCTION(BlueprintCallable) void PlayGetupMontage();

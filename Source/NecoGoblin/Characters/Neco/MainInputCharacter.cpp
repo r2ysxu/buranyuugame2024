@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 void AMainInputCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -89,6 +91,11 @@ void AMainInputCharacter::Server_SetupCharacters_Implementation() {
 	OnCharacterShow();
 }
 
+void AMainInputCharacter::Server_SetRotation_Implementation(FRotator Rotation, float Pitch) {
+	SetActorRotation(Rotation);
+	SetPlayerPitch(Pitch);
+}
+
 void AMainInputCharacter::OnStartAim() {
 	Super::OnStartAim();
 	if (!HasAuthority()) {
@@ -118,14 +125,6 @@ void AMainInputCharacter::OnStopAim() {
 	}
 }
 
-void AMainInputCharacter::OnFireWeaponOnce() {
-	if (!HasAuthority()) {
-		Server_OnFireWeaponOnce();
-	} else {
-		Multicast_OnFireWeaponOnce();
-	}
-}
-
 void AMainInputCharacter::Server_OnStopAim_Implementation() {
 	if (IsAimMode) {
 		IsAimMode = false;
@@ -137,16 +136,40 @@ void AMainInputCharacter::Multicast_OnStopAim_Implementation() {
 	Server_OnStopAim_Implementation();
 }
 
-void AMainInputCharacter::Server_SetRotation_Implementation(FRotator Rotation, float Pitch) {
-	SetActorRotation(Rotation);
-	SetPlayerPitch(Pitch);
+void AMainInputCharacter::OnFireWeaponOnce() {
+	if (Firearm->IsWeaponFireable()) {
+		FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
+		if (!HasAuthority()) {
+			Server_OnFireWeaponOnce(camStart, FollowCamera->GetForwardVector());
+		} else {
+			Server_OnFireWeaponOnce_Implementation(camStart, FollowCamera->GetForwardVector());
+		}
+	}
 }
 
-void AMainInputCharacter::Server_OnFireWeaponOnce_Implementation() {
-	Super::OnFireWeaponOnce();
-	Multicast_OnFireWeaponOnce();
+void AMainInputCharacter::Server_OnFireWeaponOnce_Implementation(FVector MuzzleLocation, FVector Direction) {
+	FHitResult result;
+	FFireResponse fireResponse = FireWeapon(MuzzleLocation, Direction, OUT result);
+	switch (fireResponse.Type) {
+		case EFireType::VE_NotFired: break;
+		case EFireType::VE_Hit: OnHitTarget(fireResponse.Target, fireResponse.ImpactPoint, fireResponse.bHeadshot);
+		case EFireType::VE_Fired:
+			Firearm->PlayFireEffects();
+			Multicast_OnFireWeaponOnceFired();
+			Recoil += Firearm->GenerateRecoil();
+			break;
+		case EFireType::VE_Killed: break;
+	}
 }
 
-void AMainInputCharacter::Multicast_OnFireWeaponOnce_Implementation() {
-	Super::OnFireWeaponOnce();
+void AMainInputCharacter::Multicast_OnFireWeaponOnceFired_Implementation() {
+	Firearm->PlayFireEffects();
+}
+
+void AMainInputCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+	Multicast_OnHitTarget(Target, ImpactPoint, IsHeadshot);
+}
+
+void AMainInputCharacter::Multicast_OnHitTarget_Implementation(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+	Super::OnHitTarget(Target, ImpactPoint, IsHeadshot);
 }

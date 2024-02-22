@@ -38,7 +38,7 @@ public:
 	void IncreaseMaxHealth(float additionalHealth);
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAlive() { return IsAlive; }
 	virtual void OnDecompose();
-	virtual void TakeHitDamage(float damage, AActor* DamageCauser);
+	virtual void TakeHitDamage(float Damage, AActor* DamageCauser);
 	virtual bool CheckAlive();
 	virtual uint8 GetTeam() { return 0; }
 	virtual void OnHeadHit(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {}

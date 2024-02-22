@@ -43,6 +43,7 @@ void ANecoSpirit::SetupFirearmWeapon() {
 	Firearm = GetWorld()->SpawnActor<AFirearmWeapon>(GetFirearmWeaponClass(), weaponTransform, spawnParams);
 	if (Firearm) {
 		Firearm->AttachToWielder(this, FirearmSocketName);
+		Firearm->SetOwner(this);
 	}
 }
 
