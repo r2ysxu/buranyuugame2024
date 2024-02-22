@@ -78,7 +78,7 @@ void AMainCharacter::BeginPlay() {
 void AMainCharacter::Tick(float DeltaSeconds) {
 	FVector2D recoilRate =  FMath::Vector2DInterpTo(FVector2D(), Recoil, DeltaSeconds, 5.f);
 	Recoil -= recoilRate;
-	// Look(FInputActionValue(recoilRate));
+	Look(FInputActionValue(recoilRate));
 }
 
 void AMainCharacter::SetupHuds() {
@@ -191,21 +191,7 @@ FFireResponse AMainCharacter::FireWeapon(FVector MuzzleLocation, FVector Directi
 	);
 }
 
-void AMainCharacter::OnFireWeaponOnce() {
-	FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
-
-	FFireResponse fireResponse = FireWeapon(camStart, FollowCamera->GetForwardVector());
-	switch(fireResponse.Type) {
-	case EFireType::VE_NotFired:
-		break;
-	case EFireType::VE_Hit:
-		OnHitTarget(fireResponse.Target, fireResponse.ImpactPoint, fireResponse.bHeadshot);
-	case EFireType::VE_Fired:
-		Recoil += Firearm->GenerateRecoil();
-		break;
-	case EFireType::VE_Killed: break;
-	}
-}
+void AMainCharacter::OnFireWeaponOnce() {}
 
 void AMainCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
 	if (AHumanoid* targetActor = Cast<AHumanoid>(Target)) {

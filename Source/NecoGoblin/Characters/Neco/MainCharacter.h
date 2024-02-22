@@ -109,16 +109,18 @@ protected:
 
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void Look(const FInputActionValue& Value) {}
+	virtual void OnStopAim();
+	virtual void OnStartAim();
+	virtual void OnFireWeaponOnce();
+	virtual void OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
+	virtual void OnReloadWeapon();
 
 	void OnAimModeStart();
 	void OnAimModeStop();
 	void OnFireWeapon();
 	void OnFireStop();
 	FFireResponse FireWeapon(FVector MuzzleLocation, FVector Direction);
-	virtual void OnStopAim();
-	virtual void OnStartAim();
-	virtual void OnFireWeaponOnce();
-	virtual void OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
 
 public:
 	AMainCharacter();
@@ -157,7 +159,6 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	void UpgradeWeaponDamage(float additionalDamage);
-	void OnReloadWeapon();
 	void OnInteract();
 	void OnSprint();
 	void OnSprintStop();

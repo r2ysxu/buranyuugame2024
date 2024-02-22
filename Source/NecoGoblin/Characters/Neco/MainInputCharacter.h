@@ -40,7 +40,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value) override;
 
 	UFUNCTION(Server, Reliable) void Server_SetupCharacters();
 	UFUNCTION(Server, Unreliable) void Server_SetRotation(FRotator Rotation, float Pitch);
@@ -60,6 +60,9 @@ protected:
 
 	virtual void OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) override;
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
+
+	virtual void OnReloadWeapon() override;
+	UFUNCTION(Server, Reliable) void Server_OnReloadWeapon();
 
 public:
 };

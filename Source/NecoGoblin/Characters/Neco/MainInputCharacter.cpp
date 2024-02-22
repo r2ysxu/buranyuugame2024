@@ -169,6 +169,19 @@ void AMainInputCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bo
 	Multicast_OnHitTarget(Target, ImpactPoint, IsHeadshot);
 }
 
+void AMainInputCharacter::OnReloadWeapon() {
+	if (!HasAuthority()) {
+		Super::OnReloadWeapon();
+		Server_OnReloadWeapon();
+	} else {
+		Server_OnReloadWeapon_Implementation();
+	}
+}
+
+void AMainInputCharacter::Server_OnReloadWeapon_Implementation() {
+	Super::OnReloadWeapon();
+}
+
 void AMainInputCharacter::Multicast_OnHitTarget_Implementation(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
 	Super::OnHitTarget(Target, ImpactPoint, IsHeadshot);
 }
