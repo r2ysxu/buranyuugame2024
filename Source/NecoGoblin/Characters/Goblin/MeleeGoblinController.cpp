@@ -31,14 +31,13 @@ AMeleeGoblinController::AMeleeGoblinController() {
 void AMeleeGoblinController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
 	PossessedPawn = Cast<AMeleeGoblinCharacter>(InPawn);
-	PossessedPawn->SetAIController(this);
 	CurrentTarget = GetNecoSpiritByTag(GetWorld(), MainPlayer);
 	Theta = FMath::RandRange(-45.f, 45.f);
 	GetWorld()->GetTimerManager().SetTimer(MoveHandler, this, &AMeleeGoblinController::OnMoveToTarget, 0.1f, true);
 }
 
 void AMeleeGoblinController::OnMoveToTarget() {
-	if (GetIsAttacking()) {
+	if (PossessedPawn->GetIsAttacking()) {
 	} else if (CurrentTarget && CurrentTarget->GetIsAlive()) {
 		PossessedPawn->LookAtTarget(FindTargetHeadRotation());
 		float distance = CurrentTarget->GetDistanceTo(PossessedPawn);

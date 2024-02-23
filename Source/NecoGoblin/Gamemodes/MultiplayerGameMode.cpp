@@ -6,6 +6,8 @@
 #include "../Characters/Neco/MainCharacter.h"
 #include "../Widgets/HUDs/RoundHUD.h"
 #include "../Controllers/MainPlayerController.h"
+#include "../Spawners/GoblinSpawner.h"
+
 #include "Kismet/GameplayStatics.h"
 
 AMultiplayerGameMode::AMultiplayerGameMode() {
@@ -32,4 +34,22 @@ void AMultiplayerGameMode::StartPlay() {
 		GameOverWidget->AddToViewport();
 		GameOverWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+void AMultiplayerGameMode::StartSpawning() {
+	Super::StartSpawning();
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("StartSpawning"));
+	GetWorldTimerManager().SetTimer(SpawnerHandler, this, &AMultiplayerGameMode::SpawnEnemy, 1.0, true);
+}
+
+void AMultiplayerGameMode::SpawnEnemy() {
+	if (TotalEnemySpawned >= MAX_ENEMY) return;
+	if (FMath::RandBool()) {
+		Spawners[CurrentSpawnerIndex]->SpawnEnemyType((uint8) ESpawnEnemyType::VE_Melee);
+		MeleeEnemySpawned++;
+	} else {
+		Spawners[CurrentSpawnerIndex]->SpawnEnemyType((uint8)ESpawnEnemyType::VE_Range);
+		RangeEnemySpawned++;
+	}
+	CurrentSpawnerIndex = (CurrentSpawnerIndex + 1) % TotalSpawners;
 }

@@ -26,14 +26,11 @@ protected:
 	FTimerHandle MoveHandler;
 	ANecoSpirit* CurrentTarget;
 	class AMeleeGoblinCharacter* PossessedPawn;
-	volatile bool IsAttacking = false;
 
 public:
 	AMeleeGoblinController();
 	virtual void OnPossess(APawn* InPawn) override;
 
-	FORCEINLINE bool GetIsAttacking() { return IsAttacking; }
-	FORCEINLINE void SetIsAttacking(bool isAttacking) { IsAttacking = isAttacking; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE FRotator FindTargetHeadRotation();
 
 	void OnMoveToTarget();

@@ -75,10 +75,10 @@ void AMeleeGoblinCharacter::SetRunSpeed(float MovementSpeedModifier) {
 
 void AMeleeGoblinCharacter::InitiateMeleeAttack() {
 	if (!GetIsAlive()) {
-		GetAIMeleeController()->SetIsAttacking(false);
+		SetIsAttacking(false);
 		GetWorld()->GetTimerManager().ClearTimer(InitateAttackHandler);
-	} else if (MeleeAttackMontage && !GetAIMeleeController()->GetIsAttacking()) {
-		GetAIMeleeController()->SetIsAttacking(true);
+	} else if (MeleeAttackMontage && !GetIsAttacking()) {
+		SetIsAttacking(true);
 		if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(true);
 		float animationDelay = PlayAnimMontage(MeleeAttackMontage);
 		GetWorld()->GetTimerManager().SetTimer(OnMeleeAttackHandler, this, &AMeleeGoblinCharacter::OnAttackStop, animationDelay, false);
@@ -86,7 +86,7 @@ void AMeleeGoblinCharacter::InitiateMeleeAttack() {
 }
 
 void AMeleeGoblinCharacter::OnAttackStop() {
-	GetAIMeleeController()->SetIsAttacking(false);
+	SetIsAttacking(false);
 	if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
 }
 
@@ -98,7 +98,7 @@ bool AMeleeGoblinCharacter::CheckAlive() {
 	if (Super::CheckAlive()) {
 		if (MeleeAttackMontage) StopAnimMontage(MeleeAttackMontage);
 		if (MeleeWeapon) MeleeWeapon->SetIsMeleeAttacking(false);
-		GetAIMeleeController()->SetIsAttacking(false);
+		SetIsAttacking(false);
 		return true;
 	}
 	return false;

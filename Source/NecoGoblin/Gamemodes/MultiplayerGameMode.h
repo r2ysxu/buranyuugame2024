@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "GoblinGameMode.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "MultiplayerGameMode.generated.h"
@@ -10,21 +12,16 @@
  * 
  */
 UCLASS()
-class NECOGOBLIN_API AMultiplayerGameMode : public AGameModeBase {
+class NECOGOBLIN_API AMultiplayerGameMode : public AGoblinGameMode {
 	GENERATED_BODY()
 
 protected:
-	FTimerHandle NextRoundHandler;
-	FTimerHandle RestartHandler;
+	FTimerHandle SpawnerHandler;
+	int32 CurrentSpawnerIndex = 0;
+	int32 TotalEnemySpawned = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class URoundHUD> RoundHudWidgetClass;
-	URoundHUD* RoundHudWidget;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UUserWidget> GameOverWidgetClass;
-	UUserWidget* GameOverWidget;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
-	USoundBase* NextRoundVoice;
+	virtual void StartSpawning() override;
+	void SpawnEnemy();
 	
 public:
 	AMultiplayerGameMode();

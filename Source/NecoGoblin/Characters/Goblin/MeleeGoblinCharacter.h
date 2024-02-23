@@ -32,16 +32,14 @@ public:
 	AMeleeGoblinCharacter();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		TSubclassOf<class AWeapon> MeleeWeaponClass;
+	TSubclassOf<class AWeapon> MeleeWeaponClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		class UBoxComponent* MeleeDetectionBox;
+	class UBoxComponent* MeleeDetectionBox;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		class UAnimMontage* MeleeAttackMontage;
+	class UAnimMontage* MeleeAttackMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-		FName WeaponSocketName = FName("weapon_r");
+	FName WeaponSocketName = FName("weapon_r");
 
-	FORCEINLINE AMeleeGoblinController* GetAIMeleeController() { return AiController; }
-	FORCEINLINE void SetAIController(AMeleeGoblinController* controller) { AiController = controller; }
 	void LookAtTarget(FRotator Rotation);
 
 	UFUNCTION()

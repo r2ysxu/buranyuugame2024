@@ -15,7 +15,8 @@ class NECOGOBLIN_API AGoblin : public AHumanoid {
 
 protected:
 	float AttackDelay = 1.2f;
-	class ANecoGoblinGameMode* GameMode;
+	class AGoblinGameMode* GameMode;
+	volatile bool IsAttacking = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
 	int32 HealthPickupSpawnRate = 5;
@@ -30,6 +31,8 @@ public:
 	AGoblin();
 
 	FORCEINLINE uint8 GetTeam() { return 2; };
+	FORCEINLINE bool GetIsAttacking() { return IsAttacking; }
+	FORCEINLINE void SetIsAttacking(bool isAttacking) { IsAttacking = isAttacking; }
 	virtual bool CheckAlive() override;
 	virtual void SetRunSpeed(float MovementSpeedModiifer);
 

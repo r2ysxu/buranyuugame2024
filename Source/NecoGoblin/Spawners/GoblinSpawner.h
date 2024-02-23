@@ -7,14 +7,18 @@
 #include "../Characters/Goblin/Goblin.h"
 #include "GoblinSpawner.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpawnEnemyType : uint8 {
+	VE_Melee,
+	VE_Range,
+};
+
 UCLASS()
 class NECOGOBLIN_API AGoblinSpawner : public AActor {
 	GENERATED_BODY()
 
 private:
 	class ANecoGoblinGameMode* GameMode;
-
-	bool SpawnEnemyType(uint8 Type);
 
 protected:
 	float MovementSpeedModifier = 1.f;
@@ -34,5 +38,6 @@ public:
 	AGoblinSpawner();
 
 	void SpawnEnemy();
+	bool SpawnEnemyType(uint8 Type);
 	void ChangeSpawnInfo(float EnemySpawnRate, float EnemyMovementSpeedMod);
 };
