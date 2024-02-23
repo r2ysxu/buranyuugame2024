@@ -198,7 +198,7 @@ void AMainCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool Is
 		float finalDamage = Firearm->GetWeaponDamage() * upgradeComponent->GetWeaponDamageModifier();
 		if (IsHeadshot) finalDamage *= (2 + upgradeComponent->GetHeadshotModifier());
 		targetActor->TakeHitDamage(finalDamage, this);
-		if (BloodHitFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodHitFX, ImpactPoint);
+		if (BloodShotFX) UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodShotFX, ImpactPoint);
 		if (!targetActor->CheckAlive()) {
 			stats->IncrementKillCount();
 			upgradeComponent->AddExpPoints(POINTS_PER_KILL);

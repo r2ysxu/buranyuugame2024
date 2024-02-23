@@ -169,6 +169,10 @@ void AMainInputCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bo
 	Multicast_OnHitTarget(Target, ImpactPoint, IsHeadshot);
 }
 
+void AMainInputCharacter::Multicast_OnHitTarget_Implementation(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+	Super::OnHitTarget(Target, ImpactPoint, IsHeadshot);
+}
+
 void AMainInputCharacter::OnReloadWeapon() {
 	if (!HasAuthority()) {
 		Super::OnReloadWeapon();
@@ -182,6 +186,36 @@ void AMainInputCharacter::Server_OnReloadWeapon_Implementation() {
 	Super::OnReloadWeapon();
 }
 
-void AMainInputCharacter::Multicast_OnHitTarget_Implementation(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
-	Super::OnHitTarget(Target, ImpactPoint, IsHeadshot);
+void AMainInputCharacter::OnSprint() {
+	if (!HasAuthority()) {
+		Server_OnSprint();
+	} else {
+		Server_OnSprint_Implementation();
+	}
+}
+
+void AMainInputCharacter::Server_OnSprint_Implementation() {
+	Super::OnSprint();
+	Multicast_OnSprint();
+}
+
+void AMainInputCharacter::Multicast_OnSprint_Implementation() {
+	Super::OnSprint();
+}
+
+void AMainInputCharacter::OnSprintStop() {
+	if (!HasAuthority()) {
+		Server_OnSprintStop();
+	} else {
+		Server_OnSprintStop_Implementation();
+	}
+}
+
+void AMainInputCharacter::Server_OnSprintStop_Implementation() {
+	Super::OnSprintStop();
+	Multicast_OnSprintStop();
+}
+
+void AMainInputCharacter::Multicast_OnSprintStop_Implementation() {
+	Super::OnSprintStop();
 }

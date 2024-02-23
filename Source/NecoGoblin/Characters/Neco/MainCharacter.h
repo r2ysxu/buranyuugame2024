@@ -84,6 +84,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	class UNiagaraSystem* BloodHitFX = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	class UNiagaraSystem* BloodShotFX = nullptr;
 	class UNiagaraComponent* BloodSplatter = nullptr;
 
 	UNecoCharacterStat* stats;
@@ -115,6 +117,9 @@ protected:
 	virtual void OnFireWeaponOnce();
 	virtual void OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
 	virtual void OnReloadWeapon();
+	virtual void OnSprint();
+	virtual void OnSprintStop();
+	virtual void OnRemoveBloodSplatter();
 
 	void OnAimModeStart();
 	void OnAimModeStop();
@@ -160,8 +165,6 @@ public:
 
 	void UpgradeWeaponDamage(float additionalDamage);
 	void OnInteract();
-	void OnSprint();
-	void OnSprintStop();
 	void OnHealthRegen();
 	void SetChangableWeapon(FName WeaponKey);
 	void StaminaRegen();
@@ -178,6 +181,4 @@ public:
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
-
-	void OnRemoveBloodSplatter();
 };
