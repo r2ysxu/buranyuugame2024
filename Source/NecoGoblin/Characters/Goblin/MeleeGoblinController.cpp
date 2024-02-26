@@ -18,6 +18,7 @@
 ANecoSpirit* AMeleeGoblinController::GetClosestNecoSpiritByTag(const UObject* WorldContextObject, FName tagName) {
 	TArray<AActor*> mainPlayers;
 	UGameplayStatics::GetAllActorsWithTag(WorldContextObject, tagName, mainPlayers);
+	if (mainPlayers.IsEmpty()) return nullptr;
 
 	int minIndex = 0;
 	float minDistance = FLT_MAX;

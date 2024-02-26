@@ -22,13 +22,19 @@ void AGoblin::BeginPlay() {
 	GameMode = Cast<AGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
+void AGoblin::Multicast_SpawnHealthPot_Implementation(FVector Location) {
+	FTransform transform;
+	transform.SetLocation(Location);
+	AHealthPickup* healthPickup = GetWorld()->SpawnActor<AHealthPickup>(HealthPickupClass, transform);
+}
+
 bool AGoblin::CheckAlive() {
 	if (CurrentHealth <= 0) {
 		if (HasAuthority()) {
 			Cast<AGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->DecrementEnemy();
 			if (FMath::RandRange(0, 100) <= HealthPickupSpawnRate) {
-				AHealthPickup* healthPickup = GetWorld()->SpawnActor<AHealthPickup>(HealthPickupClass);
-				healthPickup->SetActorLocation(GetActorLocation());
+				Multicast_SpawnHealthPot_Implementation(GetActorLocation());
+				Multicast_SpawnHealthPot(GetActorLocation());
 			}
 		}
 	}

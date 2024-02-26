@@ -27,6 +27,8 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION(NetMulticast, Reliable) void Multicast_SpawnHealthPot(FVector Location);
+
 public:
 	AGoblin();
 
