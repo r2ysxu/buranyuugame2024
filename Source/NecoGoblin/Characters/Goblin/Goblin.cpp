@@ -24,10 +24,12 @@ void AGoblin::BeginPlay() {
 
 bool AGoblin::CheckAlive() {
 	if (CurrentHealth <= 0) {
-		if (HasAuthority())	Cast<AGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->DecrementEnemy();
-		if (FMath::RandRange(0, 100) <= HealthPickupSpawnRate) {
-			AHealthPickup* healthPickup = GetWorld()->SpawnActor<AHealthPickup>(HealthPickupClass);
-			healthPickup->SetActorLocation(GetActorLocation());
+		if (HasAuthority()) {
+			Cast<AGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->DecrementEnemy();
+			if (FMath::RandRange(0, 100) <= HealthPickupSpawnRate) {
+				AHealthPickup* healthPickup = GetWorld()->SpawnActor<AHealthPickup>(HealthPickupClass);
+				healthPickup->SetActorLocation(GetActorLocation());
+			}
 		}
 	}
 	if (!Super::CheckAlive()) {

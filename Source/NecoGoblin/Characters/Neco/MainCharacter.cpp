@@ -99,6 +99,7 @@ bool AMainCharacter::CheckAlive() {
 	if (!IsAlive) return false;
 	if (CurrentHealth <= 0) {
 		IsAlive = false;
+		Tags.Remove(FName("MainPlayer"));
 		if (HudWidget)	HudWidget->RemoveFromParent();
 		if (SkillHudWidget) SkillHudWidget->RemoveFromParent();
 		if (CrosshairHudWidget) CrosshairHudWidget->RemoveFromParent();

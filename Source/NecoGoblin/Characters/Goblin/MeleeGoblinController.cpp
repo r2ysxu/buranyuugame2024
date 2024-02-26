@@ -15,13 +15,20 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
-ANecoSpirit* AMeleeGoblinController::GetNecoSpiritByTag(const UObject* WorldContextObject, FName tagName) {
+ANecoSpirit* AMeleeGoblinController::GetClosestNecoSpiritByTag(const UObject* WorldContextObject, FName tagName) {
 	TArray<AActor*> mainPlayers;
 	UGameplayStatics::GetAllActorsWithTag(WorldContextObject, tagName, mainPlayers);
-	if (mainPlayers.Num() > 0) {
-		return Cast<ANecoSpirit>(mainPlayers[0]);
+
+	int minIndex = 0;
+	float minDistance = FLT_MAX;
+	for (int i = 0; i < mainPlayers.Num(); i++) {
+		float distance = PossessedPawn->GetDistanceTo(mainPlayers[i]);
+		if (minDistance > distance) {
+			minIndex = i;
+			minDistance = distance;
+		}
 	}
-	return nullptr;
+	return Cast<ANecoSpirit>(mainPlayers[minIndex]);
 }
 
 AMeleeGoblinController::AMeleeGoblinController() {
@@ -31,12 +38,14 @@ AMeleeGoblinController::AMeleeGoblinController() {
 void AMeleeGoblinController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
 	PossessedPawn = Cast<AMeleeGoblinCharacter>(InPawn);
-	CurrentTarget = GetNecoSpiritByTag(GetWorld(), MainPlayer);
+	CurrentTarget = GetClosestNecoSpiritByTag(GetWorld(), MainPlayer);
 	Theta = FMath::RandRange(-45.f, 45.f);
+
 	GetWorld()->GetTimerManager().SetTimer(MoveHandler, this, &AMeleeGoblinController::OnMoveToTarget, 0.1f, true);
 }
 
 void AMeleeGoblinController::OnMoveToTarget() {
+	CurrentTarget = GetClosestNecoSpiritByTag(GetWorld(), MainPlayer);
 	if (PossessedPawn->GetIsAttacking()) {
 	} else if (CurrentTarget && CurrentTarget->GetIsAlive()) {
 		PossessedPawn->LookAtTarget(FindTargetHeadRotation());
@@ -47,8 +56,6 @@ void AMeleeGoblinController::OnMoveToTarget() {
 			FVector offset = FVector(TargetHomingRadius * FMath::Cos(thetaByDistance), TargetHomingRadius * FMath::Sin(thetaByDistance), 0.f);
 			MoveToLocation(actorLocation - offset);
 		} else MoveToActor(CurrentTarget);
-	} else {
-		CurrentTarget = GetNecoSpiritByTag(GetWorld(), MainPlayer);
 	}
 }
 

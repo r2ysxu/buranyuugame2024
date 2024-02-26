@@ -46,11 +46,22 @@ void AMeleeGoblinCharacter::BeginPlay() {
 }
 
 void AMeleeGoblinCharacter::LookAtTarget(FRotator Rotation) {
+	if (HasAuthority()) {
+		Multicast_LookAtTarget(Rotation);
+	}
+	LookAtTarget_Implementation(Rotation);
+}
+
+void AMeleeGoblinCharacter::LookAtTarget_Implementation(FRotator Rotation) {
 	HeadRotation = FRotator(
 		0.f, // Roll
 		Rotation.Yaw - GetActorRotation().Yaw,
 		GetActorRotation().Pitch - Rotation.Pitch + 90.f // Pitch
 	);
+}
+
+void AMeleeGoblinCharacter::Multicast_LookAtTarget_Implementation(FRotator Rotation) {
+	LookAtTarget_Implementation(Rotation);
 }
 
 void AMeleeGoblinCharacter::OnWithinMeleeAttackRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

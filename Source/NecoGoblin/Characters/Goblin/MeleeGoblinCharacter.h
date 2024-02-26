@@ -26,6 +26,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void SetupWeapon();
+	void LookAtTarget_Implementation(FRotator Rotation);
 
 public:
 	// Sets default values for this character's properties
@@ -41,6 +42,7 @@ public:
 	FName WeaponSocketName = FName("weapon_r");
 
 	void LookAtTarget(FRotator Rotation);
+	UFUNCTION(NetMulticast, Reliable) void Multicast_LookAtTarget(FRotator Rotation);
 
 	UFUNCTION()
 	void OnWithinMeleeAttackRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -54,4 +56,5 @@ public:
 	void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	bool CheckAlive() override;
 	void OnDecompose() override;
+
 };
