@@ -39,7 +39,6 @@ AMeleeGoblinController::AMeleeGoblinController() {
 void AMeleeGoblinController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
 	PossessedPawn = Cast<AMeleeGoblinCharacter>(InPawn);
-	CurrentTarget = GetClosestNecoSpiritByTag(GetWorld(), MainPlayer);
 	Theta = FMath::RandRange(-45.f, 45.f);
 
 	GetWorld()->GetTimerManager().SetTimer(MoveHandler, this, &AMeleeGoblinController::OnMoveToTarget, 0.1f, true);

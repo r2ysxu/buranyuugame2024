@@ -45,10 +45,11 @@ void AMultiplayerGameMode::StartSpawning() {
 void AMultiplayerGameMode::SpawnEnemy() {
 	if (TotalEnemySpawned >= MAX_ENEMY) return;
 	if (FMath::RandBool()) {
-		Spawners[CurrentSpawnerIndex]->SpawnEnemyType((uint8) ESpawnEnemyType::VE_Melee);
+		Spawners[CurrentSpawnerIndex]->SpawnEnemyType(ESpawnEnemyType::VE_Melee);
 		MeleeEnemySpawned++;
 	} else {
-		Spawners[CurrentSpawnerIndex]->SpawnEnemyType((uint8)ESpawnEnemyType::VE_Range);
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Spawn Ranger"));
+		Spawners[CurrentSpawnerIndex]->SpawnEnemyType(ESpawnEnemyType::VE_Range);
 		RangeEnemySpawned++;
 	}
 	CurrentSpawnerIndex = (CurrentSpawnerIndex + 1) % TotalSpawners;

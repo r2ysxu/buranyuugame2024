@@ -22,8 +22,10 @@ private:
 	FTimerHandle AttackResetHandler;
 	bool IsAttackCooldown = false;
 
+	void LookAtTarget_Implementation(FVector Targetlocation);
+	void InitiateRangeAttack_Implementation(FVector OutTossVelocity);
+
 protected:
-	class ARangeGoblinController* AiController;
 	class AThrownWeapon* Weapon;
 	float AttackCooldownRate = 2.f;
 
@@ -42,12 +44,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		float TossVelocity = 2000.f;
 
-	FORCEINLINE class ARangeGoblinController* GetAIController() { return AiController; }
-	FORCEINLINE void SetAIController(class ARangeGoblinController* controller) { AiController = controller; }
+	void LookAtTarget(FVector Targetlocation);
+	UFUNCTION(NetMulticast, Reliable) void Multicast_LookAtTarget(FVector Targetlocation);
+	void InitiateRangeAttack(FVector OutTossVelocity);
+	UFUNCTION(NetMulticast, Reliable) void Multicast_InitiateRangeAttack(FVector OutTossVelocity);
 
 	void SetRunSpeed(float MovementSpeedModifier) override;
 	bool CheckRangeAttack(ANecoSpirit* TargetCharacter, FVector& OutTossVelocity);
-	void InitiateRangeAttack(FVector& OutTossVelocity);
 	void TrackTargetStopMovement(ANecoSpirit* TargetCharacter);
 	void OnAttackReset();
 	void OnAttackCooldownReset();

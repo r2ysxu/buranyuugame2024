@@ -34,11 +34,11 @@ void AGoblinSpawner::BeginPlay() {
 void AGoblinSpawner::SpawnEnemy() {
 	if (GameMode) {
 		if (FMath::RandBool() && GameMode->IncrementRangeEnemy()) {
-			if (!SpawnEnemyType(2)) GameMode->DecrementEnemy();
+			if (!SpawnEnemyType(ESpawnEnemyType::VE_Range)) GameMode->DecrementEnemy();
 		} else if (GameMode->IncrementMeleeEnemy()) {
-			if (!SpawnEnemyType(1)) GameMode->DecrementEnemy();
+			if (!SpawnEnemyType(ESpawnEnemyType::VE_Melee)) GameMode->DecrementEnemy();
 		} else if (GameMode->IncrementRangeEnemy()) {
-			if (SpawnEnemyType(2)) GameMode->DecrementEnemy();
+			if (SpawnEnemyType(ESpawnEnemyType::VE_Range)) GameMode->DecrementEnemy();
 		}
 		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnEnemy, SpawnRate, false);
 	}
@@ -49,18 +49,18 @@ void AGoblinSpawner::ChangeSpawnInfo(float EnemySpawnRate, float EnemyMovementSp
 	SpawnRate = EnemySpawnRate;
 }
 
-bool AGoblinSpawner::SpawnEnemyType(uint8 Type) {
+bool AGoblinSpawner::SpawnEnemyType(ESpawnEnemyType Type) {
 	FTransform goblinTransform;
 	goblinTransform.SetLocation(GetActorLocation());
 	goblinTransform.SetRotation(FQuat(FRotator::ZeroRotator));
 
-	if (Type == 1) {
+	if (Type == ESpawnEnemyType::VE_Melee) {
 		AMeleeGoblinCharacter* goblin = GetWorld()->SpawnActor<AMeleeGoblinCharacter>(MeleeGoblinClass, goblinTransform);
 		if (IsValid(goblin)) {
 			goblin->SetRunSpeed(MovementSpeedModifier);
 			return true;
 		} else return false;
-	} else if (Type == 2) {
+	} else if (Type == ESpawnEnemyType::VE_Range) {
 		ARangeGoblinCharacter* goblin = GetWorld()->SpawnActor<ARangeGoblinCharacter>(RangeGoblinClass, goblinTransform);
 		return IsValid(goblin);
 	}

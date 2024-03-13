@@ -35,14 +35,30 @@ ARangeGoblinCharacter::ARangeGoblinCharacter() {
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void ARangeGoblinCharacter::LookAtTarget(FVector TargetLocation) {
+	if (HasAuthority()) {
+		Multicast_LookAtTarget(TargetLocation);
+	}
+	LookAtTarget_Implementation(TargetLocation);
+}
+
+void ARangeGoblinCharacter::LookAtTarget_Implementation(FVector TargetLocation) {
+	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetLocation);
+	SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
+}
+
+void ARangeGoblinCharacter::Multicast_LookAtTarget_Implementation(FVector TargetLocation) {
+	LookAtTarget_Implementation(TargetLocation);
+}
+
 void ARangeGoblinCharacter::SetRunSpeed(float MovementSpeedModifier) {
 	GetCharacterMovement()->MaxWalkSpeed = FMath::Min(350.f + MovementSpeedModifier, 600.f);
 }
 
 bool ARangeGoblinCharacter::CheckRangeAttack(ANecoSpirit* TargetCharacter, FVector& OutTossVelocity) {
 	if (!IsValid(Weapon) || IsAttackCooldown) return false;
-	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetActorLocation());
-	SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
+	//FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetActorLocation());
+	//SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
 
 	TArray<AActor*> ignores = { this, TargetCharacter };
 	return UGameplayStatics::SuggestProjectileVelocity(
@@ -61,15 +77,26 @@ bool ARangeGoblinCharacter::CheckRangeAttack(ANecoSpirit* TargetCharacter, FVect
 	);
 }
 
-void ARangeGoblinCharacter::InitiateRangeAttack(FVector& OutTossVelocity) {
+void ARangeGoblinCharacter::InitiateRangeAttack_Implementation(FVector OutTossVelocity) {
 	if (RangeAttackMontage && IsAlive && IsValid(Weapon) && !IsAttackCooldown) {
 		float animationDelay = PlayAnimMontage(RangeAttackMontage, 1.f) + 0.2f;
 		GetWorld()->GetTimerManager().SetTimer(AttackResetHandler, this, &ARangeGoblinCharacter::OnAttackReset, animationDelay, false);
-		GetAIController()->SetIsAttacking(true);
+		SetIsAttacking(true);
 		Weapon->OnFire(OutTossVelocity, animationDelay - 0.5f);
 		Weapon = nullptr;
 		IsAttackCooldown = true;
 	}
+}
+
+void ARangeGoblinCharacter::InitiateRangeAttack(FVector OutTossVelocity) {
+	if (HasAuthority()) {
+		Multicast_InitiateRangeAttack(OutTossVelocity);
+	}
+	InitiateRangeAttack_Implementation(OutTossVelocity);
+}
+
+void ARangeGoblinCharacter::Multicast_InitiateRangeAttack_Implementation(FVector OutTossVelocity) {
+	InitiateRangeAttack_Implementation(OutTossVelocity);
 }
 
 void ARangeGoblinCharacter::TrackTargetStopMovement(ANecoSpirit* TargetCharacter) {
@@ -78,7 +105,7 @@ void ARangeGoblinCharacter::TrackTargetStopMovement(ANecoSpirit* TargetCharacter
 }
 
 void ARangeGoblinCharacter::OnAttackReset() {
-	GetAIController()->SetIsAttacking(false);
+	SetIsAttacking(false);
 	SetupWeapon();
 	GetWorld()->GetTimerManager().SetTimer(AttackResetHandler, this, &ARangeGoblinCharacter::OnAttackCooldownReset, AttackCooldownRate, false);
 }
@@ -90,7 +117,7 @@ void ARangeGoblinCharacter::OnAttackCooldownReset() {
 bool ARangeGoblinCharacter::CheckAlive() {
 	if (Super::CheckAlive()) {
 		if (RangeAttackMontage) StopAnimMontage(RangeAttackMontage);
-		GetAIController()->SetIsAttacking(false);
+		SetIsAttacking(false);
 		return true;
 	}
 	return false;

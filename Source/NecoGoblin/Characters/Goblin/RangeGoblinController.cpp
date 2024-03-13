@@ -7,13 +7,21 @@
 
 #include "Kismet/GameplayStatics.h"
 
-ANecoSpirit* ARangeGoblinController::GetNecoSpiritByTag(const UObject* WorldContextObject, FName tagName) {
+ANecoSpirit* ARangeGoblinController::GetClosestNecoSpiritByTag(const UObject* WorldContextObject, FName tagName) {
 	TArray<AActor*> mainPlayers;
 	UGameplayStatics::GetAllActorsWithTag(WorldContextObject, tagName, mainPlayers);
-	if (mainPlayers.Num() > 0) {
-		return Cast<ANecoSpirit>(mainPlayers[0]);
+	if (mainPlayers.IsEmpty()) return nullptr;
+
+	int minIndex = 0;
+	float minDistance = FLT_MAX;
+	for (int i = 0; i < mainPlayers.Num(); i++) {
+		float distance = PossessedPawn->GetDistanceTo(mainPlayers[i]);
+		if (minDistance > distance) {
+			minIndex = i;
+			minDistance = distance;
+		}
 	}
-	return nullptr;
+	return Cast<ANecoSpirit>(mainPlayers[minIndex]);
 }
 
 ARangeGoblinController::ARangeGoblinController() {
@@ -22,16 +30,16 @@ ARangeGoblinController::ARangeGoblinController() {
 
 void ARangeGoblinController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
-	CurrentTarget = GetNecoSpiritByTag(GetWorld(), MainPlayer);
 	PossessedPawn = Cast<ARangeGoblinCharacter>(InPawn);
-	Cast<ARangeGoblinCharacter>(InPawn)->SetAIController(this);
 	GetWorld()->GetTimerManager().SetTimer(MoveHandler, this, &ARangeGoblinController::OnMoveToTarget, 0.1f, true);
 }
 
 void ARangeGoblinController::OnMoveToTarget() {
-	if (GetIsAttacking()) {
+	CurrentTarget = GetClosestNecoSpiritByTag(GetWorld(), MainPlayer);
+	if (PossessedPawn->GetIsAttacking()) {
 	} else if (CurrentTarget && CurrentTarget->GetIsAlive()) {
 		FVector tossVelocity;
+		PossessedPawn->LookAtTarget(CurrentTarget->GetActorLocation());
 		if (PossessedPawn->CheckRangeAttack(CurrentTarget, tossVelocity)) {
 			PossessedPawn->InitiateRangeAttack(tossVelocity);
 		} else if (GetPawn()->GetDistanceTo(CurrentTarget) > MinimumTargetDistance) {
@@ -40,7 +48,5 @@ void ARangeGoblinController::OnMoveToTarget() {
 			PossessedPawn->TrackTargetStopMovement(CurrentTarget);
 			StopMovement();
 		}
-	} else {
-		CurrentTarget = GetNecoSpiritByTag(GetWorld(), MainPlayer);
 	}
 }

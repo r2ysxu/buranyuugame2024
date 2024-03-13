@@ -38,6 +38,6 @@ public:
 	AGoblinSpawner();
 
 	void SpawnEnemy();
-	bool SpawnEnemyType(uint8 Type);
+	bool SpawnEnemyType(ESpawnEnemyType Type);
 	void ChangeSpawnInfo(float EnemySpawnRate, float EnemyMovementSpeedMod);
 };
