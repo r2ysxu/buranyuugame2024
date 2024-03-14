@@ -3,6 +3,7 @@
 #include "MainCharacter.h"
 #include "../Goblin/Goblin.h"
 #include "../../NecoGoblinGameMode.h"
+#include "../../Widgets/HUDs/CharacterHUD.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -82,7 +83,7 @@ void AMainCharacter::Tick(float DeltaSeconds) {
 }
 
 void AMainCharacter::SetupHuds() {
-	HudWidget = CreateWidget<UUserWidget>(GetWorld(), HudWidgetClass);
+	HudWidget = CreateWidget<UCharacterHUD>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
 		HudWidget->AddToViewport();
 	}
@@ -267,6 +268,7 @@ void AMainCharacter::OnSprintStop() {
 
 void AMainCharacter::OnHealthRegen() {
 	CurrentHealth = FMath::Min(CurrentHealth + upgradeComponent->GetRegenHP(), GetMaxHealth());
+	Delegate_HealthChange.Broadcast(GetHealthPercentage());
 }
 
 void AMainCharacter::SetChangableWeapon(FName WeaponKey) {
@@ -335,12 +337,14 @@ void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 	}
 	if (CurrentHealth == 20.f && LowHealthVoice) UGameplayStatics::PlaySound2D(GetWorld(), LowHealthVoice);
 	else if (HitVoice) UGameplayStatics::PlaySound2D(GetWorld(), HitVoice);
+	Delegate_HealthChange.Broadcast(GetHealthPercentage());
 }
 
 void AMainCharacter::HealthPot(float HealAmount) {
 	const float totalHealAmount = HealAmount + upgradeComponent->GetAdditionalHeal();
 	CurrentHealth = FMath::Min(CurrentHealth + totalHealAmount, GetMaxHealth());
 	if (HealthPickupVoice) UGameplayStatics::PlaySound2D(GetWorld(), HealthPickupVoice);
+	Delegate_HealthChange.Broadcast(GetHealthPercentage());
 }
 
 void AMainCharacter::OnShowSkills() {

@@ -57,8 +57,6 @@ void ARangeGoblinCharacter::SetRunSpeed(float MovementSpeedModifier) {
 
 bool ARangeGoblinCharacter::CheckRangeAttack(ANecoSpirit* TargetCharacter, FVector& OutTossVelocity) {
 	if (!IsValid(Weapon) || IsAttackCooldown) return false;
-	//FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetActorLocation());
-	//SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
 
 	TArray<AActor*> ignores = { this, TargetCharacter };
 	return UGameplayStatics::SuggestProjectileVelocity(

@@ -17,6 +17,9 @@ UCLASS(config=Game)
 class AMainCharacter : public ANecoSpirit {
 	GENERATED_BODY()
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDelegate_HealthChange, float, Health);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_AmmoChange);
+
 private:
 
 	const float CAMERA_SCROLL_SPEED = 5.f;
@@ -52,8 +55,8 @@ protected:
 	UUserWidget* CrosshairHudWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UUserWidget> HudWidgetClass;
-	UUserWidget* HudWidget;
+	TSubclassOf<class UCharacterHUD> HudWidgetClass;
+	UCharacterHUD* HudWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> SkillHudWidgetClass;
@@ -129,6 +132,11 @@ protected:
 
 public:
 	AMainCharacter();
+	
+	UPROPERTY(BlueprintAssignable)
+	FDelegate_HealthChange Delegate_HealthChange;
+	UPROPERTY(BlueprintAssignable)
+	FDelegate_AmmoChange Delegate_AmmoChange;
 
 	UFUNCTION() void OnScrollAxis(const FInputActionValue& Value);
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
