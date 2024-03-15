@@ -276,7 +276,7 @@ void AMainCharacter::SetChangableWeapon(FName WeaponKey) {
 }
 
 int AMainCharacter::RefillAmmo(int AmmoAmount) {
-	int refillAmount = FMath::Min(AmmoAmount, RESERVE_AMMO * upgradeComponent->GetAdditionalReserveAmmoModifier() - GetReserveAmmo());
+	int refillAmount = FMath::Min(AmmoAmount, RESERVE_AMMO * upgradeComponent->GetAdditionalReserveAmmoModifier() - Firearm->GetReserveAmmo());
 	if (RefillSound && refillAmount > 0) UGameplayStatics::PlaySound2D(GetWorld(), RefillSound, 5.f);
 	Firearm->RefillAmmo(refillAmount);
 	return refillAmount;
@@ -314,6 +314,10 @@ void AMainCharacter::PlayGetupMontage() {
 
 FFirearmStats AMainCharacter::GetFirearmStats() {
 	return (IsValid(Firearm)) ? *Firearm->GetStats() : FFirearmStats();
+}
+
+AFirearmWeapon* AMainCharacter::GetWeapon() {
+	return Firearm;
 }
 
 void AMainCharacter::OnStartAim() {

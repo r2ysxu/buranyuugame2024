@@ -20,10 +20,13 @@ protected:
 	class AMainCharacter* MainCharacter;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* Healthbar;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* ReserveAmmoCount;
 
 	virtual void NativeConstruct();
 	
 	UFUNCTION() void UpdateHealth(float Health);
 
 public:
+	UFUNCTION() void UpdateReserveAmmo(int ReserveAmmo);
 };

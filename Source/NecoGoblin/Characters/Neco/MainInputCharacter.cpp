@@ -153,7 +153,6 @@ void AMainInputCharacter::Server_OnFireWeaponOnce_Implementation(FVector MuzzleL
 		case EFireType::VE_NotFired: break;
 		case EFireType::VE_Hit: OnHitTarget(fireResponse.Target, fireResponse.ImpactPoint, fireResponse.bHeadshot);
 		case EFireType::VE_Fired:
-			Firearm->PlayFireEffects();
 			Multicast_OnFireWeaponOnceFired();
 			Recoil += Firearm->GenerateRecoil();
 			break;
@@ -175,7 +174,6 @@ void AMainInputCharacter::Multicast_OnHitTarget_Implementation(AHumanoid* Target
 
 void AMainInputCharacter::OnReloadWeapon() {
 	if (!HasAuthority()) {
-		Super::OnReloadWeapon();
 		Server_OnReloadWeapon();
 	} else {
 		Server_OnReloadWeapon_Implementation();
@@ -183,6 +181,11 @@ void AMainInputCharacter::OnReloadWeapon() {
 }
 
 void AMainInputCharacter::Server_OnReloadWeapon_Implementation() {
+	Super::OnReloadWeapon();
+	Multicast_OnReloadWeapon();
+}
+
+void AMainInputCharacter::Multicast_OnReloadWeapon_Implementation() {
 	Super::OnReloadWeapon();
 }
 

@@ -91,6 +91,8 @@ UCLASS()
 class NECOGOBLIN_API AFirearmWeapon : public AWeapon {
 	GENERATED_BODY()
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDelegate_ReserveAmmoChange, int, ReserveAmmo);
+
 private:
 
 protected:
@@ -100,6 +102,7 @@ protected:
 	class UNiagaraSystem* MuzzleFX = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	class UDataTable* WeaponDataTable = nullptr;
+
 	class USkeletalMeshComponent* WeaponMeshComponent;
 	class UNiagaraComponent* MuzzleFXComponent;
 	FFirearmWeaponData* WeaponData;
@@ -107,10 +110,10 @@ protected:
 	FTimerHandle InitiateReloadHandler;
 	volatile bool IsFiring = false;
 	volatile bool WeaponReloaded = true;
+	int ReserveAmmo = 30;
 	
 	float MaxRange = 5000.f;
 	int CurrentAmmoInMagazine = 0;
-	int ReserveAmmo = 30;
 
 	float DamageModifier = 1.f;
 	float GunVolume = 1.f;
@@ -124,6 +127,10 @@ protected:
 
 public:
 	AFirearmWeapon();
+
+	UPROPERTY(BlueprintAssignable)
+	FDelegate_ReserveAmmoChange Delegate_ReserveAmmoChange;
+
 	void ChangeWeapon(FName WeaponKey);
 	void EquipWeapon(FName SocketName) override;
 	float GetWeaponDamage() override;

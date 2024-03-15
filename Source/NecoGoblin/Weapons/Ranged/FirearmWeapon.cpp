@@ -54,7 +54,9 @@ void AFirearmWeapon::WeaponReloadStop() {
 	const int reloadedAmmo = FMath::Min(ReserveAmmo, MaxAmmoInMagazine() - CurrentAmmoInMagazine);
 	CurrentAmmoInMagazine += reloadedAmmo;
 	ReserveAmmo -= reloadedAmmo;
+	Delegate_ReserveAmmoChange.Broadcast(ReserveAmmo);
 }
+
 
 void AFirearmWeapon::EquipWeapon(FName SocketName) {
 	AttachToComponent(Wielder->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SocketName);
@@ -127,6 +129,7 @@ bool AFirearmWeapon::IsWeaponFireable() {
 void AFirearmWeapon::PlayFireEffects() {
 	if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), FRotator(), EAttachLocation::SnapToTargetIncludingScale, true);
 	if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation(), GunVolume);
+	CurrentAmmoInMagazine--;
 	//if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
 }
 
@@ -134,7 +137,6 @@ FFireResponse AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVecto
 	if (!IsWeaponFireable()) return FFireResponse(EFireType::VE_NotFired);
 	FHitResult outResult;
 	WeaponFireStart();
-	CurrentAmmoInMagazine--;
 	GetWorld()->GetTimerManager().SetTimer(InitiateFireHandler, this, &AFirearmWeapon::WeaponFireStop, WeaponData->FireRate * FireRateModifier, false);
 	FVector endLocation = startLocation + (forwardVector * MaxRange);
 	collisionParams.AddIgnoredActor(this);

@@ -18,7 +18,6 @@ class AMainCharacter : public ANecoSpirit {
 	GENERATED_BODY()
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDelegate_HealthChange, float, Health);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_AmmoChange);
 
 private:
 
@@ -135,8 +134,6 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FDelegate_HealthChange Delegate_HealthChange;
-	UPROPERTY(BlueprintAssignable)
-	FDelegate_AmmoChange Delegate_AmmoChange;
 
 	UFUNCTION() void OnScrollAxis(const FInputActionValue& Value);
 	FORCEINLINE TSubclassOf<class AWeapon> GetFirearmWeaponClass() { return FirearmWeaponClass; }
@@ -188,5 +185,5 @@ public:
 	UFUNCTION(BlueprintCallable) void SetupHuds();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
-	UFUNCTION(BlueprintCallable) FORCEINLINE int GetReserveAmmo() { return Firearm->GetReserveAmmo(); }
+	UFUNCTION() class AFirearmWeapon* GetWeapon();
 };

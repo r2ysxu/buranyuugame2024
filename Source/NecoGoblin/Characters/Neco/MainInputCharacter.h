@@ -63,6 +63,7 @@ protected:
 
 	virtual void OnReloadWeapon() override;
 	UFUNCTION(Server, Reliable) void Server_OnReloadWeapon();
+	UFUNCTION(NetMulticast, Reliable) void Multicast_OnReloadWeapon();
 
 	virtual void OnSprint() override;
 	UFUNCTION(Server, Reliable) void Server_OnSprint();
