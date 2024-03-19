@@ -168,16 +168,16 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	void UpgradeWeaponDamage(float additionalDamage);
 	void OnInteract();
+	void UpgradeWeaponDamage(float additionalDamage);
 	void OnHealthRegen();
 	void SetChangableWeapon(FName WeaponKey);
 	void StaminaRegen();
 	void StaminaDrain();
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
-	int RefillAmmo(int AmmoAmount);
 
+	virtual int RefillAmmo(int AmmoAmount);
 	virtual bool CheckAlive() override;
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);

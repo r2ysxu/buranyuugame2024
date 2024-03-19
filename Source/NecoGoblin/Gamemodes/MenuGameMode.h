@@ -13,4 +13,6 @@ UCLASS()
 class NECOGOBLIN_API AMenuGameMode : public AGameModeBase {
 	GENERATED_BODY()
 	
+public:
+	AMenuGameMode();
 };

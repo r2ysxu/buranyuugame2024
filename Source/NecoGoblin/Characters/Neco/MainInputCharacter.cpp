@@ -222,3 +222,19 @@ void AMainInputCharacter::Server_OnSprintStop_Implementation() {
 void AMainInputCharacter::Multicast_OnSprintStop_Implementation() {
 	Super::OnSprintStop();
 }
+
+int AMainInputCharacter::RefillAmmo(int AmmoAmount) {
+	if (!HasAuthority()) {
+		Server_OnRefillAmmo(AmmoAmount);
+	}
+	return Super::RefillAmmo(AmmoAmount);
+}
+
+void AMainInputCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {
+	Super::RefillAmmo(AmmoAmount);
+	Multicast_OnRefillAmmo(AmmoAmount);
+}
+
+void AMainInputCharacter::Multicast_OnRefillAmmo_Implementation(int AmmoAmount) {
+	Super::RefillAmmo(AmmoAmount);
+}

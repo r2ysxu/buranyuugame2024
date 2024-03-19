@@ -100,6 +100,7 @@ void AFirearmWeapon::UpgradeDamageModifier(float additionalModifier) {
 
 void AFirearmWeapon::RefillAmmo(int Amount) {
 	ReserveAmmo += Amount;
+	Delegate_ReserveAmmoChange.Broadcast(ReserveAmmo);
 }
 
 void AFirearmWeapon::SetVisible(bool Visible) {

@@ -25,13 +25,15 @@ void UOptionsMenuWidget::InitializeGraphicSlider(USlider* Slider) {
 }
 
 void UOptionsMenuWidget::InitializeSoundOptions() {
-	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
 
 	UGameplayStatics::SetBaseSoundMix(GetWorld(), MenuSoundMix);
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, BGM_SC);
 
-	Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
-	Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
+	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
+	if (mainCharacter) {
+		Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
+		Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
+	}
 }
 
 void UOptionsMenuWidget::InitializeGraphicOptions() {
@@ -106,8 +108,10 @@ void UOptionsMenuWidget::SwitchOptionSound() {
 	OptionsSwitcher->SetActiveWidgetIndex((uint8)EOptionOptionPanel::VE_Sound);
 
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
-	Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
+	if (mainCharacter) {
+		Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
+		Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
+	}
 }
 
 void UOptionsMenuWidget::ApplyGraphics() {
@@ -135,9 +139,10 @@ void UOptionsMenuWidget::CancelGraphics() {
 
 void UOptionsMenuWidget::ApplySound() {
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-
-	mainCharacter->SetMusicVolume(Options_Sound_Music->GetValue());
-	mainCharacter->SetGameVolume(Options_Sound_Game->GetValue());
+	if (mainCharacter) {
+		mainCharacter->SetMusicVolume(Options_Sound_Music->GetValue());
+		mainCharacter->SetGameVolume(Options_Sound_Game->GetValue());
+	}
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, BGM_SC, Options_Sound_Music->GetValue());
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, SFX_SC, Options_Sound_Game->GetValue());
 	MainSwitcher->SetActiveWidgetIndex((uint8)EOptionMainPanel::VE_Info);
@@ -145,21 +150,27 @@ void UOptionsMenuWidget::ApplySound() {
 
 void UOptionsMenuWidget::CancelSound() {
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
-	Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
+	if (mainCharacter) {
+		Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
+		Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
+	}
 	MainSwitcher->SetActiveWidgetIndex((uint8)EOptionMainPanel::VE_Info);
 }
 
 void UOptionsMenuWidget::ApplyGameplay() {
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	mainCharacter->SetIsToggleAim(Options_Game_Aim->IsChecked());
-	mainCharacter->SetIsAutoReload(Options_Game_Reload->IsChecked());
+	if (mainCharacter) {
+		mainCharacter->SetIsToggleAim(Options_Game_Aim->IsChecked());
+		mainCharacter->SetIsAutoReload(Options_Game_Reload->IsChecked());
+	}
 	MainSwitcher->SetActiveWidgetIndex((uint8)EOptionMainPanel::VE_Info);
 }
 
 void UOptionsMenuWidget::CancelGameplay() {
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	Options_Game_Aim->SetIsChecked(mainCharacter->GetIsToggleAim());
-	Options_Game_Reload->SetIsChecked(mainCharacter->GetIsAutoReload());
+	if (mainCharacter) {
+		Options_Game_Aim->SetIsChecked(mainCharacter->GetIsToggleAim());
+		Options_Game_Reload->SetIsChecked(mainCharacter->GetIsAutoReload());
+	}
 	MainSwitcher->SetActiveWidgetIndex((uint8)EOptionMainPanel::VE_Info);
 }

@@ -73,5 +73,9 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_OnSprintStop();
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnSprintStop();
 
+	virtual int RefillAmmo(int AmmoAmount) override;
+	UFUNCTION(Server, Reliable) void Server_OnRefillAmmo(int AmmoAmount);
+	UFUNCTION(NetMulticast, Reliable) void Multicast_OnRefillAmmo(int AmmoAmount);
+
 public:
 };
