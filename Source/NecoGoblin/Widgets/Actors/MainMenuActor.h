@@ -18,14 +18,21 @@ protected:
 	class AActor* StartMenuCamera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class AActor* MainMenuCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AActor* MPMenuCamera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUDs")
 	TSubclassOf<class UStartMainMenuWidget> StartMainMenuWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUDs")
+	TSubclassOf<class UStartMultiplayerMenuWidget> StartMPMenuWidgetClass;
 
 	class UStartMainMenuWidget* StartMainMenuWidget;
+	class UStartMultiplayerMenuWidget* StartMPMenuWidget;
 
 	virtual void BeginPlay() override;
 
 public:	
 
 	void ChangeToMenuCamera();
+	void ChangeToMultiplayer();
+	void ClearMultiplayerMenu();
 };

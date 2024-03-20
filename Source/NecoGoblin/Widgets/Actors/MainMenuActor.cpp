@@ -3,6 +3,7 @@
 
 #include "MainMenuActor.h"
 #include "../Menus/StartMainMenuWidget.h"
+#include "../Menus/StartMultiplayerMenuWidget.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
@@ -27,5 +28,24 @@ void AMainMenuActor::ChangeToMenuCamera() {
 	StartMainMenuWidget = CreateWidget<UStartMainMenuWidget>(GetWorld(), StartMainMenuWidgetClass);
 	if (StartMainMenuWidget) {
 		StartMainMenuWidget->AddToViewport();
+		StartMainMenuWidget->SetParent(this);
+	}
+}
+
+void AMainMenuActor::ChangeToMultiplayer() {
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetViewTargetWithBlend(MPMenuCamera, 1.f);
+	if (StartMainMenuWidget) {
+		StartMainMenuWidget->RemoveFromParent();
+	}
+	StartMPMenuWidget = CreateWidget<UStartMultiplayerMenuWidget>(GetWorld(), StartMPMenuWidgetClass);
+	if (StartMPMenuWidget) {
+		StartMPMenuWidget->AddToViewport();
+		StartMPMenuWidget->SetParent(this);
+	}
+}
+
+void AMainMenuActor::ClearMultiplayerMenu() {
+	if (StartMPMenuWidget) {
+		StartMainMenuWidget->RemoveFromParent();
 	}
 }

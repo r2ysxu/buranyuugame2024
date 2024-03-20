@@ -4,28 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "StartMainMenuWidget.generated.h"
+#include "StartMultiplayerMenuWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class NECOGOBLIN_API UStartMainMenuWidget : public UUserWidget {
+class NECOGOBLIN_API UStartMultiplayerMenuWidget : public UUserWidget {
 	GENERATED_BODY()
-	
+
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* PlaySingleButton;
+	class UButton* MPHostButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* PlayMultiplayerButton;
+	class UButton* MPSearchButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* BackButton;
 
 	class AMainMenuActor* Parent;
 
 	virtual void NativeConstruct() override;
 
-	UFUNCTION() void OnPlaySPClicked();
-	UFUNCTION() void OnPlayMPClicked();
-
+	UFUNCTION() void OnBackClicked();
+	UFUNCTION() void OnMPHostClicked();
+	UFUNCTION() void OnMPSearchClicked();
+	
 public:
 	UFUNCTION(BlueprintCallable) void SetParent(class AMainMenuActor* MenuActor);
 };
