@@ -20,7 +20,6 @@ void AMainMenuActor::BeginPlay() {
 	Super::BeginPlay();
 	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	controller->SetViewTarget(StartMenuCamera);
-	controller->bShowMouseCursor = true;
 }
 
 void AMainMenuActor::ChangeToMenuCamera() {

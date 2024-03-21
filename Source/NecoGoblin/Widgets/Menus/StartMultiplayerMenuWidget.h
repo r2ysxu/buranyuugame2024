@@ -13,6 +13,9 @@ UCLASS()
 class NECOGOBLIN_API UStartMultiplayerMenuWidget : public UUserWidget {
 	GENERATED_BODY()
 
+private:
+	void PopulateSessionList(TArray<FOnlineSessionSearchResult> Results);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* MPHostButton;
@@ -20,6 +23,8 @@ protected:
 	class UButton* MPSearchButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BackButton;
+	UPROPERTY(BlueprintReadWrite, meta =(BindWidget))
+	class UVerticalBox* SessionListPanel;
 
 	class AMainMenuActor* Parent;
 
@@ -28,6 +33,8 @@ protected:
 	UFUNCTION() void OnBackClicked();
 	UFUNCTION() void OnMPHostClicked();
 	UFUNCTION() void OnMPSearchClicked();
+
+	UFUNCTION() void OnUpdateSearchedSession();
 	
 public:
 	UFUNCTION(BlueprintCallable) void SetParent(class AMainMenuActor* MenuActor);

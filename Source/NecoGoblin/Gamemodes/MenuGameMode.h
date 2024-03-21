@@ -12,6 +12,9 @@
 UCLASS()
 class NECOGOBLIN_API AMenuGameMode : public AGameModeBase {
 	GENERATED_BODY()
+
+protected:
+	virtual void StartPlay() override;
 	
 public:
 	AMenuGameMode();
