@@ -20,7 +20,6 @@ void AGoblinSpawner::BeginPlay() {
 	Super::BeginPlay();
 	AGoblinGameMode* gamemode = Cast<AGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (gamemode) {
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Start Register Spawner"));
 		gamemode->RegisterSpawner(this);
 	}
 	GameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));

@@ -48,6 +48,7 @@ void UNGGameInstance::HostSession() {
 	sessionSettings.bAllowJoinInProgress = true;
 	sessionSettings.bIsDedicated = false;
 	sessionSettings.bIsLANMatch = true;
+	//sessionSettings.bIsLANMatch = false;
 	sessionSettings.bUsesPresence = true;
 	sessionSettings.NumPublicConnections = 4;
 	sessionSettings.bShouldAdvertise = true;

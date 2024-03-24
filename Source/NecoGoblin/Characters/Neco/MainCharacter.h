@@ -37,6 +37,7 @@ private:
 
 	void OnBelowWaterLevel();
 	float GetMaxHealth();
+	void SpawnMagazineActor();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -60,6 +61,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> SkillHudWidgetClass;
 	UUserWidget* SkillHudWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class AMagazineActor> MagazineActorBPClass;
+	class AMagazineActor* MagazineActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* RefillSound;
@@ -93,6 +98,7 @@ protected:
 	UNecoCharacterStat* stats;
 	UUpgradeSkillComponent* upgradeComponent;
 
+	int CharacterIndex = 0;
 	bool IsToggleAim = false;
 	bool IsAutoReload = false;
 	bool IsCharacterStart = false;
@@ -168,6 +174,8 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	void SetCharacterIndex(int Index);
+	int GetCharacterIndex();
 	void OnInteract();
 	void UpgradeWeaponDamage(float additionalDamage);
 	void OnHealthRegen();

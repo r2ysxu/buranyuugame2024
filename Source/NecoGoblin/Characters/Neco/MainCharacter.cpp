@@ -4,6 +4,7 @@
 #include "../Goblin/Goblin.h"
 #include "../../NecoGoblinGameMode.h"
 #include "../../Widgets/HUDs/CharacterHUD.h"
+#include "../../Widgets/Actors/MagazineActor.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -166,6 +167,17 @@ float AMainCharacter::GetMaxHealth() {
 	return (MaxHealth + upgradeComponent->GetAdditionalHP());
 }
 
+void AMainCharacter::SpawnMagazineActor() {
+	FActorSpawnParameters spawnParams;
+	spawnParams.bNoFail = true;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	FTransform transform;
+	transform.SetLocation(FVector(-6680.f, 5190.f, -22070.f));
+
+	MagazineActor = GetWorld()->SpawnActor<AMagazineActor>(MagazineActorBPClass, transform, spawnParams);
+	MagazineActor->SetParent(this);
+}
+
 void AMainCharacter::OnAimModeStart() {
 	if (!IsToggleAim) {
 		OnStartAim();
@@ -231,6 +243,16 @@ void AMainCharacter::OnFireStop() {
 void AMainCharacter::OnReloadWeapon() {
 	float animationDelay = RELOAD_SPEED * Firearm->GetReloadSpeedModifier() * upgradeComponent->GetReloadSpeedModifier();
 	Firearm->ReloadWeapon(animationDelay);
+}
+
+void AMainCharacter::SetCharacterIndex(int Index) {
+	CharacterIndex = Index;
+	SpawnMagazineActor();
+	HudWidget->SwitchToCharacterIndex(Index);
+}
+
+int AMainCharacter::GetCharacterIndex() {
+	return CharacterIndex;
 }
 
 void AMainCharacter::OnInteract() {

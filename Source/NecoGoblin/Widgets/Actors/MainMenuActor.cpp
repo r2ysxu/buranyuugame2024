@@ -42,9 +42,3 @@ void AMainMenuActor::ChangeToMultiplayer() {
 		StartMPMenuWidget->SetParent(this);
 	}
 }
-
-void AMainMenuActor::ClearMultiplayerMenu() {
-	if (StartMPMenuWidget) {
-		StartMainMenuWidget->RemoveFromParent();
-	}
-}

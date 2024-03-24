@@ -20,6 +20,8 @@ AMultiplayerGameMode::AMultiplayerGameMode() {
 	//if (PlayerContollerBPClass.Class != NULL) {
 	//	PlayerControllerClass = PlayerContollerBPClass.Class;
 	//}
+
+	//UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
 void AMultiplayerGameMode::StartPlay() {
@@ -38,8 +40,18 @@ void AMultiplayerGameMode::StartPlay() {
 
 void AMultiplayerGameMode::StartSpawning() {
 	Super::StartSpawning();
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("StartSpawning"));
 	GetWorldTimerManager().SetTimer(SpawnerHandler, this, &AMultiplayerGameMode::SpawnEnemy, 1.0, true);
+}
+
+void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {
+	if (AMainCharacter* character = Cast<AMainCharacter>(NewPlayer->GetCharacter())) {
+		character->OnCharacterStart();
+		character->SetCharacterIndex(LoggedInPlayers++);
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, FString::FromInt(GetNumPlayers()));
+	if (LoggedInPlayers == GetNumPlayers()) {
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
 }
 
 void AMultiplayerGameMode::SpawnEnemy() {
@@ -48,7 +60,6 @@ void AMultiplayerGameMode::SpawnEnemy() {
 		Spawners[CurrentSpawnerIndex]->SpawnEnemyType(ESpawnEnemyType::VE_Melee);
 		MeleeEnemySpawned++;
 	} else {
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("Spawn Ranger"));
 		Spawners[CurrentSpawnerIndex]->SpawnEnemyType(ESpawnEnemyType::VE_Range);
 		RangeEnemySpawned++;
 	}

@@ -6,6 +6,7 @@
 
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/WidgetSwitcher.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCharacterHUD::NativeConstruct() {
@@ -24,5 +25,9 @@ void UCharacterHUD::UpdateHealth(float Health) {
 
 void UCharacterHUD::UpdateReserveAmmo(int ReserveAmmo) {
 	ReserveAmmoCount->SetText(FText::FromString(FString::FromInt(ReserveAmmo)));
+}
+
+void UCharacterHUD::SwitchToCharacterIndex(int Index) {
+	MagazineSwitcher->SetActiveWidgetIndex(Index);
 }
 

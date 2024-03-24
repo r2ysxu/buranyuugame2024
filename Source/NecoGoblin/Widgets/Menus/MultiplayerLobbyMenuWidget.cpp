@@ -12,5 +12,5 @@ void UMultiplayerLobbyMenuWidget::NativeConstruct() {
 }
 
 void UMultiplayerLobbyMenuWidget::OnStartGameClicked() {
-	Cast<UNGGameInstance>(GetGameInstance())->JumpToLevel("/Game/NecoGoblin/Maps/IslandMap?listen");
+	Cast<UNGGameInstance>(GetGameInstance())->JumpToLevel("/Game/NecoGoblin/Maps/MultiplayerMaps/IslandMap_MP?listen");
 }

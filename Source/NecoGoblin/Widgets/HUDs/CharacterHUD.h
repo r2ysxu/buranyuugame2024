@@ -22,6 +22,8 @@ protected:
 	class UProgressBar* Healthbar;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* ReserveAmmoCount;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWidgetSwitcher* MagazineSwitcher;
 
 	virtual void NativeConstruct();
 	
@@ -29,4 +31,5 @@ protected:
 
 public:
 	UFUNCTION() void UpdateReserveAmmo(int ReserveAmmo);
+	UFUNCTION() void SwitchToCharacterIndex(int Index);
 };

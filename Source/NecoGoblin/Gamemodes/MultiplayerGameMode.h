@@ -20,7 +20,10 @@ protected:
 	int32 CurrentSpawnerIndex = 0;
 	int32 TotalEnemySpawned = 0;
 
+	int LoggedInPlayers = 0;
+
 	virtual void StartSpawning() override;
+	virtual void OnPostLogin(AController* NewPlayer) override;
 	void SpawnEnemy();
 	
 public:

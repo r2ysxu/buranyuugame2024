@@ -40,11 +40,13 @@ void UStartMultiplayerMenuWidget::PopulateSessionList(TArray<FOnlineSessionSearc
 }
 
 void UStartMultiplayerMenuWidget::OnBackClicked() {
-	Parent->ClearMultiplayerMenu();
 	Parent->ChangeToMenuCamera();
+	SetVisibility(ESlateVisibility::Hidden);
+	RemoveFromParent();
 }
 
 void UStartMultiplayerMenuWidget::OnMPHostClicked() {
+	MPHostButton->SetIsEnabled(false);
 	Cast<UNGGameInstance>(GetGameInstance())->HostSession();
 }
 
