@@ -16,19 +16,28 @@ class NECOGOBLIN_API AMultiplayerGameMode : public AGoblinGameMode {
 	GENERATED_BODY()
 
 protected:
+	const FName LOBBY_MENU_MAP = FName("MPLobbyWorld");
+
 	FTimerHandle SpawnerHandler;
 	int32 CurrentSpawnerIndex = 0;
 	int32 TotalEnemySpawned = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UMultiplayerLobbyMenuWidget> MultiplayerLobbyMenuClass;
+	class UMultiplayerLobbyMenuWidget* MultiplayerLobbyMenu;
+
 	int LoggedInPlayers = 0;
 
+
+	virtual void StartPlay() override;
 	virtual void StartSpawning() override;
 	virtual void OnPostLogin(AController* NewPlayer) override;
 	void SpawnEnemy();
 	
+	UFUNCTION() void SetupPlayers();
+	
 public:
 	AMultiplayerGameMode();
 
-	void StartPlay() override;
-
+	void LoadIntoMPLevel(FName LevelName);
 };

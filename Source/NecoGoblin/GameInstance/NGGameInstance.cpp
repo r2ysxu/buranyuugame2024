@@ -22,7 +22,7 @@ void UNGGameInstance::Init() {
 
 void UNGGameInstance::OnCreateSessionComplete(FName SessionName, bool IsSuccessful) {
 	if (IsSuccessful) {
-		GetWorld()->ServerTravel("/Game/NecoGoblin/Maps/MenuMap/MPLobbyWorld?listen");
+		GetWorld()->ServerTravel("/Game/NecoGoblin/Maps/MultiplayerMaps/PersistentLevel_MP?listen");
 	}
 }
 

@@ -51,6 +51,10 @@ protected:
 	TSubclassOf<class AWeapon> FirearmWeaponClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UUserWidget> LoadingScreenWidgetClass;
+	UUserWidget* LoadingScreenWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> CrosshairHudWidgetClass;
 	UUserWidget* CrosshairHudWidget;
 

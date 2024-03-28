@@ -17,6 +17,8 @@ void AMultiplayerLobbyGameMode::StartPlay() {
 			MultiplayerLobbyMenu->AddToViewport();
 		}
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("AMultiplayerLobbyGameMode Startplay"));
+	UGameplayStatics::LoadStreamLevel(GetWorld(), "MPLobbyWorld", true, true, FLatentActionInfo());
 }
 
 AMultiplayerLobbyGameMode::AMultiplayerLobbyGameMode() {
@@ -25,4 +27,9 @@ AMultiplayerLobbyGameMode::AMultiplayerLobbyGameMode() {
 	if (PlayerPawnBPClass.Class != NULL) {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+}
+
+void AMultiplayerLobbyGameMode::LoadIntoMPLevel(FName LevelName) {
+	UGameplayStatics::UnloadStreamLevel(GetWorld(), "MPLobbyWorld", FLatentActionInfo(), false);
+	UGameplayStatics::LoadStreamLevel(GetWorld(), LevelName, true, true, FLatentActionInfo());
 }

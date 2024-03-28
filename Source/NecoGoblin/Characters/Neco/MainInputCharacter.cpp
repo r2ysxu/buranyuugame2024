@@ -18,12 +18,12 @@ void AMainInputCharacter::BeginPlay() {
 		}
 	}
 
-	if (!HasAuthority()) {
+	/*if (!HasAuthority()) {
 		OnCharacterStart();
 		OnCharacterShow();
 	} else {
 		Server_SetupCharacters();
-	}
+	}*/
 }
 
 void AMainInputCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {

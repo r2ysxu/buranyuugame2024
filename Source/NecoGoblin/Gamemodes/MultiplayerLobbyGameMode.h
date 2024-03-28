@@ -16,11 +16,12 @@ class NECOGOBLIN_API AMultiplayerLobbyGameMode : public AGameModeBase {
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UMultiplayerLobbyMenuWidget> MultiplayerLobbyMenuClass;
-
 	class UMultiplayerLobbyMenuWidget* MultiplayerLobbyMenu;
 
 	virtual void StartPlay() override;
 
 public:
 	AMultiplayerLobbyGameMode();
+
+	void LoadIntoMPLevel(FName LevelName);
 };

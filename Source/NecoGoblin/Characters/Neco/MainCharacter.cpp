@@ -69,8 +69,8 @@ void AMainCharacter::BeginPlay() {
 
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
-	GetMesh()->SetVisibility(false);
-	if (Firearm) Firearm->SetVisible(false);
+	//GetMesh()->SetVisibility(false);
+	//if (Firearm) Firearm->SetVisible(false);
 
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
@@ -132,8 +132,13 @@ void AMainCharacter::OnCharacterStart() {
 	if (!IsCharacterStart) {
 		SetupHuds();
 		PlayBGMusic();
+		SpawnMagazineActor();
 		APlayerController* controller = Cast<APlayerController>(GetController());
-		if (IsValid(controller)) controller->SetInputMode(FInputModeGameOnly());
+		if (IsValid(controller)) {
+			controller->SetViewTargetWithBlend(this, 0.5f);
+			controller->SetInputMode(FInputModeGameOnly());
+			controller->bShowMouseCursor = false;
+		}
 		IsCharacterStart = true;
 	}
 }
@@ -152,7 +157,7 @@ void AMainCharacter::OnStopAim() {
 		GetCameraBoom()->SetRelativeLocation(FVector::ZeroVector);
 		GetCameraBoom()->TargetArmLength += CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
-		CrosshairHudWidget->SetVisibility(ESlateVisibility::Collapsed);
+		if (CrosshairHudWidget) CrosshairHudWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
@@ -247,7 +252,6 @@ void AMainCharacter::OnReloadWeapon() {
 
 void AMainCharacter::SetCharacterIndex(int Index) {
 	CharacterIndex = Index;
-	SpawnMagazineActor();
 	HudWidget->SwitchToCharacterIndex(Index);
 }
 
@@ -349,7 +353,7 @@ void AMainCharacter::OnStartAim() {
 		GetCameraBoom()->SetRelativeLocation(FVector(0, 50, 50));
 		GetCameraBoom()->TargetArmLength -= CameraArmLengthOffset;
 		bUseControllerRotationYaw = IsAimMode;
-		CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
+		if (CrosshairHudWidget) CrosshairHudWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
