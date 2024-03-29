@@ -13,26 +13,24 @@
 #include "Kismet/GameplayStatics.h"
 
 AMultiplayerGameMode::AMultiplayerGameMode() {
+
+	GameStateClass = AMultiplayerGameState::StaticClass();
+	static ConstructorHelpers::FClassFinder<AMainPlayerController> PlayerContollerBPClass(TEXT("/Game/NecoGoblin/Blueprints/Controllers/BP_MainPlayerController"));
+	if (PlayerContollerBPClass.Class != NULL) {
+		PlayerControllerClass = PlayerContollerBPClass.Class;
+	}
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/NecoGoblin/Blueprints/Characters/BP_MainCharacter"));
 	if (PlayerPawnBPClass.Class != NULL) {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
-	GameStateClass = AMultiplayerGameState::StaticClass();
-	/*static ConstructorHelpers::FClassFinder<APlayerController> PlayerContollerBPClass(TEXT("/Game/NecoGoblin/Blueprints/Controllers/BP_MainPlayerController"));
-	if (PlayerContollerBPClass.Class != NULL) {
-		PlayerControllerClass = PlayerContollerBPClass.Class;
-	}*/
-
 	UGameplayStatics::LoadStreamLevel(GetWorld(), LOBBY_MENU_MAP, true, true, FLatentActionInfo());
 }
 
 void AMultiplayerGameMode::StartPlay() {
 	Super::StartPlay();
-	if (HasAuthority()) {
-		MultiplayerLobbyMenu = CreateWidget<UMultiplayerLobbyMenuWidget>(GetWorld(), MultiplayerLobbyMenuClass);
-		if (MultiplayerLobbyMenu) {
-			MultiplayerLobbyMenu->AddToViewport();
-		}
+	MultiplayerLobbyMenu = CreateWidget<UMultiplayerLobbyMenuWidget>(GetWorld(), MultiplayerLobbyMenuClass);
+	if (MultiplayerLobbyMenu) {
+		MultiplayerLobbyMenu->AddToViewport();
 	}
 
 	/*RoundHudWidget = CreateWidget<URoundHUD>(GetWorld(), RoundHudWidgetClass);
@@ -45,7 +43,6 @@ void AMultiplayerGameMode::StartPlay() {
 		GameOverWidget->AddToViewport();
 		GameOverWidget->SetVisibility(ESlateVisibility::Hidden);
 	}*/
-	ULevelStreaming* level = UGameplayStatics::GetStreamingLevel(GetWorld(), "PersistentLevel_MP");
 }
 
 void AMultiplayerGameMode::StartSpawning() {
@@ -54,11 +51,14 @@ void AMultiplayerGameMode::StartSpawning() {
 }
 
 void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Emerald, TEXT("OnPostLogin"));
-	APlayerController* controller = Cast<APlayerController>(NewPlayer);
+	Super::OnPostLogin(NewPlayer);
+	AMainPlayerController* controller = Cast<AMainPlayerController>(NewPlayer);
 	if (IsValid(controller)) {
-		controller->SetInputMode(FInputModeUIOnly());
-		controller->bShowMouseCursor = true;
+		controller->Client_OnEnterLobbyMode();
+		//controller->SetInputMode(FInputModeUIOnly());
+		//controller->bShowMouseCursor = true;
+	} else {
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("controller is nul WTF"));
 	}
 }
 
@@ -74,20 +74,24 @@ void AMultiplayerGameMode::SpawnEnemy() {
 	CurrentSpawnerIndex = (CurrentSpawnerIndex + 1) % TotalSpawners;
 }
 
+void AMultiplayerGameMode::OnInitiateLevelLoadForPlayers() {
+	for (FConstPlayerControllerIterator controllerIt = GetWorld()->GetPlayerControllerIterator(); controllerIt; controllerIt++) {
+		if (AMainPlayerController* controller = Cast<AMainPlayerController>(controllerIt->Get())) {
+			controller->Client_OnInitiateLevelLoad();
+		}
+	}
+}
+
 void AMultiplayerGameMode::SetupPlayers() {
 	for (FConstPlayerControllerIterator controllerIt = GetWorld()->GetPlayerControllerIterator(); controllerIt; controllerIt++) {
-		if (APlayerController* controller = controllerIt->Get()) {
-			controller->SetInputMode(FInputModeGameOnly());
-			controller->bShowMouseCursor = false;
-			AMainCharacter* character = Cast<AMainCharacter>(controller->GetPawn());
-			if (IsValid(character)) {
-				character->OnCharacterStart();
-			}
+		if (AMainPlayerController* controller = Cast<AMainPlayerController>(controllerIt->Get())) {
+			controller->Client_OnCharacterStart();
 		}
 	}
 }
 
 void AMultiplayerGameMode::LoadIntoMPLevel(FName LevelName) {
+	OnInitiateLevelLoadForPlayers();
 	FLatentActionInfo latentInfo;
 	latentInfo.UUID = 123;
 	latentInfo.Linkage = 0;

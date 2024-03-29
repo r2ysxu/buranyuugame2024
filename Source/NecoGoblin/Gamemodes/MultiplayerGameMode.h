@@ -33,6 +33,7 @@ protected:
 	virtual void StartSpawning() override;
 	virtual void OnPostLogin(AController* NewPlayer) override;
 	void SpawnEnemy();
+	void OnInitiateLevelLoadForPlayers();
 	
 	UFUNCTION() void SetupPlayers();
 	
