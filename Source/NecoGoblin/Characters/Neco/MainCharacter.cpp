@@ -28,6 +28,7 @@ AMainCharacter::AMainCharacter() {
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(15.f, 30.f);
+	GetCapsuleComponent()->bHiddenInGame = false;
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -108,7 +109,6 @@ bool AMainCharacter::CheckAlive() {
 		GetCharacterMovement()->StopMovementImmediately();
 		GetMovementComponent()->Deactivate();
 		DisableInput(Cast<APlayerController>(GetController()));
-		HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ANecoGoblinGameMode* gameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (IsValid(gameMode)) {
 			gameMode->DelegateGameOver.Broadcast(DECOMPOSE_DELAY);
@@ -117,6 +117,19 @@ bool AMainCharacter::CheckAlive() {
 		GetMesh()->SetSimulatePhysics(true);
 	}
 	return IsAlive;
+}
+
+void AMainCharacter::OnRevivePlayer() {
+	CurrentHealth = 10.f;
+	IsAlive = true;
+	Tags.Add(FName("MainPlayer"));
+	GetMesh()->SetCollisionProfileName(FName("Custom"));
+	GetMesh()->SetSimulatePhysics(false);
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -30.f), FRotator(0.f, -90.f, 0.f));
+	GetMesh()->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::SnapToTargetIncludingScale);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	GetMovementComponent()->Activate();
+	EnableInput(Cast<APlayerController>(GetController()));
 }
 
 void AMainCharacter::SetPlayerPitch(float Pitch) {

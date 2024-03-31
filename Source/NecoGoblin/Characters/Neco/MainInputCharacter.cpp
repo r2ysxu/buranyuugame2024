@@ -6,8 +6,19 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
+#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+AMainInputCharacter::AMainInputCharacter() {
+	ReviveBox = CreateDefaultSubobject<USphereComponent>(TEXT("ReviveBox"));
+	ReviveBox->SetupAttachment(GetRootComponent());
+	ReviveBox->SetSphereRadius(25.f);
+	ReviveBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//ReviveBox->bHiddenInGame = false;
+}
 
 void AMainInputCharacter::BeginPlay() {
 	Super::BeginPlay();
@@ -17,13 +28,6 @@ void AMainInputCharacter::BeginPlay() {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
-	/*if (!HasAuthority()) {
-		OnCharacterStart();
-		OnCharacterShow();
-	} else {
-		Server_SetupCharacters();
-	}*/
 }
 
 void AMainInputCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -84,6 +88,30 @@ void AMainInputCharacter::Look(const FInputActionValue& Value) {
 	FRotator playerRotation = (GetControlRotation() - GetActorRotation()).GetNormalized();
 	SetPlayerPitch(playerRotation.Pitch);
 	if (!HasAuthority()) Server_SetRotation(GetActorRotation(), playerRotation.Pitch);
+}
+
+void AMainInputCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (ANecoSpirit* teammate = Cast<ANecoSpirit>(actor)) {
+		OnRevivePlayer();
+	}
+}
+
+void AMainInputCharacter::OnRevivePlayer() {
+	ReviveBox->OnComponentBeginOverlap.RemoveDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);
+	if (!HasAuthority()) {
+		Server_OnRevivePlayer();
+	} else {
+		Multicast_OnRevivePlayer();
+	}
+}
+
+void AMainInputCharacter::Server_OnRevivePlayer_Implementation() {
+	Super::OnRevivePlayer();
+	Multicast_OnRevivePlayer();
+}
+
+void AMainInputCharacter::Multicast_OnRevivePlayer_Implementation() {
+	Super::OnRevivePlayer();
 }
 
 void AMainInputCharacter::Server_SetupCharacters_Implementation() {
@@ -228,6 +256,21 @@ int AMainInputCharacter::RefillAmmo(int AmmoAmount) {
 		Server_OnRefillAmmo(AmmoAmount);
 	}
 	return Super::RefillAmmo(AmmoAmount);
+}
+
+bool AMainInputCharacter::CheckAlive() {
+	if (!IsAlive) return false;
+	if (CurrentHealth <= 0) {
+		IsAlive = false;
+		Tags.Remove(FName("MainPlayer"));
+		GetCharacterMovement()->StopMovementImmediately();
+		GetMovementComponent()->Deactivate();
+		DisableInput(Cast<APlayerController>(GetController()));
+		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+		GetMesh()->SetSimulatePhysics(true);
+		ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);
+	}
+	return IsAlive;
 }
 
 void AMainInputCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {

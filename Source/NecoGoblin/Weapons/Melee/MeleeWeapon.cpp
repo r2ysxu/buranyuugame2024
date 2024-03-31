@@ -43,7 +43,7 @@ float AMeleeWeapon::GetWeaponDamage() {
 }
 
 uint8 AMeleeWeapon::GetWeaponTeam() {
-	return Wielder->GetTeam();
+	return IsValid(Wielder) ? Wielder->GetTeam() : 0;
 }
 
 void AMeleeWeapon::SetIsMeleeAttacking(bool IsMeleeAttacking) {

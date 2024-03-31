@@ -32,17 +32,6 @@ void AMultiplayerGameMode::StartPlay() {
 	if (MultiplayerLobbyMenu) {
 		MultiplayerLobbyMenu->AddToViewport();
 	}
-
-	/*RoundHudWidget = CreateWidget<URoundHUD>(GetWorld(), RoundHudWidgetClass);
-	if (RoundHudWidget) {
-		RoundHudWidget->AddToViewport();
-		RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
-	GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
-	if (GameOverWidget) {
-		GameOverWidget->AddToViewport();
-		GameOverWidget->SetVisibility(ESlateVisibility::Hidden);
-	}*/
 }
 
 void AMultiplayerGameMode::StartSpawning() {

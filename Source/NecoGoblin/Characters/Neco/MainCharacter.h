@@ -132,6 +132,7 @@ protected:
 	virtual void OnSprint();
 	virtual void OnSprintStop();
 	virtual void OnRemoveBloodSplatter();
+	virtual void OnRevivePlayer();
 
 	void OnAimModeStart();
 	void OnAimModeStop();

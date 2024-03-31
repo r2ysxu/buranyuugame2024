@@ -37,10 +37,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ScrollAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
+	class USphereComponent* ReviveBox;
+
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value) override;
+
+	UFUNCTION() void OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(Server, Reliable) void Server_SetupCharacters();
 	UFUNCTION(Server, Unreliable) void Server_SetRotation(FRotator Rotation, float Pitch);
@@ -77,5 +82,12 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_OnRefillAmmo(int AmmoAmount);
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnRefillAmmo(int AmmoAmount);
 
+	virtual void OnRevivePlayer();
+	UFUNCTION(Server, Reliable) void Server_OnRevivePlayer();
+	UFUNCTION(NetMulticast, Reliable) void Multicast_OnRevivePlayer();
+
 public:
+	AMainInputCharacter();
+
+	virtual bool CheckAlive() override;
 };

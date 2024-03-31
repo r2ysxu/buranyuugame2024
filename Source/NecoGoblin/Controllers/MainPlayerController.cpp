@@ -36,6 +36,17 @@ void AMainPlayerController::Client_OnCharacterStart_Implementation() {
 	if (LoadingScreenMenu) {
 		LoadingScreenMenu->RemoveFromParent();
 	}
+
+	/*RoundHudWidget = CreateWidget<URoundHUD>(GetWorld(), RoundHudWidgetClass);
+	if (RoundHudWidget) {
+		RoundHudWidget->AddToViewport();
+		RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+	if (GameOverWidget) {
+		GameOverWidget->AddToViewport();
+		GameOverWidget->SetVisibility(ESlateVisibility::Hidden);
+	}*/
 }
 
 void AMainPlayerController::Client_OnEnterLobbyMode_Implementation() {
