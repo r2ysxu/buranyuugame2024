@@ -3,6 +3,7 @@
 
 #include "NGGameInstance.h"
 
+#include "Containers/Array.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "Kismet/GameplayStatics.h"
@@ -28,7 +29,9 @@ void UNGGameInstance::OnCreateSessionComplete(FName SessionName, bool IsSuccessf
 
 void UNGGameInstance::OnFindSessionComplete(bool IsSuccessful) {
 	if (IsSuccessful) {
-		SessionSearchResults = FoundSessions->SearchResults;
+		for (FOnlineSessionSearchResult result : FoundSessions->SearchResults) {
+			SessionSearchResults.Add(&result);
+		}
 		DelegateSessionFound.Broadcast();
 	}
 }
@@ -71,6 +74,6 @@ void UNGGameInstance::JumpToLevel(FString LevelName) {
 	GetWorld()->ServerTravel(LevelName);
 }
 
-TArray<FOnlineSessionSearchResult> UNGGameInstance::GetSearchResults() {
+TArray<FOnlineSessionSearchResult*> UNGGameInstance::GetSearchResults() {
 	return SessionSearchResults;
 }

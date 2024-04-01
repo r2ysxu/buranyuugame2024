@@ -21,7 +21,7 @@ protected:
 	IOnlineSessionPtr SessionInterface;
 	FName DefaultSessionName = FName("Session#");
 	TSharedPtr<FOnlineSessionSearch> FoundSessions;
-	TArray<FOnlineSessionSearchResult> SessionSearchResults;
+	TArray<FOnlineSessionSearchResult*> SessionSearchResults;
 
 	virtual void Init() override;
 
@@ -40,5 +40,5 @@ public:
 	void JoinSearchedSession(FOnlineSessionSearchResult SessionResult);
 	void JumpToLevel(FString LevelName);
 
-	TArray<FOnlineSessionSearchResult> GetSearchResults();
+	TArray<FOnlineSessionSearchResult*> GetSearchResults();
 };

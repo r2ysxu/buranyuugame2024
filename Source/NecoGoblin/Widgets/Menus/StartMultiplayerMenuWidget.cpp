@@ -21,14 +21,14 @@ void UStartMultiplayerMenuWidget::NativeConstruct() {
 	Cast<UNGGameInstance>(GetGameInstance())->DelegateSessionFound.AddDynamic(this, &UStartMultiplayerMenuWidget::OnUpdateSearchedSession);
 }
 
-void UStartMultiplayerMenuWidget::PopulateSessionList(TArray<FOnlineSessionSearchResult> Results) {
+void UStartMultiplayerMenuWidget::PopulateSessionList(TArray<FOnlineSessionSearchResult*> Results) {
 	SessionListPanel->ClearChildren();
-	for (FOnlineSessionSearchResult result : Results) {
+	for (FOnlineSessionSearchResult* result : Results) {
 		UHorizontalBox* frame = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("SessionResult_Frame"));
 		UTextBlock* sessionNameText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("SessionResult_Name"));
-		sessionNameText->SetText(FText::FromString(result.GetSessionIdStr()));
+		sessionNameText->SetText(FText::FromString(result->GetSessionIdStr()));
 		UJoinSessionButton* joinSessionbutton = WidgetTree->ConstructWidget<UJoinSessionButton>(UJoinSessionButton::StaticClass(), TEXT("JoinSesion_Button"));
-		joinSessionbutton->SetupJoinTarget(result);
+		joinSessionbutton->SetupJoinTarget(*result);
 		UTextBlock* joinSessionText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("SessionResult_JoinButtonPrompt"));
 		joinSessionText->SetText(FText::FromString("Join"));
 		joinSessionbutton->AddChild(joinSessionText);
@@ -57,7 +57,7 @@ void UStartMultiplayerMenuWidget::OnMPSearchClicked() {
 
 void UStartMultiplayerMenuWidget::OnUpdateSearchedSession() {
 	MPSearchButton->SetIsEnabled(true);
-	TArray<FOnlineSessionSearchResult> results = Cast<UNGGameInstance>(GetGameInstance())->GetSearchResults();
+	TArray<FOnlineSessionSearchResult*> results = Cast<UNGGameInstance>(GetGameInstance())->GetSearchResults();
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, FString::FromInt(results.Num()));
 	PopulateSessionList(results);
 }

@@ -14,7 +14,7 @@ class NECOGOBLIN_API UStartMultiplayerMenuWidget : public UUserWidget {
 	GENERATED_BODY()
 
 private:
-	void PopulateSessionList(TArray<FOnlineSessionSearchResult> Results);
+	void PopulateSessionList(TArray<FOnlineSessionSearchResult*> Results);
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
