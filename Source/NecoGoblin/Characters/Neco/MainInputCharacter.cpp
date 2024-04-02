@@ -59,6 +59,7 @@ void AMainInputCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 }
 
 void AMainInputCharacter::Move(const FInputActionValue& Value) {
+	if (!IsAlive) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -97,6 +98,7 @@ void AMainInputCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedCompo
 }
 
 void AMainInputCharacter::OnRevivePlayer() {
+	if (IsAlive) return;
 	ReviveBox->OnComponentBeginOverlap.RemoveDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);
 	if (!HasAuthority()) {
 		Server_OnRevivePlayer();
@@ -274,7 +276,7 @@ bool AMainInputCharacter::CheckAlive() {
 		Tags.Remove(FName("MainPlayer"));
 		GetCharacterMovement()->StopMovementImmediately();
 		GetMovementComponent()->Deactivate();
-		DisableInput(Cast<APlayerController>(GetController()));
+		//DisableInput(Cast<APlayerController>(GetController()));
 		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 		GetMesh()->SetSimulatePhysics(true);
 		ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);

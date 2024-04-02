@@ -142,7 +142,7 @@ FFireResponse AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVecto
 	FVector endLocation = startLocation + (forwardVector * MaxRange);
 	collisionParams.AddIgnoredActor(this);
 
-	DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Green, false, 3.f, 0U, 1.f);
+	//DrawDebugLine(GetWorld(), startLocation, endLocation, FColor::Green, false, 3.f, 0U, 1.f);
 	if (GetWorld()->LineTraceSingleByChannel(OUT outResult, startLocation, endLocation, ECollisionChannel::ECC_Pawn, collisionParams)) {
 		if (AHumanoid* target = Cast<AHumanoid>(outResult.GetActor())) {
 			return FFireResponse(EFireType::VE_Hit, FString(TEXT("HeadBox")) == outResult.GetComponent()->GetName(), target, outResult.ImpactPoint);

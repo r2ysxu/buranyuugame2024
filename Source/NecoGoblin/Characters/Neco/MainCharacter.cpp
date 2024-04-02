@@ -198,7 +198,7 @@ void AMainCharacter::SpawnMagazineActor() {
 }
 
 void AMainCharacter::OnAimModeStart() {
-	if (!IsToggleAim) {
+	if (IsAlive && !IsToggleAim) {
 		OnStartAim();
 	}
 }
@@ -240,7 +240,7 @@ void AMainCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool Is
 }
 
 void AMainCharacter::OnFireWeapon() {
-	if (Firearm && IsAimMode && !IsSkillMenuOpen) {
+	if (IsAlive && Firearm && IsAimMode && !IsSkillMenuOpen) {
 		OnFireWeaponOnce();
 		if (!Firearm->IsSemiAutomatic()) {
 			GetWorld()->GetTimerManager().SetTimer(OnFireWeaponHandler, this, &AMainCharacter::OnFireWeaponOnce, Firearm->GetFireRate() * upgradeComponent->GetFireRateModifier(), true);
@@ -260,8 +260,10 @@ void AMainCharacter::OnFireStop() {
 }
 
 void AMainCharacter::OnReloadWeapon() {
-	float animationDelay = RELOAD_SPEED * Firearm->GetReloadSpeedModifier() * upgradeComponent->GetReloadSpeedModifier();
-	Firearm->ReloadWeapon(animationDelay);
+	if (IsAlive) {
+		float animationDelay = RELOAD_SPEED * Firearm->GetReloadSpeedModifier() * upgradeComponent->GetReloadSpeedModifier();
+		Firearm->ReloadWeapon(animationDelay);
+	}
 }
 
 void AMainCharacter::SetCharacterIndex(int Index) {
@@ -274,6 +276,7 @@ int AMainCharacter::GetCharacterIndex() {
 }
 
 void AMainCharacter::OnInteract() {
+	if (!IsAlive) return;
 	if (CanFillAmmo) {
 		Firearm->RefillAmmo(RESERVE_AMMO * upgradeComponent->GetAdditionalReserveAmmoModifier());
 	} else if (SelectableWeaponKey != FName()) {
@@ -282,7 +285,7 @@ void AMainCharacter::OnInteract() {
 }
 
 void AMainCharacter::OnSprint() {
-	if (Stamina <= (MAX_STAMINA * 0.4f) || IsSprinting) return;
+	if (!IsAlive || Stamina <= (MAX_STAMINA * 0.4f) || IsSprinting) return;
 	OnStopAim();
 	IsSprinting = true;
 	GetCharacterMovement()->MaxWalkSpeed = SPRINT_SPEED * upgradeComponent->GetMovementSpeedModifer();
@@ -307,6 +310,7 @@ void AMainCharacter::OnSprintStop() {
 }
 
 void AMainCharacter::OnHealthRegen() {
+	if (!IsAlive) return;
 	CurrentHealth = FMath::Min(CurrentHealth + upgradeComponent->GetRegenHP(), GetMaxHealth());
 	Delegate_HealthChange.Broadcast(GetHealthPercentage());
 }
@@ -323,6 +327,7 @@ int AMainCharacter::RefillAmmo(int AmmoAmount) {
 }
 
 void AMainCharacter::StaminaRegen() {
+	if (!IsAlive) return;
 	if (IsSprinting || Stamina >= MAX_STAMINA * upgradeComponent->GetStaminaModifier()) {
 		GetWorld()->GetTimerManager().PauseTimer(OnSprintRegenHandler);
 	} else {
@@ -361,7 +366,7 @@ AFirearmWeapon* AMainCharacter::GetWeapon() {
 }
 
 void AMainCharacter::OnStartAim() {
-	if (!IsAimMode && !IsSkillMenuOpen) {
+	if (IsAlive && !IsAimMode && !IsSkillMenuOpen) {
 		IsAimMode = true;
 		if (IsSprinting) OnSprintStop();
 		GetCameraBoom()->SetRelativeLocation(FVector(0, 50, 50));
@@ -385,6 +390,7 @@ void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 }
 
 void AMainCharacter::HealthPot(float HealAmount) {
+	if (!IsAlive) return;
 	const float totalHealAmount = HealAmount + upgradeComponent->GetAdditionalHeal();
 	CurrentHealth = FMath::Min(CurrentHealth + totalHealAmount, GetMaxHealth());
 	if (HealthPickupVoice) UGameplayStatics::PlaySound2D(GetWorld(), HealthPickupVoice);
@@ -392,11 +398,12 @@ void AMainCharacter::HealthPot(float HealAmount) {
 }
 
 void AMainCharacter::UpgradeSkill(FNecoSkills Skill) {
+	if (!IsAlive) return;
 	GetSkillUpgrades()->AddSkillPoint(Skill);
 }
 
 void AMainCharacter::OnShowSkills() {
-	if (!IsSkillMenuOpen) {
+	if (!IsSkillMenuOpen && IsAlive) {
 		upgradeComponent->EnterScreen();
 		IsSkillMenuOpen = true;
 	} else {
