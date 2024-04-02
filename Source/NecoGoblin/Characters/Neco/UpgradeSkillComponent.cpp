@@ -3,6 +3,7 @@
 
 #include "UpgradeSkillComponent.h"
 #include "MainCharacter.h"
+#include "../../Widgets/Menus/SkillsMenuWidget.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
@@ -30,9 +31,10 @@ void UUpgradeSkillComponent::SetParentCharacter(AMainCharacter* character) {
 	ParentCharacter = character;
 }
 
-void UUpgradeSkillComponent::SetupWidget(UUserWidget* skillHudWidget) {
+void UUpgradeSkillComponent::SetupWidget(USkillsMenuWidget* skillHudWidget) {
 	SkillHudWidget = skillHudWidget;
 	if (SkillHudWidget) {
+		SkillHudWidget->SetCharacter(ParentCharacter);
 		SkillHudWidget->AddToViewport();
 		SkillHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}

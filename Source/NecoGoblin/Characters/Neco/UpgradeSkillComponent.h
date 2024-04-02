@@ -35,11 +35,11 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UUserWidget* SkillHudWidget;
+	class USkillsMenuWidget* SkillHudWidget;
 
 	class AMainCharacter* ParentCharacter;
 	int AddedSkillPoints = 0;
-	int SkillPoints = 0;
+	int SkillPoints = 15;
 	int ExpPoints = 0;
 
 	uint8 Skills[SKILLS_SIZE];
@@ -62,7 +62,7 @@ public:
 	UUpgradeSkillComponent();
 
 	void SetParentCharacter(AMainCharacter* mainCharacter);
-	void SetupWidget(UUserWidget* skillHudWidget);
+	void SetupWidget(class USkillsMenuWidget* skillHudWidget);
 	void ResetSkills();
 
 	UFUNCTION(BlueprintCallable) bool AddSkillPoint(FNecoSkills Skill);

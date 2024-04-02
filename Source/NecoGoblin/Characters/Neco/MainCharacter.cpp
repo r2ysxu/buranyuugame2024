@@ -5,6 +5,7 @@
 #include "../../NecoGoblinGameMode.h"
 #include "../../Widgets/HUDs/CharacterHUD.h"
 #include "../../Widgets/Actors/MagazineActor.h"
+#include "../../Widgets/Menus/SkillsMenuWidget.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -94,7 +95,7 @@ void AMainCharacter::SetupHuds() {
 		CrosshairHudWidget->AddToViewport();
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
-	SkillHudWidget = CreateWidget<UUserWidget>(GetWorld(), SkillHudWidgetClass);
+	SkillHudWidget = CreateWidget<USkillsMenuWidget>(GetWorld(), SkillHudWidgetClass);
 	upgradeComponent->SetupWidget(SkillHudWidget);
 }
 
@@ -388,6 +389,10 @@ void AMainCharacter::HealthPot(float HealAmount) {
 	CurrentHealth = FMath::Min(CurrentHealth + totalHealAmount, GetMaxHealth());
 	if (HealthPickupVoice) UGameplayStatics::PlaySound2D(GetWorld(), HealthPickupVoice);
 	Delegate_HealthChange.Broadcast(GetHealthPercentage());
+}
+
+void AMainCharacter::UpgradeSkill(FNecoSkills Skill) {
+	GetSkillUpgrades()->AddSkillPoint(Skill);
 }
 
 void AMainCharacter::OnShowSkills() {

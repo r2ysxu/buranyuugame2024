@@ -86,8 +86,12 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_OnRevivePlayer();
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnRevivePlayer();
 
+	UFUNCTION(Server, Reliable) void Server_UpgradeSkill(enum FNecoSkills Skill);
+	UFUNCTION(NetMulticast, Reliable) void Multicast_UpgradeSkill(enum FNecoSkills Skill);
+
 public:
 	AMainInputCharacter();
 
 	virtual bool CheckAlive() override;
+	virtual void UpgradeSkill(enum FNecoSkills Skill) override;
 };

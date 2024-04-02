@@ -63,8 +63,8 @@ protected:
 	UCharacterHUD* HudWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UUserWidget> SkillHudWidgetClass;
-	UUserWidget* SkillHudWidget;
+	TSubclassOf<class USkillsMenuWidget> SkillHudWidgetClass;
+	USkillsMenuWidget* SkillHudWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class AMagazineActor> MagazineActorBPClass;
@@ -194,6 +194,7 @@ public:
 	virtual bool CheckAlive() override;
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
+	virtual void UpgradeSkill(FNecoSkills Skill);
 	UFUNCTION(BlueprintCallable) void PlayGetupMontage();
 	UFUNCTION(BlueprintCallable) void SetupHuds();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();

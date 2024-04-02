@@ -258,6 +258,15 @@ int AMainInputCharacter::RefillAmmo(int AmmoAmount) {
 	return Super::RefillAmmo(AmmoAmount);
 }
 
+void AMainInputCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {
+	Super::RefillAmmo(AmmoAmount);
+	Multicast_OnRefillAmmo(AmmoAmount);
+}
+
+void AMainInputCharacter::Multicast_OnRefillAmmo_Implementation(int AmmoAmount) {
+	Super::RefillAmmo(AmmoAmount);
+}
+
 bool AMainInputCharacter::CheckAlive() {
 	if (!IsAlive) return false;
 	if (CurrentHealth <= 0) {
@@ -273,11 +282,18 @@ bool AMainInputCharacter::CheckAlive() {
 	return IsAlive;
 }
 
-void AMainInputCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {
-	Super::RefillAmmo(AmmoAmount);
-	Multicast_OnRefillAmmo(AmmoAmount);
+void AMainInputCharacter::UpgradeSkill(FNecoSkills Skill) {
+	if (!HasAuthority()) {
+		Server_UpgradeSkill(Skill);
+	} else {
+		Server_UpgradeSkill_Implementation(Skill);
+	}
 }
 
-void AMainInputCharacter::Multicast_OnRefillAmmo_Implementation(int AmmoAmount) {
-	Super::RefillAmmo(AmmoAmount);
+void AMainInputCharacter::Server_UpgradeSkill_Implementation(FNecoSkills Skill) {
+	Multicast_UpgradeSkill(Skill);
+}
+
+void AMainInputCharacter::Multicast_UpgradeSkill_Implementation(FNecoSkills Skill) {
+	Super::UpgradeSkill(Skill);
 }
