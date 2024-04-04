@@ -14,7 +14,7 @@ class NECOGOBLIN_API URoundHUD : public UUserWidget {
 	GENERATED_BODY()
 	
 protected:
-	int CurrentRound;
+	int CurrentRound = 0;
 public:
 
 	FORCEINLINE void SetCurrentRound(int Round) { CurrentRound = Round; }

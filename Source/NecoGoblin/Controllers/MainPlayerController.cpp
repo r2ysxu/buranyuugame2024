@@ -3,6 +3,7 @@
 
 #include "MainPlayerController.h"
 #include "../Characters/Neco/MainCharacter.h"
+#include "../Widgets/HUDs/RoundHUD.h"
 
 #include "Blueprint/UserWidget.h"
 #include "EnhancedInputComponent.h"
@@ -37,12 +38,10 @@ void AMainPlayerController::Client_OnCharacterStart_Implementation() {
 		LoadingScreenMenu->RemoveFromParent();
 	}
 
-	/*RoundHudWidget = CreateWidget<URoundHUD>(GetWorld(), RoundHudWidgetClass);
+	RoundHudWidget = CreateWidget<URoundHUD>(GetWorld(), RoundHudWidgetClass);
 	if (RoundHudWidget) {
 		RoundHudWidget->AddToViewport();
-		RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
-	}*/
-
+	}
 }
 
 void AMainPlayerController::Client_OnEnterLobbyMode_Implementation() {
@@ -56,4 +55,10 @@ void AMainPlayerController::Client_OnGameover_Implementation() {
 		GameoverScreenMenu->AddToViewport();
 	}
 	// Exit session and return to menu
+}
+
+void AMainPlayerController::Client_RoundUpdate_Implementation(int RoundNumber) {
+	if (RoundHudWidget) {
+		RoundHudWidget->SetCurrentRound(RoundNumber);
+	}
 }
