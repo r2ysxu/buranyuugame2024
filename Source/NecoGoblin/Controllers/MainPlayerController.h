@@ -18,9 +18,12 @@ class NECOGOBLIN_API AMainPlayerController : public APlayerController {
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> LoadingScreenMenuClass;
-	class UUserWidget* LoadingScreenMenu;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UUserWidget> GameoverScreenMenuClass;
 
 	class AMainCharacter* Character;
+	class UUserWidget* LoadingScreenMenu;
+	class UUserWidget* GameoverScreenMenu;
 
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* aPawn) override;
@@ -29,4 +32,5 @@ public:
 	UFUNCTION(Client, Reliable) void Client_OnInitiateLevelLoad();
 	UFUNCTION(Client, Reliable) void Client_OnEnterLobbyMode();
 	UFUNCTION(Client, Reliable) void Client_OnCharacterStart();
+	UFUNCTION(Client, Reliable) void Client_OnGameover();
 };

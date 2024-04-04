@@ -24,6 +24,7 @@ AMultiplayerGameMode::AMultiplayerGameMode() {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 	UGameplayStatics::LoadStreamLevel(GetWorld(), LOBBY_MENU_MAP, true, true, FLatentActionInfo());
+	DelegateGameOver.AddDynamic(this, &AMultiplayerGameMode::OnPlayerDead);
 }
 
 void AMultiplayerGameMode::StartPlay() {
@@ -44,10 +45,6 @@ void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {
 	AMainPlayerController* controller = Cast<AMainPlayerController>(NewPlayer);
 	if (IsValid(controller)) {
 		controller->Client_OnEnterLobbyMode();
-		//controller->SetInputMode(FInputModeUIOnly());
-		//controller->bShowMouseCursor = true;
-	} else {
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("controller is nul WTF"));
 	}
 }
 
@@ -67,6 +64,25 @@ void AMultiplayerGameMode::OnInitiateLevelLoadForPlayers() {
 	for (FConstPlayerControllerIterator controllerIt = GetWorld()->GetPlayerControllerIterator(); controllerIt; controllerIt++) {
 		if (AMainPlayerController* controller = Cast<AMainPlayerController>(controllerIt->Get())) {
 			controller->Client_OnInitiateLevelLoad();
+		}
+	}
+}
+
+void AMultiplayerGameMode::OnPlayerDead(float Delay) {
+	bool allPlayerDead = true;
+	for (FConstPlayerControllerIterator controllerIt = GetWorld()->GetPlayerControllerIterator(); controllerIt; controllerIt++) {
+		if (AMainPlayerController* controller = Cast<AMainPlayerController>(controllerIt->Get())) {
+			if (Cast<AMainCharacter>(controller->GetPawn())->GetIsAlive()) {
+				allPlayerDead = false;
+				break;
+			}
+		}
+	}
+	if (allPlayerDead) {
+		for (FConstPlayerControllerIterator controllerIt = GetWorld()->GetPlayerControllerIterator(); controllerIt; controllerIt++) {
+			if (AMainPlayerController* controller = Cast<AMainPlayerController>(controllerIt->Get())) {
+				controller->Client_OnGameover();
+			}
 		}
 	}
 }

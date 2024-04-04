@@ -89,6 +89,8 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_UpgradeSkill(enum FNecoSkills Skill);
 	UFUNCTION(NetMulticast, Reliable) void Multicast_UpgradeSkill(enum FNecoSkills Skill);
 
+	UFUNCTION(Server, Reliable) void Server_NotifyDead();
+
 public:
 	AMainInputCharacter();
 

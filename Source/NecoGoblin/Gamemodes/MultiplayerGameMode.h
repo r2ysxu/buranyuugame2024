@@ -34,6 +34,7 @@ protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;
 	void SpawnEnemy();
 	void OnInitiateLevelLoadForPlayers();
+
 	
 	UFUNCTION() void SetupPlayers();
 	
@@ -41,4 +42,5 @@ public:
 	AMultiplayerGameMode();
 
 	void LoadIntoMPLevel(FName LevelName);
+	void OnPlayerDead(float Delay);
 };

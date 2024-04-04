@@ -41,15 +41,19 @@ void AMainPlayerController::Client_OnCharacterStart_Implementation() {
 	if (RoundHudWidget) {
 		RoundHudWidget->AddToViewport();
 		RoundHudWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
-	GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
-	if (GameOverWidget) {
-		GameOverWidget->AddToViewport();
-		GameOverWidget->SetVisibility(ESlateVisibility::Hidden);
 	}*/
+
 }
 
 void AMainPlayerController::Client_OnEnterLobbyMode_Implementation() {
 	SetInputMode(FInputModeUIOnly());
 	bShowMouseCursor = true;
+}
+
+void AMainPlayerController::Client_OnGameover_Implementation() {
+	GameoverScreenMenu = CreateWidget<UUserWidget>(GetWorld(), GameoverScreenMenuClass);
+	if (GameoverScreenMenu) {
+		GameoverScreenMenu->AddToViewport();
+	}
+	// Exit session and return to menu
 }

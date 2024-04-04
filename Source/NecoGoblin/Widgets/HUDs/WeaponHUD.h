@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "../../Weapons/Ranged/FirearmWeapon.h"
+
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "WeaponHUD.generated.h"

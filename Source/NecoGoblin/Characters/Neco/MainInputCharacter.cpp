@@ -2,9 +2,11 @@
 
 
 #include "MainInputCharacter.h"
+#include "../../Gamemodes/MultiplayerGameMode.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/InputComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -14,7 +16,7 @@
 
 AMainInputCharacter::AMainInputCharacter() {
 	ReviveBox = CreateDefaultSubobject<USphereComponent>(TEXT("ReviveBox"));
-	ReviveBox->SetupAttachment(GetRootComponent());
+	ReviveBox->SetupAttachment(GetMesh());
 	ReviveBox->SetSphereRadius(25.f);
 	ReviveBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	//ReviveBox->bHiddenInGame = false;
@@ -88,7 +90,7 @@ void AMainInputCharacter::Look(const FInputActionValue& Value) {
 
 	FRotator playerRotation = (GetControlRotation() - GetActorRotation()).GetNormalized();
 	SetPlayerPitch(playerRotation.Pitch);
-	if (!HasAuthority()) Server_SetRotation(GetActorRotation(), playerRotation.Pitch);
+	//if (!HasAuthority()) Server_SetRotation(GetActorRotation(), playerRotation.Pitch);
 }
 
 void AMainInputCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
@@ -127,6 +129,7 @@ void AMainInputCharacter::Server_SetRotation_Implementation(FRotator Rotation, f
 }
 
 void AMainInputCharacter::OnStartAim() {
+	if (IsAimMode) return;
 	Super::OnStartAim();
 	if (!HasAuthority()) {
 		Server_OnStartAim();
@@ -147,6 +150,7 @@ void AMainInputCharacter::Multicast_OnStartAim_Implementation() {
 }
 
 void AMainInputCharacter::OnStopAim() {
+	if (!IsAimMode) return;
 	Super::OnStopAim();
 	if (!HasAuthority()) {
 		Server_OnStopAim();
@@ -279,6 +283,7 @@ bool AMainInputCharacter::CheckAlive() {
 		//DisableInput(Cast<APlayerController>(GetController()));
 		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 		GetMesh()->SetSimulatePhysics(true);
+		Server_NotifyDead();
 		ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);
 	}
 	return IsAlive;
@@ -298,4 +303,13 @@ void AMainInputCharacter::Server_UpgradeSkill_Implementation(FNecoSkills Skill) 
 
 void AMainInputCharacter::Multicast_UpgradeSkill_Implementation(FNecoSkills Skill) {
 	Super::UpgradeSkill(Skill);
+}
+
+
+void AMainInputCharacter::Server_NotifyDead_Implementation() {
+	AMultiplayerGameMode* gameMode = Cast<AMultiplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	gameMode->OnPlayerDead(0.f);
+	//if (IsValid(gameMode)) {
+	//	gameMode->DelegateGameOver.Broadcast(20.f);
+	//}
 }
