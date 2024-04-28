@@ -36,7 +36,9 @@ void AFirearmWeapon::BeginPlay() {
 	Super::BeginPlay();
 	ChangeWeapon(FName("AK-47"));
 	WeaponMeshComponent->SetRelativeScale3D(FVector(0.7, 0.7, 0.7));
-	WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
+	//WeaponMeshComponent->AddLocalRotation(FRotator(0.f, 180, 20.f));
+	WeaponMeshComponent->AddLocalOffset(FVector(0.f, -5.f, 0.f));
+	WeaponMeshComponent->AddLocalRotation(FRotator(90.f, 180.f, 0.f));
 	RefillAmmo(30 * 3);
 }
 

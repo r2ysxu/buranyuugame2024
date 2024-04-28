@@ -31,7 +31,7 @@ public:
 	AMeleeGoblinController();
 	virtual void OnPossess(APawn* InPawn) override;
 
-	UFUNCTION(BlueprintCallable) FORCEINLINE FRotator FindTargetHeadRotation();
+	UFUNCTION(BlueprintCallable) FRotator FindTargetHeadRotation();
 
 	void OnMoveToTarget();
 };

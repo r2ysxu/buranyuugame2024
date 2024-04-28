@@ -52,23 +52,28 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> LoadingScreenWidgetClass;
-	UUserWidget* LoadingScreenWidget;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> CrosshairHudWidgetClass;
-	UUserWidget* CrosshairHudWidget;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UCharacterHUD> HudWidgetClass;
-	UCharacterHUD* HudWidget;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class USkillsMenuWidget> SkillHudWidgetClass;
-	USkillsMenuWidget* SkillHudWidget;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UCharacterSwitcherMenuWidget> CharacterSwitcherMenuClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class AMagazineActor> MagazineActorBPClass;
+
+	UUserWidget* LoadingScreenWidget;
+	UUserWidget* CrosshairHudWidget;
+	UCharacterHUD* HudWidget;
+	USkillsMenuWidget* SkillHudWidget;
+	class UCharacterSwitcherMenuWidget* CharacterSwitcherMenu;
 	class AMagazineActor* MagazineActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	TArray<USkeletalMesh*> CharacterMeshes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	TArray<UClass*> CharacterAnimClasses;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* RefillSound;
@@ -167,6 +172,7 @@ public:
 	UFUNCTION(BlueprintCallable) float GetReloadUIFrame();
 	UFUNCTION(BlueprintCallable) bool GetIsFiringWeapon();
 	UFUNCTION(BlueprintCallable) bool GetIsReloading();
+	UFUNCTION(BlueprintCallable) int GetCharacterSkinSize();
 	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / GetMaxHealth(); }
 	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetGameVolume() { return GameVolume; }
@@ -200,4 +206,5 @@ public:
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 	UFUNCTION() class AFirearmWeapon* GetWeapon();
+	void ChangeCharacterSkin(int SkinIndex);
 };

@@ -6,6 +6,7 @@
 #include "../../Widgets/HUDs/CharacterHUD.h"
 #include "../../Widgets/Actors/MagazineActor.h"
 #include "../../Widgets/Menus/SkillsMenuWidget.h"
+#include "../../Widgets/Menus/CharacterSwitcherMenuWidget.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -71,8 +72,14 @@ void AMainCharacter::BeginPlay() {
 
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
+
 	//GetMesh()->SetVisibility(false);
 	//if (Firearm) Firearm->SetVisible(false);
+	CharacterSwitcherMenu = CreateWidget<UCharacterSwitcherMenuWidget>(GetWorld(), CharacterSwitcherMenuClass);
+	if (CharacterSwitcherMenu) {
+		CharacterSwitcherMenu->SetParent(this);
+		CharacterSwitcherMenu->AddToViewport();
+	}
 
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
@@ -86,6 +93,7 @@ void AMainCharacter::Tick(float DeltaSeconds) {
 }
 
 void AMainCharacter::SetupHuds() {
+	if (CharacterSwitcherMenu) CharacterSwitcherMenu->RemoveFromParent();
 	HudWidget = CreateWidget<UCharacterHUD>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
 		HudWidget->AddToViewport();
@@ -365,6 +373,12 @@ AFirearmWeapon* AMainCharacter::GetWeapon() {
 	return Firearm;
 }
 
+void AMainCharacter::ChangeCharacterSkin(int SkinIndex) {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("ChangeCharacterSkin"));
+	GetMesh()->SetSkeletalMesh(CharacterMeshes[SkinIndex]);
+	GetMesh()->SetAnimClass(CharacterAnimClasses[SkinIndex]);
+}
+
 void AMainCharacter::OnStartAim() {
 	if (IsAlive && !IsAimMode && !IsSkillMenuOpen) {
 		IsAimMode = true;
@@ -435,6 +449,10 @@ float AMainCharacter::GetReloadUIFrame() {
 
 bool AMainCharacter::GetIsReloading() {
 	return Firearm && Firearm->GetIsReloading();
+}
+
+int AMainCharacter::GetCharacterSkinSize() {
+	return CharacterMeshes.Num();
 }
 
 bool AMainCharacter::GetIsFiringWeapon() {

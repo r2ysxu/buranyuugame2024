@@ -17,6 +17,7 @@ void UNGGameInstance::Init() {
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UNGGameInstance::OnCreateSessionComplete);
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UNGGameInstance::OnFindSessionComplete);
 			SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UNGGameInstance::OnJoinSessionComplete);
+			SessionInterface->OnSessionFailureDelegates.AddUObject(this, &UNGGameInstance::OnSessionFailed);
 		}
 	}
 }
@@ -46,12 +47,16 @@ void UNGGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCom
 	}
 }
 
+void UNGGameInstance::OnSessionFailed(const FUniqueNetId& Id, ESessionFailure::Type ErrorType) {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnSessionFailed"));
+}
+
 void UNGGameInstance::HostSession() {
 	FOnlineSessionSettings sessionSettings;
 	sessionSettings.bAllowJoinInProgress = true;
-	sessionSettings.bIsDedicated = false;
+	//sessionSettings.bIsDedicated = false;
 	sessionSettings.bIsLANMatch = true;
-	//sessionSettings.bIsLANMatch = false;
+	sessionSettings.bIsLANMatch = false;
 	sessionSettings.bUsesPresence = true;
 	sessionSettings.NumPublicConnections = 4;
 	sessionSettings.bShouldAdvertise = true;

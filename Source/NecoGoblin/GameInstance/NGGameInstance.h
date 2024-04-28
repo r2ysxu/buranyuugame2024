@@ -28,6 +28,7 @@ protected:
 	void OnCreateSessionComplete(FName SessionName, bool IsSuccessful);
 	void OnFindSessionComplete(bool IsSuccessful);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	void OnSessionFailed(const FUniqueNetId& Id, ESessionFailure::Type ErrorType);
 
 public:
 
