@@ -55,7 +55,7 @@ void UNGGameInstance::HostSession() {
 	FOnlineSessionSettings sessionSettings;
 	sessionSettings.bAllowJoinInProgress = true;
 	//sessionSettings.bIsDedicated = false;
-	sessionSettings.bIsLANMatch = true;
+	//sessionSettings.bIsLANMatch = true;
 	sessionSettings.bIsLANMatch = false;
 	sessionSettings.bUsesPresence = true;
 	sessionSettings.NumPublicConnections = 4;
@@ -66,7 +66,7 @@ void UNGGameInstance::HostSession() {
 
 void UNGGameInstance::SearchSessions() {
 	FoundSessions = MakeShareable(new FOnlineSessionSearch());
-	FoundSessions->bIsLanQuery = true;
+	//FoundSessions->bIsLanQuery = true;
 	FoundSessions->MaxSearchResults = 10000;
 	SessionInterface->FindSessions(0, FoundSessions.ToSharedRef());
 }
