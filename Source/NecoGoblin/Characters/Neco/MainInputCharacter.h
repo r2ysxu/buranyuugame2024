@@ -82,6 +82,14 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_OnRefillAmmo(int AmmoAmount);
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnRefillAmmo(int AmmoAmount);
 
+	virtual void ChangeCharacterSkin(int SkinIndex) override;
+	UFUNCTION(Server, Reliable) void Server_ChangeCharacterSkin(int SkinIndex);
+	UFUNCTION(NetMultiCast, Reliable) void Multicast_ChangeCharacterSkin(int SkinIndex);
+
+	virtual void OnInteract() override;
+	UFUNCTION(Server, Reliable) void Server_OnInteract();
+	UFUNCTION(NetMulticast, Reliable) void Multicast_OnInteract();
+
 	virtual void OnRevivePlayer();
 	UFUNCTION(Server, Reliable) void Server_OnRevivePlayer();
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnRevivePlayer();

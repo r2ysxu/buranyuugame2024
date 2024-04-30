@@ -34,4 +34,5 @@ public:
 
 	void ChangeToMenuCamera();
 	void ChangeToMultiplayer();
+	void ChangeToSingleplayer();
 };

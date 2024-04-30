@@ -187,7 +187,6 @@ public:
 
 	void SetCharacterIndex(int Index);
 	int GetCharacterIndex();
-	void OnInteract();
 	void UpgradeWeaponDamage(float additionalDamage);
 	void OnHealthRegen();
 	void SetChangableWeapon(FName WeaponKey);
@@ -196,6 +195,7 @@ public:
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
 
+	virtual	void OnInteract();
 	virtual int RefillAmmo(int AmmoAmount);
 	virtual bool CheckAlive() override;
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;

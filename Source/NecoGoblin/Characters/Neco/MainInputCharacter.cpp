@@ -99,6 +99,23 @@ void AMainInputCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedCompo
 	}
 }
 
+void AMainInputCharacter::OnInteract() {
+	if (!HasAuthority()) {
+		Server_OnInteract();
+	} else {
+		Server_OnInteract_Implementation();
+	}
+}
+
+void AMainInputCharacter::Server_OnInteract_Implementation() {
+	Super::OnInteract();
+	Multicast_OnInteract();
+}
+
+void AMainInputCharacter::Multicast_OnInteract_Implementation() {
+	Super::OnInteract();
+}
+
 void AMainInputCharacter::OnRevivePlayer() {
 	if (IsAlive) return;
 	ReviveBox->OnComponentBeginOverlap.RemoveDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);
@@ -262,6 +279,22 @@ int AMainInputCharacter::RefillAmmo(int AmmoAmount) {
 		Server_OnRefillAmmo(AmmoAmount);
 	}
 	return Super::RefillAmmo(AmmoAmount);
+}
+
+void AMainInputCharacter::ChangeCharacterSkin(int SkinIndex) {
+	if (!HasAuthority()) {
+		Server_ChangeCharacterSkin(SkinIndex);
+	}
+	Super::ChangeCharacterSkin(SkinIndex);
+}
+
+void AMainInputCharacter::Server_ChangeCharacterSkin_Implementation(int SkinIndex) {
+	Super::ChangeCharacterSkin(SkinIndex);
+	Multicast_ChangeCharacterSkin(SkinIndex);
+}
+
+void AMainInputCharacter::Multicast_ChangeCharacterSkin_Implementation(int SkinIndex) {
+	Super::ChangeCharacterSkin(SkinIndex);
 }
 
 void AMainInputCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {

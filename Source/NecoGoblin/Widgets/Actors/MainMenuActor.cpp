@@ -42,3 +42,7 @@ void AMainMenuActor::ChangeToMultiplayer() {
 		StartMPMenuWidget->SetParent(this);
 	}
 }
+
+void AMainMenuActor::ChangeToSingleplayer() {
+	UGameplayStatics::OpenLevel(GetWorld(), "IslandMap");
+}

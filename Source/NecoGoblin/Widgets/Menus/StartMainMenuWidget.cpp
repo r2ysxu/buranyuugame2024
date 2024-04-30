@@ -11,7 +11,9 @@ void UStartMainMenuWidget::NativeConstruct() {
 	PlayMultiplayerButton->OnClicked.AddDynamic(this, &UStartMainMenuWidget::OnPlayMPClicked);
 }
 
-void UStartMainMenuWidget::OnPlaySPClicked() {}
+void UStartMainMenuWidget::OnPlaySPClicked() {
+	Parent->ChangeToSingleplayer();
+}
 
 void UStartMainMenuWidget::OnPlayMPClicked() {
 	SetVisibility(ESlateVisibility::Hidden);
