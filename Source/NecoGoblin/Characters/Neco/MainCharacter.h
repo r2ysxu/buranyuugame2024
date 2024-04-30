@@ -93,9 +93,9 @@ protected:
 	USoundBase* HealthPickupVoice;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
-	class UAnimMontage* FlinchMontage;
+	TArray<class UAnimMontage*> FlinchMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
-	class UAnimMontage* GetupMontage;
+	TArray<class UAnimMontage*> GetupMontage;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
@@ -201,10 +201,10 @@ public:
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
 	virtual void UpgradeSkill(FNecoSkills Skill);
+	virtual void ChangeCharacterSkin(int SkinIndex);
 	UFUNCTION(BlueprintCallable) void PlayGetupMontage();
 	UFUNCTION(BlueprintCallable) void SetupHuds();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 	UFUNCTION() class AFirearmWeapon* GetWeapon();
-	void ChangeCharacterSkin(int SkinIndex);
 };

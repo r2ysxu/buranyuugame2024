@@ -362,7 +362,7 @@ void AMainCharacter::AddMaxHP(float AdditionalHP) {
 }
 
 void AMainCharacter::PlayGetupMontage() {
-	if (GetupMontage) PlayAnimMontage(GetupMontage, 1.f);
+	if (GetupMontage[CharacterIndex]) PlayAnimMontage(GetupMontage[CharacterIndex], 1.f);
 }
 
 FFirearmStats AMainCharacter::GetFirearmStats() {
@@ -393,7 +393,7 @@ void AMainCharacter::OnStartAim() {
 void AMainCharacter::TakeHitDamage(float damage, AActor* DamageCauser) {
 	if (!IsAlive) return;
 	Super::TakeHitDamage(damage, DamageCauser);
-	if (FlinchMontage) PlayAnimMontage(FlinchMontage, 1.f);
+	if (FlinchMontage[CharacterIndex]) PlayAnimMontage(FlinchMontage[CharacterIndex], 1.f);
 	if (BloodHitFX && BloodSplatter == nullptr) {
 		BloodSplatter = UNiagaraFunctionLibrary::SpawnSystemAttached(BloodHitFX, GetCapsuleComponent(), NAME_None, FVector(0.f, 0.f, 10.f), GetActorRotation(), EAttachLocation::Type::SnapToTarget, true);
 		GetWorld()->GetTimerManager().SetTimer(BloodSplatterHandler, this, &AMainCharacter::OnRemoveBloodSplatter, 1.f, false);
