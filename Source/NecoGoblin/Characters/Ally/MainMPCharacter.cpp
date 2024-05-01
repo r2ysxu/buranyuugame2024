@@ -3,6 +3,7 @@
 
 #include "MainMPCharacter.h"
 #include "../../Gamemodes/MultiplayerGameMode.h"
+#include "../../Widgets/Menus/CharacterSwitcherMenuWidget.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -13,6 +14,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Blueprint/UserWidget.h"
 
 AMainMPCharacter::AMainMPCharacter() {
 	ReviveBox = CreateDefaultSubobject<USphereComponent>(TEXT("ReviveBox"));
@@ -29,6 +31,12 @@ void AMainMPCharacter::BeginPlay() {
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}
+
+	CharacterSwitcherMenu = CreateWidget<UCharacterSwitcherMenuWidget>(GetWorld(), CharacterSwitcherMenuClass);
+	if (CharacterSwitcherMenu) {
+		CharacterSwitcherMenu->SetParent(this);
+		CharacterSwitcherMenu->AddToViewport();
 	}
 }
 
@@ -58,6 +66,11 @@ void AMainMPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(InfoAction, ETriggerEvent::Completed, this, &AMainMPCharacter::OnShowSkills);
 		EnhancedInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnScrollAxis);
 	}
+}
+
+void AMainMPCharacter::SetupHud() {
+	if (CharacterSwitcherMenu) CharacterSwitcherMenu->RemoveFromParent();
+	Super::SetupHuds();
 }
 
 void AMainMPCharacter::Move(const FInputActionValue& Value) {

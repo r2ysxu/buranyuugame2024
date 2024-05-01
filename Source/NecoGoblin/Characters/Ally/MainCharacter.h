@@ -59,15 +59,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class USkillsMenuWidget> SkillHudWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UCharacterSwitcherMenuWidget> CharacterSwitcherMenuClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class AMagazineActor> MagazineActorBPClass;
 
 	UUserWidget* LoadingScreenWidget;
 	UUserWidget* CrosshairHudWidget;
 	UCharacterHUD* HudWidget;
 	USkillsMenuWidget* SkillHudWidget;
-	class UCharacterSwitcherMenuWidget* CharacterSwitcherMenu;
 	class AMagazineActor* MagazineActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -203,7 +200,7 @@ public:
 	virtual void UpgradeSkill(FNecoSkills Skill);
 	virtual void ChangeCharacterSkin(int SkinIndex);
 	UFUNCTION(BlueprintCallable) void PlayGetupMontage();
-	UFUNCTION(BlueprintCallable) void SetupHuds();
+	UFUNCTION(BlueprintCallable) virtual void SetupHuds();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 	UFUNCTION() class AFirearmWeapon* GetWeapon();

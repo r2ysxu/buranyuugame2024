@@ -37,13 +37,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ScrollAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UCharacterSwitcherMenuWidget> CharacterSwitcherMenuClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* ReviveBox;
 
+	class UCharacterSwitcherMenuWidget* CharacterSwitcherMenu;
+
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupHud();
+	virtual void Look(const FInputActionValue& Value) override;
 	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value) override;
 
 	UFUNCTION() void OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

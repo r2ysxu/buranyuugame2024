@@ -6,7 +6,6 @@
 #include "../../Widgets/HUDs/CharacterHUD.h"
 #include "../../Widgets/Actors/MagazineActor.h"
 #include "../../Widgets/Menus/SkillsMenuWidget.h"
-#include "../../Widgets/Menus/CharacterSwitcherMenuWidget.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -73,14 +72,6 @@ void AMainCharacter::BeginPlay() {
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
 
-	//GetMesh()->SetVisibility(false);
-	//if (Firearm) Firearm->SetVisible(false);
-	CharacterSwitcherMenu = CreateWidget<UCharacterSwitcherMenuWidget>(GetWorld(), CharacterSwitcherMenuClass);
-	if (CharacterSwitcherMenu) {
-		CharacterSwitcherMenu->SetParent(this);
-		CharacterSwitcherMenu->AddToViewport();
-	}
-
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnHealthRegenHandler, this, &AMainCharacter::OnHealthRegen, 10.f, true);
@@ -93,7 +84,6 @@ void AMainCharacter::Tick(float DeltaSeconds) {
 }
 
 void AMainCharacter::SetupHuds() {
-	if (CharacterSwitcherMenu) CharacterSwitcherMenu->RemoveFromParent();
 	HudWidget = CreateWidget<UCharacterHUD>(GetWorld(), HudWidgetClass);
 	if (HudWidget) {
 		HudWidget->AddToViewport();
@@ -362,7 +352,7 @@ void AMainCharacter::AddMaxHP(float AdditionalHP) {
 }
 
 void AMainCharacter::PlayGetupMontage() {
-	if (GetupMontage[CharacterIndex]) PlayAnimMontage(GetupMontage[CharacterIndex], 1.f);
+	if (GetupMontage.Num() > CharacterIndex && GetupMontage[CharacterIndex]) PlayAnimMontage(GetupMontage[CharacterIndex], 1.f);
 }
 
 FFirearmStats AMainCharacter::GetFirearmStats() {
@@ -374,7 +364,6 @@ AFirearmWeapon* AMainCharacter::GetWeapon() {
 }
 
 void AMainCharacter::ChangeCharacterSkin(int SkinIndex) {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("ChangeCharacterSkin"));
 	GetMesh()->SetSkeletalMesh(CharacterMeshes[SkinIndex]);
 	GetMesh()->SetAnimClass(CharacterAnimClasses[SkinIndex]);
 }
