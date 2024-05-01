@@ -2,7 +2,7 @@
 
 #include "MainCharacter.h"
 #include "../Goblin/Goblin.h"
-#include "../../NecoGoblinGameMode.h"
+#include "../../Gamemodes/GoblinGameMode.h"
 #include "../../Widgets/HUDs/CharacterHUD.h"
 #include "../../Widgets/Actors/MagazineActor.h"
 #include "../../Widgets/Menus/SkillsMenuWidget.h"
@@ -108,7 +108,7 @@ bool AMainCharacter::CheckAlive() {
 		GetCharacterMovement()->StopMovementImmediately();
 		GetMovementComponent()->Deactivate();
 		DisableInput(Cast<APlayerController>(GetController()));
-		ANecoGoblinGameMode* gameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		AGoblinGameMode* gameMode = Cast<AGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (IsValid(gameMode)) {
 			gameMode->DelegateGameOver.Broadcast(DECOMPOSE_DELAY);
 		}

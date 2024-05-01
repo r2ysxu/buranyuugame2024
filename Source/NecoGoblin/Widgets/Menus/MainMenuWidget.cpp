@@ -2,7 +2,7 @@
 
 #include "MainMenuWidget.h"
 #include "../../Characters/Ally/MainCharacter.h"
-#include "../../NecoGoblinGameMode.h"
+#include "../../Gamemodes/SingleplayerGameMode.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -21,5 +21,5 @@ void UMainMenuWidget::OnStartGame() {
 }
 
 void UMainMenuWidget::SetGameMode(bool IsEndlessMode) {
-	Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->SetEndlessMode(IsEndlessMode);
+	Cast<ASingleplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->SetEndlessMode(IsEndlessMode);
 }

@@ -13,7 +13,6 @@
 #include "Kismet/GameplayStatics.h"
 
 AMultiplayerGameMode::AMultiplayerGameMode() {
-
 	GameStateClass = AMultiplayerGameState::StaticClass();
 	static ConstructorHelpers::FClassFinder<AMainPlayerController> PlayerContollerBPClass(TEXT("/Game/NecoGoblin/Blueprints/Controllers/BP_MainPlayerController"));
 	if (PlayerContollerBPClass.Class != NULL) {
@@ -35,11 +34,6 @@ void AMultiplayerGameMode::StartPlay() {
 	}
 }
 
-void AMultiplayerGameMode::StartSpawning() {
-	Super::StartSpawning();
-	GetWorldTimerManager().SetTimer(SpawnerHandler, this, &AMultiplayerGameMode::SpawnEnemy, 1.0, true);
-}
-
 void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {
 	Super::OnPostLogin(NewPlayer);
 	AMainPlayerController* controller = Cast<AMainPlayerController>(NewPlayer);
@@ -57,7 +51,7 @@ void AMultiplayerGameMode::SpawnEnemy() {
 		Spawners[CurrentSpawnerIndex]->SpawnEnemyType(ESpawnEnemyType::VE_Range);
 		RangeEnemySpawned++;
 	}
-	CurrentSpawnerIndex = (CurrentSpawnerIndex + 1) % TotalSpawners;
+	CurrentSpawnerIndex = (CurrentSpawnerIndex + 1) % Spawners.Num();
 }
 
 void AMultiplayerGameMode::OnInitiateLevelLoadForPlayers() {

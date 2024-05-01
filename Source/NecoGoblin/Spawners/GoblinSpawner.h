@@ -18,7 +18,7 @@ class NECOGOBLIN_API AGoblinSpawner : public AActor {
 	GENERATED_BODY()
 
 private:
-	class ANecoGoblinGameMode* GameMode;
+	class AGoblinGameMode* GameMode;
 
 protected:
 	float MovementSpeedModifier = 1.f;
@@ -30,14 +30,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TSubclassOf<class ARangeGoblinCharacter> RangeGoblinClass;
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 public:	
-	// Sets default values for this actor's properties
 	AGoblinSpawner();
 
-	void SpawnEnemy();
 	bool SpawnEnemyType(ESpawnEnemyType Type);
-	void ChangeSpawnInfo(float EnemySpawnRate, float EnemyMovementSpeedMod);
+	UFUNCTION() void ChangeSpawnInfo(float EnemySpawnRate, float EnemyMovementSpeedMod);
 };

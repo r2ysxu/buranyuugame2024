@@ -29,17 +29,23 @@ protected:
 	TArray<class AGoblinSpawner*> Spawners;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class URoundHUD> RoundHudWidgetClass;
-	URoundHUD* RoundHudWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> GameOverWidgetClass;
-	UUserWidget* GameOverWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Voices", meta = (AllowPrivateAccess = "true"))
 	USoundBase* NextRoundVoice;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int TotalSpawners = 1;
 
-	virtual void StartSpawning() {}
+	FTimerHandle SpawnerHandler;
+	int32 CurrentSpawnerIndex = 0;
+	int32 TotalEnemySpawned = 0;
+
+	class URoundHUD* RoundHudWidget;
+	class UUserWidget* GameOverWidget;
+
+	virtual void StartSpawning();
+	virtual void SpawnEnemy() {}
 
 public:
 	FDelegate_Gameover DelegateGameOver;

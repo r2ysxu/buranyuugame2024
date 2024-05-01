@@ -7,6 +7,10 @@ void AGoblinGameMode::StartPlay() {
 	Super::StartPlay();
 }
 
+void AGoblinGameMode::StartSpawning() {
+	GetWorldTimerManager().SetTimer(SpawnerHandler, this, &AGoblinGameMode::SpawnEnemy, 1.0, true);
+}
+
 void AGoblinGameMode::RegisterSpawner(AGoblinSpawner* Spawner) {
 	Spawners.Add(Spawner);
 	if (Spawners.Num() == TotalSpawners) {

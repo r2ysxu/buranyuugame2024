@@ -20,19 +20,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UMultiplayerLobbyMenuWidget> MultiplayerLobbyMenuClass;
+
 	class UMultiplayerLobbyMenuWidget* MultiplayerLobbyMenu;
-
-	FTimerHandle SpawnerHandler;
-	int32 CurrentSpawnerIndex = 0;
-	int32 TotalEnemySpawned = 0;
-
 	int LoggedInPlayers = 0;
 
 
 	virtual void StartPlay() override;
-	virtual void StartSpawning() override;
 	virtual void OnPostLogin(AController* NewPlayer) override;
-	void SpawnEnemy();
+	virtual void SpawnEnemy() override;
 	void OnInitiateLevelLoadForPlayers();
 
 	

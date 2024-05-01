@@ -2,7 +2,7 @@
 
 
 #include "GoblinSpawner.h"
-#include "NecoGoblin/NecoGoblinGameMode.h"
+#include "../Gamemodes/GoblinGameMode.h"
 #include "../Characters/Goblin/MeleeGoblinCharacter.h"
 #include "../Characters/Goblin/RangeGoblinCharacter.h"
 
@@ -21,25 +21,6 @@ void AGoblinSpawner::BeginPlay() {
 	AGoblinGameMode* gamemode = Cast<AGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (gamemode) {
 		gamemode->RegisterSpawner(this);
-	}
-	GameMode = Cast<ANecoGoblinGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (GameMode) {
-		SpawnRate = GameMode->GetGoblinSpawnRate();
-		GameMode->DelegateRoundChange.AddDynamic(this, &AGoblinSpawner::ChangeSpawnInfo);
-		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnEnemy, SpawnRate, false);
-	}
-}
-
-void AGoblinSpawner::SpawnEnemy() {
-	if (GameMode) {
-		if (FMath::RandBool() && GameMode->IncrementRangeEnemy()) {
-			if (!SpawnEnemyType(ESpawnEnemyType::VE_Range)) GameMode->DecrementEnemy();
-		} else if (GameMode->IncrementMeleeEnemy()) {
-			if (!SpawnEnemyType(ESpawnEnemyType::VE_Melee)) GameMode->DecrementEnemy();
-		} else if (GameMode->IncrementRangeEnemy()) {
-			if (SpawnEnemyType(ESpawnEnemyType::VE_Range)) GameMode->DecrementEnemy();
-		}
-		GetWorld()->GetTimerManager().SetTimer(OnSpawnHandler, this, &AGoblinSpawner::SpawnEnemy, SpawnRate, false);
 	}
 }
 
