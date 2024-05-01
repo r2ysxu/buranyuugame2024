@@ -2,7 +2,7 @@
 
 
 #include "ThrownWeapon.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"

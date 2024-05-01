@@ -2,8 +2,9 @@
 
 
 #include "RangeGoblinCharacter.h"
-#include "../../Weapons/Ranged/ThrownWeapon.h"
 #include "RangeGoblinController.h"
+#include "../Ally/AllyBase.h"
+#include "../../Weapons/Ranged/ThrownWeapon.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -55,7 +56,7 @@ void ARangeGoblinCharacter::SetRunSpeed(float MovementSpeedModifier) {
 	GetCharacterMovement()->MaxWalkSpeed = FMath::Min(350.f + MovementSpeedModifier, 600.f);
 }
 
-bool ARangeGoblinCharacter::CheckRangeAttack(ANecoSpirit* TargetCharacter, FVector& OutTossVelocity) {
+bool ARangeGoblinCharacter::CheckRangeAttack(AAllyBase* TargetCharacter, FVector& OutTossVelocity) {
 	if (!IsValid(Weapon) || IsAttackCooldown) return false;
 
 	TArray<AActor*> ignores = { this, TargetCharacter };
@@ -97,7 +98,7 @@ void ARangeGoblinCharacter::Multicast_InitiateRangeAttack_Implementation(FVector
 	InitiateRangeAttack_Implementation(OutTossVelocity);
 }
 
-void ARangeGoblinCharacter::TrackTargetStopMovement(ANecoSpirit* TargetCharacter) {
+void ARangeGoblinCharacter::TrackTargetStopMovement(AAllyBase* TargetCharacter) {
 	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetActorLocation());
 	SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
 }

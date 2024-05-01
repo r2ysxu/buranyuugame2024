@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MainMenuWidget.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 #include "../../NecoGoblinGameMode.h"
 
 #include "Kismet/GameplayStatics.h"

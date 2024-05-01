@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "NecoSpirit.h"
+#include "AllyBase.h"
 #include "NecoCharacterStat.h"
 #include "UpgradeSkillComponent.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
@@ -14,7 +14,7 @@
 
 
 UCLASS(config=Game)
-class AMainCharacter : public ANecoSpirit {
+class AMainCharacter : public AAllyBase {
 	GENERATED_BODY()
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDelegate_HealthChange, float, Health);

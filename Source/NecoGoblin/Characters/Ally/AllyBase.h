@@ -6,13 +6,13 @@
 #include "../../Weapons/Ranged/FirearmWeapon.h"
 #include "../../Weapons/Weapon.h"
 #include "../Humanoid.h"
-#include "NecoSpirit.generated.h"
+#include "AllyBase.generated.h"
 
 /**
  * 
  */
 UCLASS(Abstract)
-class NECOGOBLIN_API ANecoSpirit : public AHumanoid {
+class NECOGOBLIN_API AAllyBase : public AHumanoid {
 	GENERATED_BODY()
 
 private:
@@ -28,7 +28,7 @@ protected:
 	void SetupFirearmWeapon();
 
 public:
-	ANecoSpirit();
+	AAllyBase();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	FName FirearmSocketName = FName("hand_l");

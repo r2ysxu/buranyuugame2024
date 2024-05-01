@@ -11,7 +11,7 @@ void AHealthPickup::BeginPlay() {
 	GetWorld()->GetTimerManager().SetTimer(OnDecomposeHandler, this, &AHealthPickup::OnDecompose, DECOMPOSE_DELAY, false);
 }
 
-void AHealthPickup::OnPickup(ANecoSpirit* actor) {
+void AHealthPickup::OnPickup(AAllyBase* actor) {
 	if (IsValid(actor)) {
 		actor->HealthPot(60);
 		Destroy();

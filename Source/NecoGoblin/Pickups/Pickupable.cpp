@@ -2,6 +2,8 @@
 
 
 #include "Pickupable.h"
+#include "../Characters/Ally/AllyBase.h"
+
 #include "Components/SphereComponent.h"
 
 // Sets default values
@@ -26,7 +28,7 @@ APickupable::APickupable() {
 }
 
 void APickupable::OnWithinPickupRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	OnPickup(Cast<ANecoSpirit>(actor));
+	OnPickup(Cast<AAllyBase>(actor));
 }
 
 // Called when the game starts or when spawned

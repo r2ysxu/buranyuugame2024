@@ -2,7 +2,7 @@
 
 
 #include "MagazineActor.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/SkeletalMeshComponent.h"

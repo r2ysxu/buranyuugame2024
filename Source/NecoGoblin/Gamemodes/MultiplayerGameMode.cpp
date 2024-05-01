@@ -3,7 +3,7 @@
 
 #include "MultiplayerGameMode.h"
 #include "States/MultiplayerGameState.h"
-#include "../Characters/Neco/MainCharacter.h"
+#include "../Characters/Ally/MainCharacter.h"
 #include "../Controllers/MainPlayerController.h"
 #include "../Spawners/GoblinSpawner.h"
 #include "../Widgets/HUDs/RoundHUD.h"
@@ -19,7 +19,7 @@ AMultiplayerGameMode::AMultiplayerGameMode() {
 	if (PlayerContollerBPClass.Class != NULL) {
 		PlayerControllerClass = PlayerContollerBPClass.Class;
 	}
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/NecoGoblin/Blueprints/Characters/BP_MainCharacter"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/NecoGoblin/Blueprints/Characters/BP_MainMP"));
 	if (PlayerPawnBPClass.Class != NULL) {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}

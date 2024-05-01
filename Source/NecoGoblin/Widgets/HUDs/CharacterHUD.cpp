@@ -2,7 +2,7 @@
 
 
 #include "CharacterHUD.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"

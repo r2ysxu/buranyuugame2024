@@ -16,11 +16,11 @@ class NECOGOBLIN_API ARangeGoblinController : public AAIController {
 private:
 	class ARangeGoblinCharacter* PossessedPawn;
 	const FName MainPlayer = FName("MainPlayer");
-	class ANecoSpirit* GetClosestNecoSpiritByTag(const UObject* WorldContextObject, FName tagName);
+	class AAllyBase* GetClosestPlayableByTag(const UObject* WorldContextObject, FName tagName);
 
 protected:
 	FTimerHandle MoveHandler;
-	class ANecoSpirit* CurrentTarget;
+	class AAllyBase* CurrentTarget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	float MinimumTargetDistance = 2000.f;
@@ -29,7 +29,7 @@ public:
 	ARangeGoblinController();
 	virtual void OnPossess(APawn* InPawn) override;
 
-	FORCEINLINE class ANecoSpirit* GetCurrentTarget() { return CurrentTarget; }
+	FORCEINLINE class AAllyBase* GetCurrentTarget() { return CurrentTarget; }
 
 	void OnMoveToTarget();
 };

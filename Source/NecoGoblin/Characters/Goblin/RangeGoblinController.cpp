@@ -2,12 +2,12 @@
 
 
 #include "RangeGoblinController.h"
-#include "../Neco/NecoSpirit.h"
+#include "../Ally/AllyBase.h"
 #include "RangeGoblinCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
 
-ANecoSpirit* ARangeGoblinController::GetClosestNecoSpiritByTag(const UObject* WorldContextObject, FName tagName) {
+AAllyBase* ARangeGoblinController::GetClosestPlayableByTag(const UObject* WorldContextObject, FName tagName) {
 	TArray<AActor*> mainPlayers;
 	UGameplayStatics::GetAllActorsWithTag(WorldContextObject, tagName, mainPlayers);
 	if (mainPlayers.IsEmpty()) return nullptr;
@@ -21,7 +21,7 @@ ANecoSpirit* ARangeGoblinController::GetClosestNecoSpiritByTag(const UObject* Wo
 			minDistance = distance;
 		}
 	}
-	return Cast<ANecoSpirit>(mainPlayers[minIndex]);
+	return Cast<AAllyBase>(mainPlayers[minIndex]);
 }
 
 ARangeGoblinController::ARangeGoblinController() {
@@ -35,7 +35,7 @@ void ARangeGoblinController::OnPossess(APawn* InPawn) {
 }
 
 void ARangeGoblinController::OnMoveToTarget() {
-	CurrentTarget = GetClosestNecoSpiritByTag(GetWorld(), MainPlayer);
+	CurrentTarget = GetClosestPlayableByTag(GetWorld(), MainPlayer);
 	if (PossessedPawn->GetIsAttacking()) {
 	} else if (CurrentTarget && CurrentTarget->GetIsAlive()) {
 		FVector tossVelocity;

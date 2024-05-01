@@ -2,7 +2,7 @@
 
 
 #include "OptionsMenuWidget.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"

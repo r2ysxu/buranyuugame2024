@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MainInputCharacter.h"
+#include "MainMPCharacter.h"
 #include "../../Gamemodes/MultiplayerGameMode.h"
 
 #include "EnhancedInputComponent.h"
@@ -14,7 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-AMainInputCharacter::AMainInputCharacter() {
+AMainMPCharacter::AMainMPCharacter() {
 	ReviveBox = CreateDefaultSubobject<USphereComponent>(TEXT("ReviveBox"));
 	ReviveBox->SetupAttachment(GetMesh());
 	ReviveBox->SetSphereRadius(25.f);
@@ -22,7 +22,7 @@ AMainInputCharacter::AMainInputCharacter() {
 	//ReviveBox->bHiddenInGame = false;
 }
 
-void AMainInputCharacter::BeginPlay() {
+void AMainMPCharacter::BeginPlay() {
 	Super::BeginPlay();
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
@@ -32,35 +32,35 @@ void AMainInputCharacter::BeginPlay() {
 	}
 }
 
-void AMainInputCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+void AMainMPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent)) {
 
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::Move);
 
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::Look);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::Look);
 
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::OnSprint);
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainInputCharacter::OnSprintStop);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnSprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainMPCharacter::OnSprintStop);
 
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::OnAimModeStart);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMainInputCharacter::OnAimModeStop);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnAimModeStart);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AMainMPCharacter::OnAimModeStop);
 
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::OnFireWeapon);
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainInputCharacter::OnFireStop);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnFireWeapon);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AMainMPCharacter::OnFireStop);
 
-		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::OnReloadWeapon);
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::OnInteract);
+		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnReloadWeapon);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnInteract);
 
-		EnhancedInputComponent->BindAction(InfoAction, ETriggerEvent::Completed, this, &AMainInputCharacter::OnShowSkills);
-		EnhancedInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &AMainInputCharacter::OnScrollAxis);
+		EnhancedInputComponent->BindAction(InfoAction, ETriggerEvent::Completed, this, &AMainMPCharacter::OnShowSkills);
+		EnhancedInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnScrollAxis);
 	}
 }
 
-void AMainInputCharacter::Move(const FInputActionValue& Value) {
+void AMainMPCharacter::Move(const FInputActionValue& Value) {
 	if (!IsAlive) return;
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -80,7 +80,7 @@ void AMainInputCharacter::Move(const FInputActionValue& Value) {
 	AddMovementInput(RightDirection, MovementVector.X);
 }
 
-void AMainInputCharacter::Look(const FInputActionValue& Value) {
+void AMainMPCharacter::Look(const FInputActionValue& Value) {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -93,13 +93,13 @@ void AMainInputCharacter::Look(const FInputActionValue& Value) {
 	//if (!HasAuthority()) Server_SetRotation(GetActorRotation(), playerRotation.Pitch);
 }
 
-void AMainInputCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	if (ANecoSpirit* teammate = Cast<ANecoSpirit>(actor)) {
+void AMainMPCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (AAllyBase* teammate = Cast<AAllyBase>(actor)) {
 		OnRevivePlayer();
 	}
 }
 
-void AMainInputCharacter::OnInteract() {
+void AMainMPCharacter::OnInteract() {
 	if (!HasAuthority()) {
 		Server_OnInteract();
 	} else {
@@ -107,18 +107,18 @@ void AMainInputCharacter::OnInteract() {
 	}
 }
 
-void AMainInputCharacter::Server_OnInteract_Implementation() {
+void AMainMPCharacter::Server_OnInteract_Implementation() {
 	Super::OnInteract();
 	Multicast_OnInteract();
 }
 
-void AMainInputCharacter::Multicast_OnInteract_Implementation() {
+void AMainMPCharacter::Multicast_OnInteract_Implementation() {
 	Super::OnInteract();
 }
 
-void AMainInputCharacter::OnRevivePlayer() {
+void AMainMPCharacter::OnRevivePlayer() {
 	if (IsAlive) return;
-	ReviveBox->OnComponentBeginOverlap.RemoveDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);
+	ReviveBox->OnComponentBeginOverlap.RemoveDynamic(this, &AMainMPCharacter::OnDeadBodyTouched);
 	if (!HasAuthority()) {
 		Server_OnRevivePlayer();
 	} else {
@@ -126,26 +126,26 @@ void AMainInputCharacter::OnRevivePlayer() {
 	}
 }
 
-void AMainInputCharacter::Server_OnRevivePlayer_Implementation() {
+void AMainMPCharacter::Server_OnRevivePlayer_Implementation() {
 	Super::OnRevivePlayer();
 	Multicast_OnRevivePlayer();
 }
 
-void AMainInputCharacter::Multicast_OnRevivePlayer_Implementation() {
+void AMainMPCharacter::Multicast_OnRevivePlayer_Implementation() {
 	Super::OnRevivePlayer();
 }
 
-void AMainInputCharacter::Server_SetupCharacters_Implementation() {
+void AMainMPCharacter::Server_SetupCharacters_Implementation() {
 	OnCharacterStart();
 	OnCharacterShow();
 }
 
-void AMainInputCharacter::Server_SetRotation_Implementation(FRotator Rotation, float Pitch) {
+void AMainMPCharacter::Server_SetRotation_Implementation(FRotator Rotation, float Pitch) {
 	SetActorRotation(Rotation);
 	SetPlayerPitch(Pitch);
 }
 
-void AMainInputCharacter::OnStartAim() {
+void AMainMPCharacter::OnStartAim() {
 	if (IsAimMode) return;
 	Super::OnStartAim();
 	if (!HasAuthority()) {
@@ -155,18 +155,18 @@ void AMainInputCharacter::OnStartAim() {
 	}
 }
 
-void AMainInputCharacter::Server_OnStartAim_Implementation() {
+void AMainMPCharacter::Server_OnStartAim_Implementation() {
 	if (!IsAimMode && !IsSkillMenuOpen) {
 		IsAimMode = true;
 		Multicast_OnStartAim();
 	}
 }
 
-void AMainInputCharacter::Multicast_OnStartAim_Implementation() {
+void AMainMPCharacter::Multicast_OnStartAim_Implementation() {
 	Server_OnStartAim_Implementation();
 }
 
-void AMainInputCharacter::OnStopAim() {
+void AMainMPCharacter::OnStopAim() {
 	if (!IsAimMode) return;
 	Super::OnStopAim();
 	if (!HasAuthority()) {
@@ -176,18 +176,18 @@ void AMainInputCharacter::OnStopAim() {
 	}
 }
 
-void AMainInputCharacter::Server_OnStopAim_Implementation() {
+void AMainMPCharacter::Server_OnStopAim_Implementation() {
 	if (IsAimMode) {
 		IsAimMode = false;
 		Multicast_OnStopAim();
 	}
 }
 
-void AMainInputCharacter::Multicast_OnStopAim_Implementation() {
+void AMainMPCharacter::Multicast_OnStopAim_Implementation() {
 	Server_OnStopAim_Implementation();
 }
 
-void AMainInputCharacter::OnFireWeaponOnce() {
+void AMainMPCharacter::OnFireWeaponOnce() {
 	if (Firearm->IsWeaponFireable()) {
 		FVector camStart = GetCameraBoom()->GetComponentLocation() + GetCameraBoom()->GetForwardVector();
 		if (!HasAuthority()) {
@@ -198,7 +198,7 @@ void AMainInputCharacter::OnFireWeaponOnce() {
 	}
 }
 
-void AMainInputCharacter::Server_OnFireWeaponOnce_Implementation(FVector MuzzleLocation, FVector Direction) {
+void AMainMPCharacter::Server_OnFireWeaponOnce_Implementation(FVector MuzzleLocation, FVector Direction) {
 	FFireResponse fireResponse = FireWeapon(MuzzleLocation, Direction);
 	switch (fireResponse.Type) {
 		case EFireType::VE_NotFired: break;
@@ -211,19 +211,19 @@ void AMainInputCharacter::Server_OnFireWeaponOnce_Implementation(FVector MuzzleL
 	}
 }
 
-void AMainInputCharacter::Multicast_OnFireWeaponOnceFired_Implementation() {
+void AMainMPCharacter::Multicast_OnFireWeaponOnceFired_Implementation() {
 	Firearm->PlayFireEffects();
 }
 
-void AMainInputCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+void AMainMPCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
 	Multicast_OnHitTarget(Target, ImpactPoint, IsHeadshot);
 }
 
-void AMainInputCharacter::Multicast_OnHitTarget_Implementation(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+void AMainMPCharacter::Multicast_OnHitTarget_Implementation(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
 	Super::OnHitTarget(Target, ImpactPoint, IsHeadshot);
 }
 
-void AMainInputCharacter::OnReloadWeapon() {
+void AMainMPCharacter::OnReloadWeapon() {
 	if (!HasAuthority()) {
 		Server_OnReloadWeapon();
 	} else {
@@ -231,16 +231,16 @@ void AMainInputCharacter::OnReloadWeapon() {
 	}
 }
 
-void AMainInputCharacter::Server_OnReloadWeapon_Implementation() {
+void AMainMPCharacter::Server_OnReloadWeapon_Implementation() {
 	Super::OnReloadWeapon();
 	Multicast_OnReloadWeapon();
 }
 
-void AMainInputCharacter::Multicast_OnReloadWeapon_Implementation() {
+void AMainMPCharacter::Multicast_OnReloadWeapon_Implementation() {
 	Super::OnReloadWeapon();
 }
 
-void AMainInputCharacter::OnSprint() {
+void AMainMPCharacter::OnSprint() {
 	if (!HasAuthority()) {
 		Server_OnSprint();
 	} else {
@@ -248,16 +248,16 @@ void AMainInputCharacter::OnSprint() {
 	}
 }
 
-void AMainInputCharacter::Server_OnSprint_Implementation() {
+void AMainMPCharacter::Server_OnSprint_Implementation() {
 	Super::OnSprint();
 	Multicast_OnSprint();
 }
 
-void AMainInputCharacter::Multicast_OnSprint_Implementation() {
+void AMainMPCharacter::Multicast_OnSprint_Implementation() {
 	Super::OnSprint();
 }
 
-void AMainInputCharacter::OnSprintStop() {
+void AMainMPCharacter::OnSprintStop() {
 	if (!HasAuthority()) {
 		Server_OnSprintStop();
 	} else {
@@ -265,48 +265,48 @@ void AMainInputCharacter::OnSprintStop() {
 	}
 }
 
-void AMainInputCharacter::Server_OnSprintStop_Implementation() {
+void AMainMPCharacter::Server_OnSprintStop_Implementation() {
 	Super::OnSprintStop();
 	Multicast_OnSprintStop();
 }
 
-void AMainInputCharacter::Multicast_OnSprintStop_Implementation() {
+void AMainMPCharacter::Multicast_OnSprintStop_Implementation() {
 	Super::OnSprintStop();
 }
 
-int AMainInputCharacter::RefillAmmo(int AmmoAmount) {
+int AMainMPCharacter::RefillAmmo(int AmmoAmount) {
 	if (!HasAuthority()) {
 		Server_OnRefillAmmo(AmmoAmount);
 	}
 	return Super::RefillAmmo(AmmoAmount);
 }
 
-void AMainInputCharacter::ChangeCharacterSkin(int SkinIndex) {
+void AMainMPCharacter::ChangeCharacterSkin(int SkinIndex) {
 	if (!HasAuthority()) {
 		Server_ChangeCharacterSkin(SkinIndex);
 	}
 	Super::ChangeCharacterSkin(SkinIndex);
 }
 
-void AMainInputCharacter::Server_ChangeCharacterSkin_Implementation(int SkinIndex) {
+void AMainMPCharacter::Server_ChangeCharacterSkin_Implementation(int SkinIndex) {
 	Super::ChangeCharacterSkin(SkinIndex);
 	Multicast_ChangeCharacterSkin(SkinIndex);
 }
 
-void AMainInputCharacter::Multicast_ChangeCharacterSkin_Implementation(int SkinIndex) {
+void AMainMPCharacter::Multicast_ChangeCharacterSkin_Implementation(int SkinIndex) {
 	Super::ChangeCharacterSkin(SkinIndex);
 }
 
-void AMainInputCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {
+void AMainMPCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {
 	Super::RefillAmmo(AmmoAmount);
 	Multicast_OnRefillAmmo(AmmoAmount);
 }
 
-void AMainInputCharacter::Multicast_OnRefillAmmo_Implementation(int AmmoAmount) {
+void AMainMPCharacter::Multicast_OnRefillAmmo_Implementation(int AmmoAmount) {
 	Super::RefillAmmo(AmmoAmount);
 }
 
-bool AMainInputCharacter::CheckAlive() {
+bool AMainMPCharacter::CheckAlive() {
 	if (!IsAlive) return false;
 	if (CurrentHealth <= 0) {
 		IsAlive = false;
@@ -317,12 +317,12 @@ bool AMainInputCharacter::CheckAlive() {
 		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 		GetMesh()->SetSimulatePhysics(true);
 		Server_NotifyDead();
-		ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainInputCharacter::OnDeadBodyTouched);
+		ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainMPCharacter::OnDeadBodyTouched);
 	}
 	return IsAlive;
 }
 
-void AMainInputCharacter::UpgradeSkill(FNecoSkills Skill) {
+void AMainMPCharacter::UpgradeSkill(FNecoSkills Skill) {
 	if (!HasAuthority()) {
 		Server_UpgradeSkill(Skill);
 	} else {
@@ -330,16 +330,16 @@ void AMainInputCharacter::UpgradeSkill(FNecoSkills Skill) {
 	}
 }
 
-void AMainInputCharacter::Server_UpgradeSkill_Implementation(FNecoSkills Skill) {
+void AMainMPCharacter::Server_UpgradeSkill_Implementation(FNecoSkills Skill) {
 	Multicast_UpgradeSkill(Skill);
 }
 
-void AMainInputCharacter::Multicast_UpgradeSkill_Implementation(FNecoSkills Skill) {
+void AMainMPCharacter::Multicast_UpgradeSkill_Implementation(FNecoSkills Skill) {
 	Super::UpgradeSkill(Skill);
 }
 
 
-void AMainInputCharacter::Server_NotifyDead_Implementation() {
+void AMainMPCharacter::Server_NotifyDead_Implementation() {
 	AMultiplayerGameMode* gameMode = Cast<AMultiplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	gameMode->OnPlayerDead(0.f);
 	//if (IsValid(gameMode)) {

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../Characters/Neco/NecoSpirit.h"
 #include "Pickupable.generated.h"
 
 UCLASS()
@@ -25,7 +24,7 @@ public:
 	// Sets default values for this actor's properties
 	APickupable();
 
-	virtual void OnPickup(ANecoSpirit* actor) {}
+	virtual void OnPickup(class AAllyBase* actor) {}
 
 	UFUNCTION()	void OnWithinPickupRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

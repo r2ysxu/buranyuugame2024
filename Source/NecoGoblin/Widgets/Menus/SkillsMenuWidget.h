@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../../Characters/Neco/UpgradeSkillComponent.h"
+#include "../../Characters/Ally/UpgradeSkillComponent.h"
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"

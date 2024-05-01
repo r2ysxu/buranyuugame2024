@@ -5,7 +5,7 @@
 #include "Goblin.h"
 #include "MeleeGoblinCharacter.h"
 #include "../Humanoid.h"
-#include "../Neco/NecoSpirit.h"
+#include "../Ally/AllyBase.h"
 
 #include "Components/SplineComponent.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BehaviorTree.h>
@@ -15,7 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
-ANecoSpirit* AMeleeGoblinController::GetClosestNecoSpiritByTag(const UObject* WorldContextObject, FName tagName) {
+AAllyBase* AMeleeGoblinController::GetClosestPlayableByTag(const UObject* WorldContextObject, FName tagName) {
 	TArray<AActor*> mainPlayers;
 	UGameplayStatics::GetAllActorsWithTag(WorldContextObject, tagName, mainPlayers);
 	if (mainPlayers.IsEmpty()) return nullptr;
@@ -29,7 +29,7 @@ ANecoSpirit* AMeleeGoblinController::GetClosestNecoSpiritByTag(const UObject* Wo
 			minDistance = distance;
 		}
 	}
-	return Cast<ANecoSpirit>(mainPlayers[minIndex]);
+	return Cast<AAllyBase>(mainPlayers[minIndex]);
 }
 
 AMeleeGoblinController::AMeleeGoblinController() {
@@ -45,7 +45,7 @@ void AMeleeGoblinController::OnPossess(APawn* InPawn) {
 }
 
 void AMeleeGoblinController::OnMoveToTarget() {
-	CurrentTarget = GetClosestNecoSpiritByTag(GetWorld(), MainPlayer);
+	CurrentTarget = GetClosestPlayableByTag(GetWorld(), MainPlayer);
 	if (PossessedPawn->GetIsAttacking()) {
 	} else if (CurrentTarget && CurrentTarget->GetIsAlive()) {
 		PossessedPawn->LookAtTarget(FindTargetHeadRotation());

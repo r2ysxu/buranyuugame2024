@@ -2,7 +2,7 @@
 
 
 #include "AmmoCrate.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 
 #include "Blueprint/UserWidget.h"
 

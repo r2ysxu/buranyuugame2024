@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "MainCharacter.h"
-#include "MainInputCharacter.generated.h"
+#include "MainMPCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class NECOGOBLIN_API AMainInputCharacter : public AMainCharacter {
+class NECOGOBLIN_API AMainMPCharacter : public AMainCharacter {
 	GENERATED_BODY()
 
 protected:
@@ -100,7 +100,7 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_NotifyDead();
 
 public:
-	AMainInputCharacter();
+	AMainMPCharacter();
 
 	virtual bool CheckAlive() override;
 	virtual void UpgradeSkill(enum FNecoSkills Skill) override;

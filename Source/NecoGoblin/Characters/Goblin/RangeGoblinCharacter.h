@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Goblin.h"
-#include "../Neco/NecoSpirit.h"
 
 #include "CoreMinimal.h"
 #include "RangeGoblinCharacter.generated.h"
@@ -50,8 +49,8 @@ public:
 	UFUNCTION(NetMulticast, Reliable) void Multicast_InitiateRangeAttack(FVector OutTossVelocity);
 
 	void SetRunSpeed(float MovementSpeedModifier) override;
-	bool CheckRangeAttack(ANecoSpirit* TargetCharacter, FVector& OutTossVelocity);
-	void TrackTargetStopMovement(ANecoSpirit* TargetCharacter);
+	bool CheckRangeAttack(class AAllyBase* TargetCharacter, FVector& OutTossVelocity);
+	void TrackTargetStopMovement(class AAllyBase* TargetCharacter);
 	void OnAttackReset();
 	void OnAttackCooldownReset();
 	bool CheckAlive() override;

@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "../Neco/NecoSpirit.h"
-
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include <Runtime/AIModule/Classes/BehaviorTree/BehaviorTreeComponent.h>
@@ -18,13 +16,13 @@ class NECOGOBLIN_API AMeleeGoblinController : public AAIController {
 
 private:
 	const FName MainPlayer = FName("MainPlayer");
-	class ANecoSpirit* GetClosestNecoSpiritByTag(const UObject* WorldContextObject, FName tagName);
+	class AAllyBase* GetClosestPlayableByTag(const UObject* WorldContextObject, FName tagName);
 	float TargetHomingRadius = 500.f;
 	float Theta = 0.f;
 
 protected:
 	FTimerHandle MoveHandler;
-	ANecoSpirit* CurrentTarget;
+	class AAllyBase* CurrentTarget;
 	class AMeleeGoblinCharacter* PossessedPawn;
 
 public:

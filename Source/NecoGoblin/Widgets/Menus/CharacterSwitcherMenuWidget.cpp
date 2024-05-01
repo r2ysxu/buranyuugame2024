@@ -2,7 +2,7 @@
 
 
 #include "CharacterSwitcherMenuWidget.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 #include "Components/Button.h"
 
 void UCharacterSwitcherMenuWidget::NativeConstruct() {

@@ -4,7 +4,7 @@
 #include "WeaponCrate.h"
 #include "../../Widgets/HUDs/WeaponHUD.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"

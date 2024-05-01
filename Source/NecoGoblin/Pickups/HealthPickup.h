@@ -20,6 +20,6 @@ private:
 
 public:
 	virtual void BeginPlay() override;
-	virtual void OnPickup(ANecoSpirit* actor) override;
+	virtual void OnPickup(class AAllyBase* actor) override;
 	void OnDecompose();
 };

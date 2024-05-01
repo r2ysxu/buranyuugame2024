@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "NecoGoblinGameMode.h"
-#include "Characters/Neco/MainCharacter.h"
+#include "Characters/Ally/MainCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"

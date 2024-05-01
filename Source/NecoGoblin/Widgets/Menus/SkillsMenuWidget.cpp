@@ -2,7 +2,7 @@
 
 
 #include "SkillsMenuWidget.h"
-#include "../../Characters/Neco/MainCharacter.h"
+#include "../../Characters/Ally/MainCharacter.h"
 
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
