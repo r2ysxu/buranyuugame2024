@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MainMenuWidget.generated.h"
+#include "StartSingleplayerMenuWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class NECOGOBLIN_API UMainMenuWidget : public UUserWidget {
+class NECOGOBLIN_API UStartSingleplayerMenuWidget : public UUserWidget {
 	GENERATED_BODY()
 
 protected:

@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MainMenuWidget.h"
+#include "StartSingleplayerMenuWidget.h"
 #include "../../Characters/Ally/MainCharacter.h"
 #include "../../Gamemodes/SingleplayerGameMode.h"
 
 #include "Kismet/GameplayStatics.h"
 
 
-void UMainMenuWidget::NativeConstruct() {
+void UStartSingleplayerMenuWidget::NativeConstruct() {
 	SkipIntroWidget = CreateWidget<UUserWidget>(GetWorld(), SkipIntroWidgetClass);
 }
 
-void UMainMenuWidget::OnStartGame() {
+void UStartSingleplayerMenuWidget::OnStartGame() {
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	APlayerController* controller = GetOwningPlayer();
 	controller->DisableInput(controller);
@@ -20,6 +20,6 @@ void UMainMenuWidget::OnStartGame() {
 	controller->bShowMouseCursor = false;
 }
 
-void UMainMenuWidget::SetGameMode(bool IsEndlessMode) {
+void UStartSingleplayerMenuWidget::SetGameMode(bool IsEndlessMode) {
 	Cast<ASingleplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->SetEndlessMode(IsEndlessMode);
 }
