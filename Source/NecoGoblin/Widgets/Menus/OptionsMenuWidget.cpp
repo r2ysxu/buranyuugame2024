@@ -25,7 +25,6 @@ void UOptionsMenuWidget::InitializeGraphicSlider(USlider* Slider) {
 }
 
 void UOptionsMenuWidget::InitializeSoundOptions() {
-
 	UGameplayStatics::SetBaseSoundMix(GetWorld(), MenuSoundMix);
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, BGM_SC);
 
