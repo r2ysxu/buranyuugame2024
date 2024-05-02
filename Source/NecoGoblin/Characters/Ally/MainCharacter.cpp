@@ -6,6 +6,7 @@
 #include "../../Widgets/HUDs/CharacterHUD.h"
 #include "../../Widgets/Actors/MagazineActor.h"
 #include "../../Widgets/Menus/SkillsMenuWidget.h"
+#include "../../GameInstance/NGGameInstance.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -71,6 +72,12 @@ void AMainCharacter::BeginPlay() {
 
 	HeadBox->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnHeadHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::OnBodyHit);
+
+	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
+	if (gameInstance) {
+		SetIsToggleAim(gameInstance->GetIsToggleAim());
+		SetIsAutoReload(gameInstance->GetIsAutoReload());
+	}
 
 	GetWorld()->GetTimerManager().SetTimer(OnSprintRegenHandler, this, &AMainCharacter::StaminaRegen, 0.5f, true);
 	GetWorld()->GetTimerManager().SetTimer(OnWaterLevelCheckHandler, this, &AMainCharacter::OnBelowWaterLevel, 1.f, true);
@@ -156,7 +163,8 @@ void AMainCharacter::OnCharacterStart() {
 }
 
 void AMainCharacter::PlayBGMusic() {
-	if (BGMSound) UGameplayStatics::PlaySound2D(GetWorld(), BGMSound, MusicVolume);
+	float musicVolume = Cast<UNGGameInstance>(GetGameInstance())->GetMusicVolume();
+	if (BGMSound) UGameplayStatics::PlaySound2D(GetWorld(), BGMSound, musicVolume);
 }
 
 void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {

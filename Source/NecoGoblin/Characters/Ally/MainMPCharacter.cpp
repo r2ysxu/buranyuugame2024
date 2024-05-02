@@ -68,7 +68,7 @@ void AMainMPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
-void AMainMPCharacter::SetupHud() {
+void AMainMPCharacter::SetupHuds() {
 	if (CharacterSwitcherMenu) CharacterSwitcherMenu->RemoveFromParent();
 	Super::SetupHuds();
 }

@@ -55,6 +55,6 @@ void UStartSingleplayerMenuWidget::SetSelectedCharacterText() {
 	case 0: CharacterText->SetText(FText::FromString(TEXT("Indentured Rabbit"))); break;
 	case 1: CharacterText->SetText(FText::FromString(TEXT("Nutty Squirrel"))); break;
 	case 2: CharacterText->SetText(FText::FromString(TEXT("Stowaway Raccoon"))); break;
-	case 4: CharacterText->SetText(FText::FromString(TEXT("Neko Aku"))); break;
+	case 3: CharacterText->SetText(FText::FromString(TEXT("Neko Aku"))); break;
 	}
 }

@@ -2,6 +2,7 @@
 
 
 #include "OptionsMenuWidget.h"
+#include "../../GameInstance/NGGameInstance.h"
 #include "../../Characters/Ally/MainCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -28,10 +29,10 @@ void UOptionsMenuWidget::InitializeSoundOptions() {
 	UGameplayStatics::SetBaseSoundMix(GetWorld(), MenuSoundMix);
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, BGM_SC);
 
-	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	if (mainCharacter) {
-		Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
-		Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
+	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
+	if (gameInstance) {
+		Options_Sound_Game->SetValue(gameInstance->GetGameVolume());
+		Options_Sound_Music->SetValue(gameInstance->GetMusicVolume());
 	}
 }
 
@@ -59,9 +60,18 @@ void UOptionsMenuWidget::InitializeGraphicOptions() {
 	Options_Graphics_TextureQ->SetValue(settings->GetTextureQuality());
 }
 
+void UOptionsMenuWidget::InitializeGameplayOptions() {
+	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
+	if (gameInstance) {
+		Options_Game_Aim->SetIsChecked(gameInstance->GetIsToggleAim());
+		Options_Game_Reload->SetIsChecked(gameInstance->GetIsAutoReload());
+	}
+}
+
 void UOptionsMenuWidget::NativeConstruct() {
 	InitializeSoundOptions();
 	InitializeGraphicOptions();
+	InitializeGameplayOptions();
 
 	HelpButton->OnClicked.AddDynamic(this, &UOptionsMenuWidget::SwitchHelpMenu);
 	OptionsButton->OnClicked.AddDynamic(this, &UOptionsMenuWidget::SwitchOptionMenu);
@@ -106,10 +116,10 @@ void UOptionsMenuWidget::SwitchOptionGraphic() {
 void UOptionsMenuWidget::SwitchOptionSound() {
 	OptionsSwitcher->SetActiveWidgetIndex((uint8)EOptionOptionPanel::VE_Sound);
 
-	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	if (mainCharacter) {
-		Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
-		Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
+	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
+	if (gameInstance) {
+		Options_Sound_Game->SetValue(gameInstance->GetGameVolume());
+		Options_Sound_Music->SetValue(gameInstance->GetMusicVolume());
 	}
 }
 
@@ -137,10 +147,10 @@ void UOptionsMenuWidget::CancelGraphics() {
 }
 
 void UOptionsMenuWidget::ApplySound() {
-	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	if (mainCharacter) {
-		mainCharacter->SetMusicVolume(Options_Sound_Music->GetValue());
-		mainCharacter->SetGameVolume(Options_Sound_Game->GetValue());
+	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
+	if (gameInstance) {
+		gameInstance->SetMusicVolume(Options_Sound_Music->GetValue());
+		gameInstance->SetGameVolume(Options_Sound_Game->GetValue());
 	}
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, BGM_SC, Options_Sound_Music->GetValue());
 	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, SFX_SC, Options_Sound_Game->GetValue());
@@ -148,15 +158,15 @@ void UOptionsMenuWidget::ApplySound() {
 }
 
 void UOptionsMenuWidget::CancelSound() {
-	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	if (mainCharacter) {
-		Options_Sound_Music->SetValue(mainCharacter->GetMusicVolume());
-		Options_Sound_Game->SetValue(mainCharacter->GetGameVolume());
-	}
 	MainSwitcher->SetActiveWidgetIndex((uint8)EOptionMainPanel::VE_Info);
 }
 
 void UOptionsMenuWidget::ApplyGameplay() {
+	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
+	if (gameInstance) {
+		gameInstance->SetIsToggleAim(Options_Game_Aim->IsChecked());
+		gameInstance->SetIsAutoReload(Options_Game_Reload->IsChecked());
+	}
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
 	if (mainCharacter) {
 		mainCharacter->SetIsToggleAim(Options_Game_Aim->IsChecked());
@@ -166,10 +176,10 @@ void UOptionsMenuWidget::ApplyGameplay() {
 }
 
 void UOptionsMenuWidget::CancelGameplay() {
-	AMainCharacter* mainCharacter = Cast<AMainCharacter>(GetOwningPlayerPawn());
-	if (mainCharacter) {
-		Options_Game_Aim->SetIsChecked(mainCharacter->GetIsToggleAim());
-		Options_Game_Reload->SetIsChecked(mainCharacter->GetIsAutoReload());
+	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
+	if (gameInstance) {
+		Options_Game_Aim->SetIsChecked(gameInstance->GetIsToggleAim());
+		Options_Game_Reload->SetIsChecked(gameInstance->GetIsAutoReload());
 	}
 	MainSwitcher->SetActiveWidgetIndex((uint8)EOptionMainPanel::VE_Info);
 }

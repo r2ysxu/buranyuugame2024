@@ -46,7 +46,7 @@ protected:
 
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void SetupHud();
+	virtual void SetupHuds() override;
 	virtual void Look(const FInputActionValue& Value) override;
 	void Move(const FInputActionValue& Value);
 

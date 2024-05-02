@@ -32,9 +32,6 @@ private:
 	const int POINTS_PER_KILL = 1;
 	const int RESERVE_AMMO = 30 * 10;
 
-	float GameVolume = 1.f;
-	float MusicVolume = 1.f;
-
 	void OnBelowWaterLevel();
 	float GetMaxHealth();
 	void SpawnMagazineActor();
@@ -63,8 +60,8 @@ protected:
 
 	UUserWidget* LoadingScreenWidget;
 	UUserWidget* CrosshairHudWidget;
-	UCharacterHUD* HudWidget;
-	USkillsMenuWidget* SkillHudWidget;
+	class UCharacterHUD* HudWidget;
+	class USkillsMenuWidget* SkillHudWidget;
 	class AMagazineActor* MagazineActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
@@ -158,6 +155,7 @@ public:
 	UFUNCTION(BlueprintCallable) FORCEINLINE void SetIsToggleAim(bool isToggleAim) { IsToggleAim = isToggleAim; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAutoReload() { return IsAutoReload; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE void SetIsAutoReload(bool isAutoReload) { IsAutoReload = isAutoReload; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsCharacterStart() { return IsCharacterStart; }
 	UFUNCTION(BlueprintCallable) FORCEINLINE float GetPlayerPitch() { return PlayerPitch; }
 	void SetPlayerPitch(float Pitch);
 	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsSkillMenuOpen() { return IsSkillMenuOpen; }
@@ -172,10 +170,6 @@ public:
 	UFUNCTION(BlueprintCallable) int GetCharacterSkinSize();
 	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / GetMaxHealth(); }
 	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
-	UFUNCTION(BlueprintCallable) FORCEINLINE float GetGameVolume() { return GameVolume; }
-	UFUNCTION(BlueprintCallable) FORCEINLINE void SetGameVolume(float Volume) { GameVolume = Volume; }
-	UFUNCTION(BlueprintCallable) FORCEINLINE float GetMusicVolume() { return MusicVolume; }
-	UFUNCTION(BlueprintCallable) FORCEINLINE void SetMusicVolume(float Volume) { MusicVolume = Volume; }
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

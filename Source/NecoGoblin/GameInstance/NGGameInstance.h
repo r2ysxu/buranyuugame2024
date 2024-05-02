@@ -22,6 +22,11 @@ protected:
 	FName DefaultSessionName = FName("Session#");
 	TSharedPtr<FOnlineSessionSearch> FoundSessions;
 	TArray<FOnlineSessionSearchResult*> SessionSearchResults;
+	float GameVolume = 1.f;
+	float MusicVolume = 1.f;
+
+	bool IsToggleAim = false;
+	bool IsAutoReload = false;
 
 	virtual void Init() override;
 
@@ -40,6 +45,14 @@ public:
 	void SearchSessions();
 	void JoinSearchedSession(FOnlineSessionSearchResult SessionResult);
 	void JumpToLevel(FString LevelName);
-
 	TArray<FOnlineSessionSearchResult*> GetSearchResults();
+
+	UFUNCTION(BlueprintCallable) FORCEINLINE float GetGameVolume() { return GameVolume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetGameVolume(float Volume) { GameVolume = Volume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE float GetMusicVolume() { return MusicVolume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetMusicVolume(float Volume) { MusicVolume = Volume; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsToggleAim() { return IsToggleAim; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetIsToggleAim(bool isToggleAim) { IsToggleAim = isToggleAim; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE bool GetIsAutoReload() { return IsAutoReload; }
+	UFUNCTION(BlueprintCallable) FORCEINLINE void SetIsAutoReload(bool isAutoReload) { IsAutoReload = isAutoReload; }
 };

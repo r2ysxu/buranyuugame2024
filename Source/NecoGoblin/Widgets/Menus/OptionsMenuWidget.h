@@ -33,6 +33,7 @@ private:
 
 	void InitializeSoundOptions();
 	void InitializeGraphicOptions();
+	void InitializeGameplayOptions();
 
 protected:
 	
