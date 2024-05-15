@@ -22,6 +22,11 @@ void AMainMenuActor::BeginPlay() {
 	controller->SetViewTarget(StartMenuCamera);
 }
 
+void AMainMenuActor::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+	if (LoadingWidget) LoadingWidget->RemoveFromParent();
+}
+
 void AMainMenuActor::ChangeToMenuCamera() {
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetViewTargetWithBlend(MainMenuCamera, 1.f);
 	StartMainMenuWidget = CreateWidget<UStartMainMenuWidget>(GetWorld(), StartMainMenuWidgetClass);
@@ -44,5 +49,9 @@ void AMainMenuActor::ChangeToMultiplayer() {
 }
 
 void AMainMenuActor::ChangeToSingleplayer() {
+	LoadingWidget = CreateWidget<UUserWidget>(GetWorld(), LoadingWidgetClass);
+	if (LoadingWidget) { 
+		LoadingWidget->AddToViewport();
+	}
 	UGameplayStatics::OpenLevel(GetWorld(), "IslandMap");
 }

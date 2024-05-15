@@ -24,11 +24,15 @@ protected:
 	TSubclassOf<class UStartMainMenuWidget> StartMainMenuWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUDs")
 	TSubclassOf<class UStartMultiplayerMenuWidget> StartMPMenuWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUDs")
+	TSubclassOf<class UUserWidget> LoadingWidgetClass;
 
 	class UStartMainMenuWidget* StartMainMenuWidget;
 	class UStartMultiplayerMenuWidget* StartMPMenuWidget;
+	class UUserWidget* LoadingWidget;
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:	
 
