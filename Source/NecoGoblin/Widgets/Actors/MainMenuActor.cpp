@@ -41,11 +41,6 @@ void AMainMenuActor::ChangeToMultiplayer() {
 	if (StartMainMenuWidget) {
 		StartMainMenuWidget->RemoveFromParent();
 	}
-	StartMPMenuWidget = CreateWidget<UStartMultiplayerMenuWidget>(GetWorld(), StartMPMenuWidgetClass);
-	if (StartMPMenuWidget) {
-		StartMPMenuWidget->AddToViewport();
-		StartMPMenuWidget->SetParent(this);
-	}
 }
 
 void AMainMenuActor::ChangeToSingleplayer() {

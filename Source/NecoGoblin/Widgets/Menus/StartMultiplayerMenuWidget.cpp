@@ -41,8 +41,8 @@ void UStartMultiplayerMenuWidget::PopulateSessionList(TArray<FOnlineSessionSearc
 
 void UStartMultiplayerMenuWidget::OnBackClicked() {
 	Parent->ChangeToMenuCamera();
-	SetVisibility(ESlateVisibility::Hidden);
-	RemoveFromParent();
+	//SetVisibility(ESlateVisibility::Hidden);
+	//RemoveFromParent();
 }
 
 void UStartMultiplayerMenuWidget::OnMPHostClicked() {
