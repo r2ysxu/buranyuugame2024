@@ -28,10 +28,6 @@ AMultiplayerGameMode::AMultiplayerGameMode() {
 
 void AMultiplayerGameMode::StartPlay() {
 	Super::StartPlay();
-	MultiplayerLobbyMenu = CreateWidget<UMultiplayerLobbyMenuWidget>(GetWorld(), MultiplayerLobbyMenuClass);
-	if (MultiplayerLobbyMenu) {
-		MultiplayerLobbyMenu->AddToViewport();
-	}
 }
 
 void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {

@@ -4,6 +4,7 @@
 #include "MainMPCharacter.h"
 #include "../../Gamemodes/MultiplayerGameMode.h"
 #include "../../Widgets/Menus/CharacterSwitcherMenuWidget.h"
+#include "../../Widgets/Menus/MultiplayerLobbyMenuWidget.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -33,10 +34,10 @@ void AMainMPCharacter::BeginPlay() {
 		}
 	}
 
-	CharacterSwitcherMenu = CreateWidget<UCharacterSwitcherMenuWidget>(GetWorld(), CharacterSwitcherMenuClass);
-	if (CharacterSwitcherMenu) {
-		CharacterSwitcherMenu->SetParent(this);
-		CharacterSwitcherMenu->AddToViewport();
+	MultiplayerLobbyMenu = CreateWidget<UMultiplayerLobbyMenuWidget>(GetWorld(), MultiplayerLobbyMenuClass);
+	if (MultiplayerLobbyMenu) {
+		MultiplayerLobbyMenu->SetParent(this);
+		MultiplayerLobbyMenu->AddToViewport();
 	}
 }
 
@@ -69,7 +70,7 @@ void AMainMPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 }
 
 void AMainMPCharacter::SetupHuds() {
-	if (CharacterSwitcherMenu) CharacterSwitcherMenu->RemoveFromParent();
+	if (MultiplayerLobbyMenu) MultiplayerLobbyMenu->RemoveFromRoot();
 	Super::SetupHuds();
 }
 

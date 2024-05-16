@@ -34,6 +34,7 @@ protected:
 	void OnFindSessionComplete(bool IsSuccessful);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	void OnSessionFailed(const FUniqueNetId& Id, ESessionFailure::Type ErrorType);
+	void OnSessionEnded(FName SessionName, bool IsSuccessful);
 
 public:
 
@@ -43,6 +44,7 @@ public:
 
 	void HostSession();
 	void SearchSessions();
+	void QuitSession();
 	void JoinSearchedSession(FOnlineSessionSearchResult SessionResult);
 	void JumpToLevel(FString LevelName);
 	TArray<FOnlineSessionSearchResult*> GetSearchResults();

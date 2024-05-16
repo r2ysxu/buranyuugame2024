@@ -38,11 +38,11 @@ protected:
 	class UInputAction* ScrollAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UCharacterSwitcherMenuWidget> CharacterSwitcherMenuClass;
+	TSubclassOf<class UMultiplayerLobbyMenuWidget> MultiplayerLobbyMenuClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* ReviveBox;
 
-	class UCharacterSwitcherMenuWidget* CharacterSwitcherMenu;
+	class UMultiplayerLobbyMenuWidget* MultiplayerLobbyMenu;
 
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

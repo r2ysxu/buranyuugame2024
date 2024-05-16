@@ -18,10 +18,6 @@ class NECOGOBLIN_API AMultiplayerGameMode : public AGoblinGameMode {
 protected:
 	const FName LOBBY_MENU_MAP = FName("MPLobbyWorld");
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UMultiplayerLobbyMenuWidget> MultiplayerLobbyMenuClass;
-
-	class UMultiplayerLobbyMenuWidget* MultiplayerLobbyMenu;
 	int LoggedInPlayers = 0;
 
 

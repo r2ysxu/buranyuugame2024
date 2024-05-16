@@ -18,6 +18,7 @@ void UNGGameInstance::Init() {
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UNGGameInstance::OnFindSessionComplete);
 			SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UNGGameInstance::OnJoinSessionComplete);
 			SessionInterface->OnSessionFailureDelegates.AddUObject(this, &UNGGameInstance::OnSessionFailed);
+			SessionInterface->OnEndSessionCompleteDelegates.AddUObject(this, &UNGGameInstance::OnSessionEnded);
 		}
 	}
 }
@@ -51,11 +52,15 @@ void UNGGameInstance::OnSessionFailed(const FUniqueNetId& Id, ESessionFailure::T
 	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnSessionFailed"));
 }
 
+void UNGGameInstance::OnSessionEnded(FName SessionName, bool IsSuccessful) {
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnSessionEnded"));
+}
+
 void UNGGameInstance::HostSession() {
 	FOnlineSessionSettings sessionSettings;
 	sessionSettings.bAllowJoinInProgress = true;
 	//sessionSettings.bIsDedicated = false;
-	//sessionSettings.bIsLANMatch = true;
+	sessionSettings.bIsLANMatch = true;
 	sessionSettings.bIsLANMatch = false;
 	sessionSettings.bUsesPresence = true;
 	sessionSettings.NumPublicConnections = 4;
@@ -66,9 +71,14 @@ void UNGGameInstance::HostSession() {
 
 void UNGGameInstance::SearchSessions() {
 	FoundSessions = MakeShareable(new FOnlineSessionSearch());
-	//FoundSessions->bIsLanQuery = true;
+	FoundSessions->bIsLanQuery = true;
 	FoundSessions->MaxSearchResults = 10000;
 	SessionInterface->FindSessions(0, FoundSessions.ToSharedRef());
+}
+
+void UNGGameInstance::QuitSession() {
+	SessionInterface->EndSession(DefaultSessionName);
+	SessionInterface->DestroySession(DefaultSessionName);
 }
 
 void UNGGameInstance::JoinSearchedSession(FOnlineSessionSearchResult SessionResult) {
