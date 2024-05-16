@@ -27,13 +27,15 @@ void UOptionsMenuWidget::InitializeGraphicSlider(USlider* Slider) {
 
 void UOptionsMenuWidget::InitializeSoundOptions() {
 	UGameplayStatics::SetBaseSoundMix(GetWorld(), MenuSoundMix);
-	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, BGM_SC);
 
 	UNGGameInstance* gameInstance = Cast<UNGGameInstance>(GetGameInstance());
 	if (gameInstance) {
 		Options_Sound_Game->SetValue(gameInstance->GetGameVolume());
 		Options_Sound_Music->SetValue(gameInstance->GetMusicVolume());
 	}
+
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, BGM_SC, Options_Sound_Music->GetValue());
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), MenuSoundMix, SFX_SC, Options_Sound_Game->GetValue());
 }
 
 void UOptionsMenuWidget::InitializeGraphicOptions() {

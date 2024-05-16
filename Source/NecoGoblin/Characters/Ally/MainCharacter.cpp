@@ -163,8 +163,7 @@ void AMainCharacter::OnCharacterStart() {
 }
 
 void AMainCharacter::PlayBGMusic() {
-	float musicVolume = Cast<UNGGameInstance>(GetGameInstance())->GetMusicVolume();
-	if (BGMSound) UGameplayStatics::PlaySound2D(GetWorld(), BGMSound, musicVolume);
+	if (BGMSound) UGameplayStatics::PlaySound2D(GetWorld(), BGMSound, 1.f);
 }
 
 void AMainCharacter::UpgradeWeaponDamage(float additionalDamage) {
