@@ -3,6 +3,7 @@
 #include "StartSingleplayerMenuWidget.h"
 #include "../../Characters/Ally/MainCharacter.h"
 #include "../../Gamemodes/SingleplayerGameMode.h"
+#include "../../GameInstance/NGGameInstance.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/CheckBox.h"
@@ -29,6 +30,10 @@ void UStartSingleplayerMenuWidget::OnStartGame() {
 
 void UStartSingleplayerMenuWidget::SetGameMode(bool IsEndlessMode) {
 	Cast<ASingleplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->SetEndlessMode(IsEndlessMode);
+}
+
+float UStartSingleplayerMenuWidget::GetMusicVolume() {
+	return Cast<UNGGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()))->GetMusicVolume();
 }
 
 void UStartSingleplayerMenuWidget::NextCharacter() {

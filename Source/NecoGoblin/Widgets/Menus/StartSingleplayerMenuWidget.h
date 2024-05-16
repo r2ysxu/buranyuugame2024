@@ -43,4 +43,5 @@ public:
 	
 	UFUNCTION(BlueprintCallable) void OnStartGame();
 	UFUNCTION(BlueprintCallable) void SetGameMode(bool IsEndlessMode);
+	UFUNCTION(BlueprintCallable) float GetMusicVolume();
 };
