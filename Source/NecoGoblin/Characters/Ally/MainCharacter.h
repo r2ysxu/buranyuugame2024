@@ -102,6 +102,7 @@ protected:
 	UUpgradeSkillComponent* upgradeComponent;
 
 	int CharacterIndex = 0;
+	int CharacterSkinIndex = 0;
 	bool IsToggleAim = false;
 	bool IsAutoReload = false;
 	bool IsCharacterStart = false;
@@ -178,6 +179,7 @@ public:
 
 	void SetCharacterIndex(int Index);
 	int GetCharacterIndex();
+	int GetCharacterSkinIndex();
 	void UpgradeWeaponDamage(float additionalDamage);
 	void OnHealthRegen();
 	void SetChangableWeapon(FName WeaponKey);

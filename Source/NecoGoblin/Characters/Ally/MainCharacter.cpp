@@ -281,6 +281,10 @@ int AMainCharacter::GetCharacterIndex() {
 	return CharacterIndex;
 }
 
+int AMainCharacter::GetCharacterSkinIndex() {
+	return CharacterSkinIndex;
+}
+
 void AMainCharacter::OnInteract() {
 	if (!IsAlive) return;
 	if (CanFillAmmo) {
@@ -374,6 +378,7 @@ AFirearmWeapon* AMainCharacter::GetWeapon() {
 void AMainCharacter::ChangeCharacterSkin(int SkinIndex) {
 	GetMesh()->SetSkeletalMesh(CharacterMeshes[SkinIndex]);
 	GetMesh()->SetAnimClass(CharacterAnimClasses[SkinIndex]);
+	CharacterSkinIndex = SkinIndex;
 }
 
 void AMainCharacter::OnStartAim() {
