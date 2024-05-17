@@ -14,14 +14,20 @@ public:
 	AMainMenuActor();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	class AActor* StartMenuCamera;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	class AActor* MainMenuCamera;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite)
 	class AActor* MPMenuCamera;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUDs")
-	TSubclassOf<class UStartMainMenuWidget> StartMainMenuWidgetClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HUDs")
+	class UWidgetComponent* LogoMenuWidget;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HUDs")
+	class UWidgetComponent* GameMenuWidget;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HUDs")
+	class UWidgetComponent* StartMenuWidget;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HUDs")
+	class UWidgetComponent* MPMenuWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUDs")
 	TSubclassOf<class UUserWidget> LoadingWidgetClass;
 

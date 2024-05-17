@@ -3,7 +3,6 @@
 
 #include "MainMPCharacter.h"
 #include "../../Gamemodes/MultiplayerGameMode.h"
-#include "../../Widgets/Menus/CharacterSwitcherMenuWidget.h"
 #include "../../Widgets/Menus/MultiplayerLobbyMenuWidget.h"
 
 #include "EnhancedInputComponent.h"
