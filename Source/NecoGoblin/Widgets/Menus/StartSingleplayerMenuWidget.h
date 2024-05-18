@@ -24,16 +24,23 @@ protected:
 	UUserWidget* SkipIntroWidget;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UCheckBox* Options_Endless;
+	class UButton* OptionsEndless;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* NextCharButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* PrevCharButton;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* CharacterText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* CharacterJobText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* OptionEndlessModeText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UWidgetSwitcher* CharacterProfilePics;
 
 	FTimerHandle OnMovieHandler;
 	int SelectedCharacterSkinIndex = 0;
+	bool IsEndlessMode;
 
 	virtual void NativeConstruct() override;
 	UFUNCTION() void NextCharacter();
@@ -42,6 +49,6 @@ protected:
 public:
 	
 	UFUNCTION(BlueprintCallable) void OnStartGame();
-	UFUNCTION(BlueprintCallable) void SetGameMode(bool IsEndlessMode);
+	UFUNCTION(BlueprintCallable) void OnModeChanged();
 	UFUNCTION(BlueprintCallable) float GetMusicVolume();
 };
