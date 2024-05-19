@@ -3,6 +3,8 @@
 
 #include "FirearmWeapon.h"
 #include "../../Characters/Humanoid.h"
+#include "./BulletCasing.h"
+
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -134,6 +136,10 @@ void AFirearmWeapon::PlayFireEffects() {
 	if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation(), GunVolume);
 	CurrentAmmoInMagazine--;
 	//if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
+
+	FTransform casingTransform;
+	casingTransform.SetLocation(WeaponMeshComponent->GetSocketLocation(FName("b_gun_shelleject")));
+	GetWorld()->SpawnActor<ABulletCasing>(BulletCasingClass, casingTransform);
 }
 
 FFireResponse AFirearmWeapon::OnFire(FVector startLocation, FVector forwardVector, FCollisionQueryParams collisionParams, float FireRateModifier, float WeaponDamageModifier, float HeadshotDmgModifier) {

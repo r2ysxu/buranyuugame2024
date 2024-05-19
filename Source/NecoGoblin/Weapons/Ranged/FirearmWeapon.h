@@ -102,6 +102,8 @@ protected:
 	class UNiagaraSystem* MuzzleFX = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	class UDataTable* WeaponDataTable = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	TSubclassOf<class ABulletCasing> BulletCasingClass;
 
 	class USkeletalMeshComponent* WeaponMeshComponent;
 	class UNiagaraComponent* MuzzleFXComponent;
