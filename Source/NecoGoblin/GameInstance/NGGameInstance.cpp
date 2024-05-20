@@ -53,14 +53,14 @@ void UNGGameInstance::OnSessionFailed(const FUniqueNetId& Id, ESessionFailure::T
 }
 
 void UNGGameInstance::OnSessionEnded(FName SessionName, bool IsSuccessful) {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnSessionEnded"));
+	// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnSessionEnded"));
 }
 
 void UNGGameInstance::HostSession() {
 	FOnlineSessionSettings sessionSettings;
 	sessionSettings.bAllowJoinInProgress = true;
 	//sessionSettings.bIsDedicated = false;
-	sessionSettings.bIsLANMatch = true;
+	//sessionSettings.bIsLANMatch = true;
 	sessionSettings.bIsLANMatch = false;
 	sessionSettings.bUsesPresence = true;
 	sessionSettings.NumPublicConnections = 4;
@@ -71,7 +71,7 @@ void UNGGameInstance::HostSession() {
 
 void UNGGameInstance::SearchSessions() {
 	FoundSessions = MakeShareable(new FOnlineSessionSearch());
-	FoundSessions->bIsLanQuery = true;
+	//FoundSessions->bIsLanQuery = true;
 	FoundSessions->MaxSearchResults = 10000;
 	SessionInterface->FindSessions(0, FoundSessions.ToSharedRef());
 }
