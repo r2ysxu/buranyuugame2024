@@ -13,7 +13,7 @@ void UStartMenuWidget::NativeConstruct() {
 void UStartMenuWidget::OnStartClicked() {
 	Parent->ChangeToMenuCamera();
 	SetVisibility(ESlateVisibility::Hidden);
-	RemoveFromParent();
+	RemoveFromRoot();
 }
 
 void UStartMenuWidget::SetParent(AMainMenuActor* MenuActor) {
