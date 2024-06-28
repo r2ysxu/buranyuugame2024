@@ -16,4 +16,5 @@ void UJoinSessionButton::SetupJoinTarget(FOnlineSessionSearchResult JoinableSess
 
 void UJoinSessionButton::OnJoinSession() {
 	Cast<UNGGameInstance>(GetGameInstance())->JoinSearchedSession(SessionResult);
+	SetIsEnabled(false);
 }

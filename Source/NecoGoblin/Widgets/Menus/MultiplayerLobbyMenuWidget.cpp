@@ -47,8 +47,6 @@ void UMultiplayerLobbyMenuWidget::OnPrevClicked() {
 }
 
 void UMultiplayerLobbyMenuWidget::OnBackClicked() {
-	if (MainCharacter->HasAuthority()) {
-		Cast<UNGGameInstance>(GetGameInstance())->QuitSession();
-		UGameplayStatics::OpenLevel(GetWorld(), "MenuMapWorld");
-	}
+	Cast<UNGGameInstance>(GetGameInstance())->QuitSession();
+	UGameplayStatics::OpenLevel(GetWorld(), "MenuMapWorld");
 }

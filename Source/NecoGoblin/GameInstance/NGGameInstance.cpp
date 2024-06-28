@@ -6,6 +6,7 @@
 #include "Containers/Array.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "Online/OnlineSessionNames.h"
 #include "Kismet/GameplayStatics.h"
 
 UNGGameInstance::UNGGameInstance() {}
@@ -58,11 +59,13 @@ void UNGGameInstance::OnSessionEnded(FName SessionName, bool IsSuccessful) {
 
 void UNGGameInstance::HostSession() {
 	FOnlineSessionSettings sessionSettings;
-	sessionSettings.bAllowJoinInProgress = true;
-	//sessionSettings.bIsDedicated = false;
+	sessionSettings.bIsDedicated = false;
 	//sessionSettings.bIsLANMatch = true;
 	sessionSettings.bIsLANMatch = false;
 	sessionSettings.bUsesPresence = true;
+	sessionSettings.bAllowJoinViaPresence = true;
+	sessionSettings.bUseLobbiesIfAvailable = true;
+	sessionSettings.bAllowJoinInProgress = true;
 	sessionSettings.NumPublicConnections = 4;
 	sessionSettings.bShouldAdvertise = true;
 
@@ -71,8 +74,9 @@ void UNGGameInstance::HostSession() {
 
 void UNGGameInstance::SearchSessions() {
 	FoundSessions = MakeShareable(new FOnlineSessionSearch());
-	//FoundSessions->bIsLanQuery = true;
-	FoundSessions->MaxSearchResults = 10000;
+	FoundSessions->bIsLanQuery = false;
+	FoundSessions->MaxSearchResults = 100;
+	FoundSessions->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 	SessionInterface->FindSessions(0, FoundSessions.ToSharedRef());
 }
 
