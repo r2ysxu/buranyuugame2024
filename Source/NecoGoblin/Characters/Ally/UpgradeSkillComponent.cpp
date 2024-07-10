@@ -119,7 +119,7 @@ void UUpgradeSkillComponent::EnterScreen() {
 	controller->SetInputMode(FInputModeGameAndUI());
 	controller->SetIgnoreMoveInput(true);
 	controller->SetIgnoreLookInput(true);
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.01f);
+	ParentCharacter->MenuTimeDilate(0.01f);
 }
 
 void UUpgradeSkillComponent::ExitScreen() {
@@ -129,7 +129,7 @@ void UUpgradeSkillComponent::ExitScreen() {
 	controller->SetInputMode(FInputModeGameOnly());
 	controller->SetIgnoreLookInput(false);
 	controller->SetIgnoreMoveInput(false);
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+	ParentCharacter->MenuTimeDilate(1.f);
 }
 
 int UUpgradeSkillComponent::GetSkillLevel(FNecoSkills Skill) {

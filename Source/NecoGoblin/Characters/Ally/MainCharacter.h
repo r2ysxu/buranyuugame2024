@@ -201,6 +201,7 @@ public:
 	virtual void HealthPot(float HealAmount);
 	virtual void UpgradeSkill(FNecoSkills Skill);
 	virtual void ChangeCharacterSkin(int IndexOffset);
+	virtual void MenuTimeDilate(float TimeDilation) {}
 	UFUNCTION(BlueprintCallable) void PlayGetupMontage();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();

@@ -39,7 +39,7 @@ protected:
 
 	class AMainCharacter* ParentCharacter;
 	int AddedSkillPoints = 0;
-	int SkillPoints = 15;
+	int SkillPoints = 0;
 	int ExpPoints = 0;
 
 	uint8 Skills[SKILLS_SIZE];

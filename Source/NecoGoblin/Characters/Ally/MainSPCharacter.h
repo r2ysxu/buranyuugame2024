@@ -48,4 +48,6 @@ protected:
 
 public:
 	AMainSPCharacter();
+
+	virtual void MenuTimeDilate(float TimeDilation) override;
 };

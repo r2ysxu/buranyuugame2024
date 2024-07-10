@@ -8,9 +8,14 @@
 #include "Components/InputComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AMainSPCharacter::AMainSPCharacter() {}
+
+void AMainSPCharacter::MenuTimeDilate(float TimeDilation) {
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
+}
 
 void AMainSPCharacter::BeginPlay() {
 	Super::BeginPlay();
