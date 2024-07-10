@@ -91,18 +91,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TArray<class UAnimMontage*> GetupMontage;
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	class UNiagaraSystem* BloodHitFX = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	class UNiagaraSystem* BloodShotFX = nullptr;
 	class UNiagaraComponent* BloodSplatter = nullptr;
 
+	UPROPERTY(ReplicatedUsing = OnChangeCharacterSkin)
+	int CharacterSkinIndex = 0;
+
 	UNecoCharacterStat* stats;
 	UUpgradeSkillComponent* upgradeComponent;
 
 	int CharacterIndex = 0;
-	int CharacterSkinIndex = 0;
+
+
 	bool IsToggleAim = false;
 	bool IsAutoReload = false;
 	bool IsCharacterStart = false;
@@ -122,6 +125,7 @@ protected:
 	FTimerHandle OnHealthRegenHandler;
 
 	virtual void BeginPlay();
+	virtual void SetupHuds();
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void Look(const FInputActionValue& Value) {}
 	virtual void OnStopAim();
@@ -133,6 +137,7 @@ protected:
 	virtual void OnSprintStop();
 	virtual void OnRemoveBloodSplatter();
 	virtual void OnRevivePlayer();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	void OnAimModeStart();
 	void OnAimModeStop();
@@ -171,6 +176,7 @@ public:
 	UFUNCTION(BlueprintCallable) int GetCharacterSkinSize();
 	UFUNCTION(BlueprintCallable) float GetHealthPercentage() { return CurrentHealth / GetMaxHealth(); }
 	UFUNCTION(BlueprintCallable) float GetStaminaPercentage() { return Stamina / (MAX_STAMINA * upgradeComponent->GetStaminaModifier()); }
+	UFUNCTION() void OnChangeCharacterSkin();
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -194,9 +200,8 @@ public:
 	virtual void TakeHitDamage(float damage, AActor* DamageCauser) override;
 	virtual void HealthPot(float HealAmount);
 	virtual void UpgradeSkill(FNecoSkills Skill);
-	virtual void ChangeCharacterSkin(int SkinIndex);
+	virtual void ChangeCharacterSkin(int IndexOffset);
 	UFUNCTION(BlueprintCallable) void PlayGetupMontage();
-	UFUNCTION(BlueprintCallable) virtual void SetupHuds();
 	UFUNCTION(BlueprintCallable) void OnShowSkills();
 	UFUNCTION(BlueprintCallable) struct FFirearmStats GetFirearmStats();
 	UFUNCTION() class AFirearmWeapon* GetWeapon();

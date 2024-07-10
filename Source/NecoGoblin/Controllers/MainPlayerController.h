@@ -22,11 +22,14 @@ protected:
 	TSubclassOf<class UUserWidget> GameoverScreenMenuClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class URoundHUD> RoundHudWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UMultiplayerLobbyMenuWidget> MultiplayerLobbyMenuClass;
 
 	class AMainCharacter* Character;
 	class UUserWidget* LoadingScreenMenu;
 	class UUserWidget* GameoverScreenMenu;
 	class URoundHUD* RoundHudWidget;
+	class UMultiplayerLobbyMenuWidget* MultiplayerLobbyMenu;
 
 
 	virtual void BeginPlay() override;
@@ -38,4 +41,5 @@ public:
 	UFUNCTION(Client, Reliable) void Client_OnCharacterStart();
 	UFUNCTION(Client, Reliable) void Client_OnGameover();
 	UFUNCTION(Client, Reliable) void Client_RoundUpdate(int RoundNumber);
+	UFUNCTION(Client, Reliable) void Client_OnPropagateLobbySettings();
 };

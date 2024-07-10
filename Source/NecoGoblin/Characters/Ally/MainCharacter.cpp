@@ -20,6 +20,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Niagara/Public/NiagaraFunctionLibrary.h"
 #include "Components/AudioComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -136,6 +137,12 @@ void AMainCharacter::OnRevivePlayer() {
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetMovementComponent()->Activate();
 	EnableInput(Cast<APlayerController>(GetController()));
+}
+
+void AMainCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMainCharacter, CharacterSkinIndex);
 }
 
 void AMainCharacter::SetPlayerPitch(float Pitch) {
@@ -374,10 +381,11 @@ AFirearmWeapon* AMainCharacter::GetWeapon() {
 	return Firearm;
 }
 
-void AMainCharacter::ChangeCharacterSkin(int SkinIndex) {
-	GetMesh()->SetSkeletalMesh(CharacterMeshes[SkinIndex]);
-	GetMesh()->SetAnimClass(CharacterAnimClasses[SkinIndex]);
-	CharacterSkinIndex = SkinIndex;
+void AMainCharacter::ChangeCharacterSkin(int IndexOffset) {
+	CharacterSkinIndex = (CharacterSkinIndex + IndexOffset) % GetCharacterSkinSize();
+	if (CharacterSkinIndex < 0) CharacterSkinIndex = GetCharacterSkinSize() - 1;
+	GetMesh()->SetSkeletalMesh(CharacterMeshes[CharacterSkinIndex]);
+	GetMesh()->SetAnimClass(CharacterAnimClasses[CharacterSkinIndex]);
 }
 
 void AMainCharacter::OnStartAim() {
@@ -454,6 +462,11 @@ bool AMainCharacter::GetIsReloading() {
 
 int AMainCharacter::GetCharacterSkinSize() {
 	return CharacterMeshes.Num();
+}
+
+void AMainCharacter::OnChangeCharacterSkin() {
+	GetMesh()->SetSkeletalMesh(CharacterMeshes[CharacterSkinIndex]);
+	GetMesh()->SetAnimClass(CharacterAnimClasses[CharacterSkinIndex]);
 }
 
 bool AMainCharacter::GetIsFiringWeapon() {

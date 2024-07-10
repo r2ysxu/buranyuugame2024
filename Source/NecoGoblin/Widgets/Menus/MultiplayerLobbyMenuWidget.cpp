@@ -19,31 +19,24 @@ void UMultiplayerLobbyMenuWidget::NativeConstruct() {
 
 void UMultiplayerLobbyMenuWidget::OnStartGameClicked() {
 	StartButton->SetIsEnabled(false);
+	RemoveFromViewport();
 	if (AMultiplayerGameMode* gamemode = Cast<AMultiplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()))) {
 		gamemode->LoadIntoMPLevel("IslandMap_MP");
 	}
-	RemoveFromParent();
-	//Cast<UNGGameInstance>(GetGameInstance())->JumpToLevel("/Game/NecoGoblin/Maps/MultiplayerMaps/IslandMap_MP?listen");
 }
 
-void UMultiplayerLobbyMenuWidget::SetParent(AMainCharacter* Character) {
-	MainCharacter = Character;
-	StartButton->SetIsEnabled(MainCharacter->HasAuthority());
+void UMultiplayerLobbyMenuWidget::CheckCanStart(bool CanStart) {
+	StartButton->SetIsEnabled(CanStart);
 }
 
 void UMultiplayerLobbyMenuWidget::OnNextClicked() {
-	if (MainCharacter) {
-		SelectedCharacterSkinIndex = ++SelectedCharacterSkinIndex % MainCharacter->GetCharacterSkinSize();
-		MainCharacter->ChangeCharacterSkin(SelectedCharacterSkinIndex);
-	}
+	Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+		->ChangeCharacterSkin(1);
 }
 
 void UMultiplayerLobbyMenuWidget::OnPrevClicked() {
-	if (MainCharacter) {
-		SelectedCharacterSkinIndex = --SelectedCharacterSkinIndex;
-		if (SelectedCharacterSkinIndex < 0) SelectedCharacterSkinIndex = MainCharacter->GetCharacterSkinSize() - 1;
-		MainCharacter->ChangeCharacterSkin(SelectedCharacterSkinIndex);
-	}
+	Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+		->ChangeCharacterSkin(1);
 }
 
 void UMultiplayerLobbyMenuWidget::OnBackClicked() {

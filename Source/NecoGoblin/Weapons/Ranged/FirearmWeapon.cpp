@@ -133,7 +133,7 @@ bool AFirearmWeapon::IsWeaponFireable() {
 
 void AFirearmWeapon::PlayFireEffects() {
 	if (MuzzleFX) UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMeshComponent, MUZZLE, FVector(), FRotator(), EAttachLocation::SnapToTargetIncludingScale, true);
-	if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, GetActorLocation(), GunVolume);
+	if (WeaponData->ShotSound) UGameplayStatics::PlaySoundAtLocation(GetWorld(), WeaponData->ShotSound, WeaponMeshComponent->GetSocketLocation("Muzzle"), GunVolume);
 	CurrentAmmoInMagazine--;
 	//if (WeaponData->FireAnimation) WeaponMeshComponent->PlayAnimation(WeaponData->FireAnimation, false);
 

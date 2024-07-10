@@ -37,16 +37,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ScrollAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UMultiplayerLobbyMenuWidget> MultiplayerLobbyMenuClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* ReviveBox;
 
-	class UMultiplayerLobbyMenuWidget* MultiplayerLobbyMenu;
-
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	virtual void SetupHuds() override;
 	virtual void Look(const FInputActionValue& Value) override;
 	void Move(const FInputActionValue& Value);
 
@@ -87,9 +82,9 @@ protected:
 	UFUNCTION(Server, Reliable) void Server_OnRefillAmmo(int AmmoAmount);
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnRefillAmmo(int AmmoAmount);
 
-	virtual void ChangeCharacterSkin(int SkinIndex) override;
-	UFUNCTION(Server, Reliable) void Server_ChangeCharacterSkin(int SkinIndex);
-	UFUNCTION(NetMultiCast, Reliable) void Multicast_ChangeCharacterSkin(int SkinIndex);
+	virtual void ChangeCharacterSkin(int IndexOffset) override;
+	UFUNCTION(Server, Reliable) void Server_ChangeCharacterSkin(int IndexOffset);
+	UFUNCTION(NetMultiCast, Reliable) void Multicast_ChangeCharacterSkin(int IndexOffset);
 
 	virtual void OnInteract() override;
 	UFUNCTION(Server, Reliable) void Server_OnInteract();

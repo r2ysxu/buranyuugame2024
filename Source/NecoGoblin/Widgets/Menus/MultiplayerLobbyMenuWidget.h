@@ -23,7 +23,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* PrevCharacterButton;
 
-	int SelectedCharacterSkinIndex = 0;
 	class AMainCharacter* MainCharacter;
 
 	virtual void NativeConstruct() override;
@@ -34,5 +33,5 @@ protected:
 	UFUNCTION() void OnBackClicked();
 
 public:
-	void SetParent(class AMainCharacter* Character);
+	void CheckCanStart(bool CanStart);
 };

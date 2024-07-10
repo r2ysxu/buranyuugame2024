@@ -36,6 +36,7 @@ void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {
 	if (IsValid(controller)) {
 		controller->Client_OnEnterLobbyMode();
 	}
+	OnInitiateLobbyLoadForPlayers();
 }
 
 void AMultiplayerGameMode::SpawnEnemy() {
@@ -48,6 +49,14 @@ void AMultiplayerGameMode::SpawnEnemy() {
 		RangeEnemySpawned++;
 	}
 	CurrentSpawnerIndex = (CurrentSpawnerIndex + 1) % Spawners.Num();
+}
+
+void AMultiplayerGameMode::OnInitiateLobbyLoadForPlayers() {
+	for (FConstPlayerControllerIterator controllerIt = GetWorld()->GetPlayerControllerIterator(); controllerIt; controllerIt++) {
+		if (AMainPlayerController* controller = Cast<AMainPlayerController>(controllerIt->Get())) {
+			controller->Client_OnPropagateLobbySettings();
+		}
+	}
 }
 
 void AMultiplayerGameMode::OnInitiateLevelLoadForPlayers() {

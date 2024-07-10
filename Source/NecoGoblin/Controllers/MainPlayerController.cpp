@@ -4,6 +4,7 @@
 #include "MainPlayerController.h"
 #include "../Characters/Ally/MainCharacter.h"
 #include "../Widgets/HUDs/RoundHUD.h"
+#include "../Widgets/Menus/MultiplayerLobbyMenuWidget.h"
 
 #include "Blueprint/UserWidget.h"
 #include "EnhancedInputComponent.h"
@@ -14,17 +15,32 @@
 void AMainPlayerController::BeginPlay() {
 	Super::BeginPlay();
 	LoadingScreenMenu = CreateWidget<UUserWidget>(GetWorld(), LoadingScreenMenuClass);
+
+	MultiplayerLobbyMenu = CreateWidget<UMultiplayerLobbyMenuWidget>(GetWorld(), MultiplayerLobbyMenuClass);
+	if (MultiplayerLobbyMenu) {
+		MultiplayerLobbyMenu->CheckCanStart(HasAuthority());
+		MultiplayerLobbyMenu->AddToViewport();
+	}
 }
 
 void AMainPlayerController::OnPossess(APawn* aPawn) {
 	Super::OnPossess(aPawn);
 	Character = Cast<AMainCharacter>(aPawn);
+
+}
+
+void AMainPlayerController::Client_OnPropagateLobbySettings_Implementation() {
+	AMainCharacter* character = Cast<AMainCharacter>(GetPawn());
+	if (IsValid(character)) {
+		character->ChangeCharacterSkin(0);
+	}
 }
 
 void AMainPlayerController::Client_OnInitiateLevelLoad_Implementation() {
 	if (LoadingScreenMenu) {
 		LoadingScreenMenu->AddToViewport();
 	}
+	if (MultiplayerLobbyMenu) MultiplayerLobbyMenu->RemoveFromViewport();
 }
 
 void AMainPlayerController::Client_OnCharacterStart_Implementation() {

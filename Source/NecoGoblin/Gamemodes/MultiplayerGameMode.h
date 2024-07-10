@@ -24,6 +24,7 @@ protected:
 	virtual void StartPlay() override;
 	virtual void OnPostLogin(AController* NewPlayer) override;
 	virtual void SpawnEnemy() override;
+	void OnInitiateLobbyLoadForPlayers();
 	void OnInitiateLevelLoadForPlayers();
 
 	

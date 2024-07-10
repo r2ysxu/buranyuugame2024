@@ -60,7 +60,6 @@ void UNGGameInstance::OnSessionEnded(FName SessionName, bool IsSuccessful) {
 void UNGGameInstance::HostSession() {
 	FOnlineSessionSettings sessionSettings;
 	sessionSettings.bIsDedicated = false;
-	//sessionSettings.bIsLANMatch = true;
 	sessionSettings.bIsLANMatch = false;
 	sessionSettings.bUsesPresence = true;
 	sessionSettings.bAllowJoinViaPresence = true;

@@ -3,7 +3,6 @@
 
 #include "MainMPCharacter.h"
 #include "../../Gamemodes/MultiplayerGameMode.h"
-#include "../../Widgets/Menus/MultiplayerLobbyMenuWidget.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -15,6 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/UserWidget.h"
+
 
 AMainMPCharacter::AMainMPCharacter() {
 	ReviveBox = CreateDefaultSubobject<USphereComponent>(TEXT("ReviveBox"));
@@ -31,12 +31,6 @@ void AMainMPCharacter::BeginPlay() {
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
-	}
-
-	MultiplayerLobbyMenu = CreateWidget<UMultiplayerLobbyMenuWidget>(GetWorld(), MultiplayerLobbyMenuClass);
-	if (MultiplayerLobbyMenu) {
-		MultiplayerLobbyMenu->SetParent(this);
-		MultiplayerLobbyMenu->AddToViewport();
 	}
 }
 
@@ -66,11 +60,6 @@ void AMainMPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(InfoAction, ETriggerEvent::Completed, this, &AMainMPCharacter::OnShowSkills);
 		EnhancedInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &AMainMPCharacter::OnScrollAxis);
 	}
-}
-
-void AMainMPCharacter::SetupHuds() {
-	if (MultiplayerLobbyMenu) MultiplayerLobbyMenu->RemoveFromRoot();
-	Super::SetupHuds();
 }
 
 void AMainMPCharacter::Move(const FInputActionValue& Value) {
@@ -294,20 +283,22 @@ int AMainMPCharacter::RefillAmmo(int AmmoAmount) {
 	return Super::RefillAmmo(AmmoAmount);
 }
 
-void AMainMPCharacter::ChangeCharacterSkin(int SkinIndex) {
+void AMainMPCharacter::ChangeCharacterSkin(int IndexOffset) {
 	if (!HasAuthority()) {
-		Server_ChangeCharacterSkin(SkinIndex);
+		Server_ChangeCharacterSkin(IndexOffset);
+	} else {
+		Super::ChangeCharacterSkin(IndexOffset);
+		Multicast_ChangeCharacterSkin(IndexOffset);
 	}
-	Super::ChangeCharacterSkin(SkinIndex);
 }
 
-void AMainMPCharacter::Server_ChangeCharacterSkin_Implementation(int SkinIndex) {
-	Super::ChangeCharacterSkin(SkinIndex);
-	Multicast_ChangeCharacterSkin(SkinIndex);
+void AMainMPCharacter::Server_ChangeCharacterSkin_Implementation(int IndexOffset) {
+	Super::ChangeCharacterSkin(IndexOffset);
+	Multicast_ChangeCharacterSkin(IndexOffset);
 }
 
-void AMainMPCharacter::Multicast_ChangeCharacterSkin_Implementation(int SkinIndex) {
-	Super::ChangeCharacterSkin(SkinIndex);
+void AMainMPCharacter::Multicast_ChangeCharacterSkin_Implementation(int IndexOffset) {
+	Super::OnChangeCharacterSkin();
 }
 
 void AMainMPCharacter::Server_OnRefillAmmo_Implementation(int AmmoAmount) {

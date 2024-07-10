@@ -14,7 +14,7 @@ class NECOGOBLIN_API UStartSingleplayerMenuWidget : public UUserWidget {
 	GENERATED_BODY()
 
 private:
-	void SetSelectedCharacterText();
+	void SetSelectedCharacterText(int SkinIndex);
 
 protected:
 
@@ -39,7 +39,6 @@ protected:
 	class UWidgetSwitcher* CharacterProfilePics;
 
 	FTimerHandle OnMovieHandler;
-	int SelectedCharacterSkinIndex = 0;
 	bool IsEndlessMode;
 
 	virtual void NativeConstruct() override;

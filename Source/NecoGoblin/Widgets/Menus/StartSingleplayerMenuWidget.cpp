@@ -16,7 +16,7 @@ void UStartSingleplayerMenuWidget::NativeConstruct() {
 	OptionsEndless->OnClicked.AddDynamic(this, &UStartSingleplayerMenuWidget::OnModeChanged);
 	NextCharButton->OnClicked.AddDynamic(this, &UStartSingleplayerMenuWidget::NextCharacter);
 	PrevCharButton->OnClicked.AddDynamic(this, &UStartSingleplayerMenuWidget::PrevCharacter);
-	SetSelectedCharacterText();
+	SetSelectedCharacterText(0);
 }
 
 void UStartSingleplayerMenuWidget::OnStartGame() {
@@ -41,24 +41,21 @@ float UStartSingleplayerMenuWidget::GetMusicVolume() {
 void UStartSingleplayerMenuWidget::NextCharacter() {
 	AMainCharacter* mc = Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (mc) {
-		SelectedCharacterSkinIndex = ++SelectedCharacterSkinIndex % mc->GetCharacterSkinSize();
-		mc->ChangeCharacterSkin(SelectedCharacterSkinIndex);
-		SetSelectedCharacterText();
+		mc->ChangeCharacterSkin(1);
+		SetSelectedCharacterText(mc->GetCharacterSkinIndex());
 	}
 }
 
 void UStartSingleplayerMenuWidget::PrevCharacter() {
 	AMainCharacter* mc = Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (mc) {
-		SelectedCharacterSkinIndex = --SelectedCharacterSkinIndex % mc->GetCharacterSkinSize();
-		if (SelectedCharacterSkinIndex < 0) SelectedCharacterSkinIndex = mc->GetCharacterSkinSize() - 1;
-		mc->ChangeCharacterSkin(SelectedCharacterSkinIndex);
-		SetSelectedCharacterText();
+		mc->ChangeCharacterSkin(-1);
+		SetSelectedCharacterText(mc->GetCharacterSkinIndex());
 	}
 }
 
-void UStartSingleplayerMenuWidget::SetSelectedCharacterText() {
-	switch (SelectedCharacterSkinIndex) {
+void UStartSingleplayerMenuWidget::SetSelectedCharacterText(int SkinIndex) {
+	switch (SkinIndex) {
 	case 0: 
 		CharacterText->SetText(FText::FromString(TEXT("Indentured Rabbit")));
 		CharacterJobText->SetText(FText::FromString(TEXT("Janitor, Pilot")));
@@ -76,5 +73,5 @@ void UStartSingleplayerMenuWidget::SetSelectedCharacterText() {
 		CharacterJobText->SetText(FText::FromString(TEXT("Burenyuu, Boss")));
 		break;
 	}
-	CharacterProfilePics->SetActiveWidgetIndex(SelectedCharacterSkinIndex);
+	CharacterProfilePics->SetActiveWidgetIndex(SkinIndex);
 }
