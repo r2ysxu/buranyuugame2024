@@ -23,7 +23,7 @@ protected:
 	TSharedPtr<FOnlineSessionSearch> FoundSessions;
 	TArray<FOnlineSessionSearchResult*> SessionSearchResults;
 	float GameVolume = 1.f;
-	float MusicVolume = 1.f;
+	float MusicVolume = .6f;
 
 	bool IsToggleAim = false;
 	bool IsAutoReload = false;
