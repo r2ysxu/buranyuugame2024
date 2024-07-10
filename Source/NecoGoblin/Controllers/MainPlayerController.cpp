@@ -40,7 +40,7 @@ void AMainPlayerController::Client_OnInitiateLevelLoad_Implementation() {
 	if (LoadingScreenMenu) {
 		LoadingScreenMenu->AddToViewport();
 	}
-	if (MultiplayerLobbyMenu) MultiplayerLobbyMenu->RemoveFromViewport();
+	if (MultiplayerLobbyMenu && MultiplayerLobbyMenu->IsInViewport()) MultiplayerLobbyMenu->RemoveFromViewport();
 }
 
 void AMainPlayerController::Client_OnCharacterStart_Implementation() {

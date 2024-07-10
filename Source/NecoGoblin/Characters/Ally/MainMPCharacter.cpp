@@ -96,6 +96,7 @@ void AMainMPCharacter::Look(const FInputActionValue& Value) {
 }
 
 void AMainMPCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	if (actor == this) return;
 	if (AAllyBase* teammate = Cast<AAllyBase>(actor)) {
 		OnRevivePlayer();
 	}
@@ -317,7 +318,7 @@ bool AMainMPCharacter::CheckAlive() {
 		Tags.Remove(FName("MainPlayer"));
 		GetCharacterMovement()->StopMovementImmediately();
 		GetMovementComponent()->Deactivate();
-		//DisableInput(Cast<APlayerController>(GetController()));
+		DisableInput(Cast<APlayerController>(GetController()));
 		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 		GetMesh()->SetSimulatePhysics(true);
 		Server_NotifyDead();

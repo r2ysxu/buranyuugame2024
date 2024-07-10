@@ -137,6 +137,7 @@ void AMainCharacter::OnRevivePlayer() {
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetMovementComponent()->Activate();
 	EnableInput(Cast<APlayerController>(GetController()));
+	Delegate_HealthChange.Broadcast(GetHealthPercentage());
 }
 
 void AMainCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
