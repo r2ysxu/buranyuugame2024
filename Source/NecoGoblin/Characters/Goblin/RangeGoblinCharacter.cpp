@@ -60,12 +60,14 @@ bool ARangeGoblinCharacter::CheckRangeAttack(AAllyBase* TargetCharacter, FVector
 	if (!IsValid(Weapon) || IsAttackCooldown) return false;
 
 	TArray<AActor*> ignores = { this, TargetCharacter };
+	FVector endLocation = TargetCharacter->GetActorLocation()
+			+ TargetCharacter->GetVelocity() // Ignore projectile speed in calculation to make it less accurate
+			+ FVector(FMath::RandRange(-50.f, 50.f), FMath::RandRange(-50.f, 50.f), 0.f); // Adds random spread to spear
 	return UGameplayStatics::SuggestProjectileVelocity(
 		GetWorld(),
 		OutTossVelocity,
 		Weapon->GetActorLocation(),
-		// Ignore projectile speed in calculation to make it less accurate
-		TargetCharacter->GetActorLocation() + TargetCharacter->GetVelocity(),
+		endLocation,
 		TossVelocity,
 		false,
 		0.f,

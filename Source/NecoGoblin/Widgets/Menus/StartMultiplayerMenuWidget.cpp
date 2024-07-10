@@ -26,7 +26,7 @@ void UStartMultiplayerMenuWidget::PopulateSessionList(TArray<FOnlineSessionSearc
 	for (FOnlineSessionSearchResult* result : Results) {
 		UHorizontalBox* frame = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass(), TEXT("SessionResult_Frame"));
 		UTextBlock* sessionNameText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("SessionResult_Name"));
-		sessionNameText->SetText(FText::FromString(result->GetSessionIdStr()));
+		sessionNameText->SetText(FText::FromString(result->Session.OwningUserName));
 		UJoinSessionButton* joinSessionbutton = WidgetTree->ConstructWidget<UJoinSessionButton>(UJoinSessionButton::StaticClass(), TEXT("JoinSesion_Button"));
 		joinSessionbutton->SetupJoinTarget(*result);
 		UTextBlock* joinSessionText = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass(), TEXT("SessionResult_JoinButtonPrompt"));
