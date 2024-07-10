@@ -13,6 +13,9 @@ UCLASS()
 class NECOGOBLIN_API AMainMPCharacter : public AMainCharacter {
 	GENERATED_BODY()
 
+private:
+	void ShowReviveHUD(bool IsVisible);
+
 protected:
 
 	/** MappingContext */
@@ -39,6 +42,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision)
 	class USphereComponent* ReviveBox;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	class UWidgetComponent* ReviveWidgetComponent;
 
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

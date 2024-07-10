@@ -10,6 +10,7 @@
 #include "Components/InputComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,6 +23,9 @@ AMainMPCharacter::AMainMPCharacter() {
 	ReviveBox->SetSphereRadius(25.f);
 	ReviveBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	//ReviveBox->bHiddenInGame = false;
+
+	ReviveWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ReviveWidget"));
+	ReviveWidgetComponent->SetupAttachment(ReviveBox);
 }
 
 void AMainMPCharacter::BeginPlay() {
@@ -32,6 +36,12 @@ void AMainMPCharacter::BeginPlay() {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	ShowReviveHUD(false);
+}
+
+void AMainMPCharacter::ShowReviveHUD(bool IsVisible) {
+	if (IsVisible) ReviveWidgetComponent->GetWidget()->SetVisibility(ESlateVisibility::Visible);
+	else ReviveWidgetComponent->GetWidget()->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void AMainMPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
@@ -131,11 +141,13 @@ void AMainMPCharacter::OnRevivePlayer() {
 
 void AMainMPCharacter::Server_OnRevivePlayer_Implementation() {
 	Super::OnRevivePlayer();
+	ShowReviveHUD(false);
 	Multicast_OnRevivePlayer();
 }
 
 void AMainMPCharacter::Multicast_OnRevivePlayer_Implementation() {
 	Super::OnRevivePlayer();
+	ShowReviveHUD(false);
 }
 
 void AMainMPCharacter::Server_SetupCharacters_Implementation() {
@@ -323,6 +335,7 @@ bool AMainMPCharacter::CheckAlive() {
 		GetMesh()->SetSimulatePhysics(true);
 		Server_NotifyDead();
 		ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainMPCharacter::OnDeadBodyTouched);
+		ShowReviveHUD(true);
 	}
 	return IsAlive;
 }
