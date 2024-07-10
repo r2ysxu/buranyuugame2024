@@ -19,6 +19,7 @@ protected:
 	const FName LOBBY_MENU_MAP = FName("MPLobbyWorld");
 
 	int LoggedInPlayers = 0;
+	bool GameStarted = false;
 
 
 	virtual void StartPlay() override;

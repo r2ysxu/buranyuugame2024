@@ -5,6 +5,7 @@
 #include "../Characters/Ally/MainCharacter.h"
 #include "../Widgets/HUDs/RoundHUD.h"
 #include "../Widgets/Menus/MultiplayerLobbyMenuWidget.h"
+#include "../GameInstance/NGGameInstance.h"
 
 #include "Blueprint/UserWidget.h"
 #include "EnhancedInputComponent.h"
@@ -27,6 +28,10 @@ void AMainPlayerController::OnPossess(APawn* aPawn) {
 	Super::OnPossess(aPawn);
 	Character = Cast<AMainCharacter>(aPawn);
 
+}
+
+void AMainPlayerController::QuitSession() {
+	Cast<UNGGameInstance>(GetGameInstance())->QuitSession();
 }
 
 void AMainPlayerController::Client_OnPropagateLobbySettings_Implementation() {

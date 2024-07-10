@@ -36,6 +36,8 @@ protected:
 	virtual void OnPossess(APawn* aPawn) override;
 
 public:
+	void QuitSession();
+
 	UFUNCTION(Client, Reliable) void Client_OnInitiateLevelLoad();
 	UFUNCTION(Client, Reliable) void Client_OnEnterLobbyMode();
 	UFUNCTION(Client, Reliable) void Client_OnCharacterStart();

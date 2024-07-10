@@ -34,7 +34,11 @@ void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {
 	Super::OnPostLogin(NewPlayer);
 	AMainPlayerController* controller = Cast<AMainPlayerController>(NewPlayer);
 	if (IsValid(controller)) {
-		controller->Client_OnEnterLobbyMode();
+		if (GameStarted) {
+			controller->QuitSession();
+		} else {
+			controller->Client_OnEnterLobbyMode();
+		}
 	}
 	OnInitiateLobbyLoadForPlayers();
 }
@@ -95,6 +99,7 @@ void AMultiplayerGameMode::SetupPlayers() {
 }
 
 void AMultiplayerGameMode::LoadIntoMPLevel(FName LevelName) {
+	GameStarted = true;
 	OnInitiateLevelLoadForPlayers();
 	FLatentActionInfo latentInfo;
 	latentInfo.UUID = 123;
