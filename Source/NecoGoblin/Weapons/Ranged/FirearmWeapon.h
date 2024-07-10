@@ -6,6 +6,7 @@
 #include "../Weapon.h"
 #include "NiagaraComponent.h"
 #include "Engine/DataTable.h"
+#include "Sound/SoundCue.h"
 #include "FirearmWeapon.generated.h"
 
 UENUM(BlueprintType)
@@ -27,9 +28,9 @@ struct FFirearmWeaponData : public FTableRowBase {
 	UPROPERTY(EditAnywhere)
 	class UAnimationAsset* FireAnimation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
-	USoundBase* ShotSound;
+	USoundCue* ShotSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
-	USoundBase* ReloadSound;
+	USoundCue* ReloadSound;
 	UPROPERTY(EditAnywhere)
 	int MagazineSize;
 	UPROPERTY(EditAnywhere)
@@ -51,6 +52,7 @@ struct FFirearmWeaponData : public FTableRowBase {
 USTRUCT(BlueprintType)
 struct FFirearmStats {
 	GENERATED_BODY()
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FString Name;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
