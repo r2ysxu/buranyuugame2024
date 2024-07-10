@@ -20,6 +20,7 @@ void UNGGameInstance::Init() {
 			SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UNGGameInstance::OnJoinSessionComplete);
 			SessionInterface->OnSessionFailureDelegates.AddUObject(this, &UNGGameInstance::OnSessionFailed);
 			SessionInterface->OnEndSessionCompleteDelegates.AddUObject(this, &UNGGameInstance::OnSessionEnded);
+			GetEngine()->OnNetworkFailure().AddUObject(this, &UNGGameInstance::OnNetworkFailure);
 		}
 	}
 }
@@ -50,11 +51,16 @@ void UNGGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCom
 }
 
 void UNGGameInstance::OnSessionFailed(const FUniqueNetId& Id, ESessionFailure::Type ErrorType) {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnSessionFailed"));
+	UGameplayStatics::OpenLevel(GetWorld(), "MenuMapWorld");
 }
 
 void UNGGameInstance::OnSessionEnded(FName SessionName, bool IsSuccessful) {
-	// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("OnSessionEnded"));
+	UGameplayStatics::OpenLevel(GetWorld(), "MenuMapWorld");
+}
+
+void UNGGameInstance::OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString) {
+	SessionInterface->DestroySession(DefaultSessionName);
+	UGameplayStatics::OpenLevel(GetWorld(), "MenuMapWorld");
 }
 
 void UNGGameInstance::HostSession() {

@@ -35,6 +35,7 @@ protected:
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 	void OnSessionFailed(const FUniqueNetId& Id, ESessionFailure::Type ErrorType);
 	void OnSessionEnded(FName SessionName, bool IsSuccessful);
+	void OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
 
 public:
 
