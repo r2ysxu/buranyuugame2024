@@ -15,6 +15,8 @@ UCLASS()
 class NECOGOBLIN_API AMainPlayerController : public APlayerController {
 	GENERATED_BODY()
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDelegate_ControllerGameStart);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UUserWidget> LoadingScreenMenuClass;
@@ -36,8 +38,11 @@ protected:
 	virtual void OnPossess(APawn* aPawn) override;
 
 public:
+	FDelegate_ControllerGameStart GameStart_Delegate;
+
 	void QuitSession();
 
+	UFUNCTION() void OnStartGame();
 	UFUNCTION(Client, Reliable) void Client_OnInitiateLevelLoad();
 	UFUNCTION(Client, Reliable) void Client_OnEnterLobbyMode();
 	UFUNCTION(Client, Reliable) void Client_OnCharacterStart();

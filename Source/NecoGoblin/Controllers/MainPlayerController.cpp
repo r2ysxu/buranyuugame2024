@@ -6,15 +6,18 @@
 #include "../Widgets/HUDs/RoundHUD.h"
 #include "../Widgets/Menus/MultiplayerLobbyMenuWidget.h"
 #include "../GameInstance/NGGameInstance.h"
+#include "../Gamemodes/MultiplayerGameMode.h"
 
 #include "Blueprint/UserWidget.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/Controller.h"
+#include "Kismet/GameplayStatics.h"
 
 void AMainPlayerController::BeginPlay() {
 	Super::BeginPlay();
+	GameStart_Delegate.AddDynamic(this, &AMainPlayerController::OnStartGame);
 	LoadingScreenMenu = CreateWidget<UUserWidget>(GetWorld(), LoadingScreenMenuClass);
 
 	MultiplayerLobbyMenu = CreateWidget<UMultiplayerLobbyMenuWidget>(GetWorld(), MultiplayerLobbyMenuClass);
@@ -34,6 +37,13 @@ void AMainPlayerController::QuitSession() {
 	Cast<UNGGameInstance>(GetGameInstance())->QuitSession();
 }
 
+void AMainPlayerController::OnStartGame() {
+	if (IsValid(MultiplayerLobbyMenu)) MultiplayerLobbyMenu->RemoveFromViewport();
+	if (AMultiplayerGameMode* gamemode = Cast<AMultiplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()))) {
+		gamemode->LoadIntoMPLevel("IslandMap_MP");
+	}
+}
+
 void AMainPlayerController::Client_OnPropagateLobbySettings_Implementation() {
 	AMainCharacter* character = Cast<AMainCharacter>(GetPawn());
 	if (IsValid(character)) {
@@ -45,8 +55,7 @@ void AMainPlayerController::Client_OnInitiateLevelLoad_Implementation() {
 	if (LoadingScreenMenu) {
 		LoadingScreenMenu->AddToViewport();
 	}
-	if (MultiplayerLobbyMenu && MultiplayerLobbyMenu->IsInViewport()) {
-		MultiplayerLobbyMenu->SetVisibility(ESlateVisibility::Hidden);
+	if (IsValid(MultiplayerLobbyMenu) && !HasAuthority()) {
 		MultiplayerLobbyMenu->RemoveFromParent();
 	}
 }

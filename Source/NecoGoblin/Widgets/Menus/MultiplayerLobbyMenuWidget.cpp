@@ -2,9 +2,9 @@
 
 
 #include "MultiplayerLobbyMenuWidget.h"
-#include "../../Gamemodes/MultiplayerGameMode.h"
 #include "../../GameInstance/NGGameInstance.h"
 #include "../../Characters/Ally/MainCharacter.h"
+#include "../../Controllers/MainPlayerController.h"
 
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
@@ -19,10 +19,9 @@ void UMultiplayerLobbyMenuWidget::NativeConstruct() {
 
 void UMultiplayerLobbyMenuWidget::OnStartGameClicked() {
 	StartButton->SetIsEnabled(false);
-	RemoveFromViewport();
-	if (AMultiplayerGameMode* gamemode = Cast<AMultiplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()))) {
-		gamemode->LoadIntoMPLevel("IslandMap_MP");
-	}
+	SetVisibility(ESlateVisibility::Hidden);
+	Cast<AMainPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))
+		->GameStart_Delegate.Broadcast();
 }
 
 void UMultiplayerLobbyMenuWidget::CheckCanStart(bool CanStart) {
@@ -36,7 +35,7 @@ void UMultiplayerLobbyMenuWidget::OnNextClicked() {
 
 void UMultiplayerLobbyMenuWidget::OnPrevClicked() {
 	Cast<AMainCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
-		->ChangeCharacterSkin(1);
+		->ChangeCharacterSkin(-1);
 }
 
 void UMultiplayerLobbyMenuWidget::OnBackClicked() {
