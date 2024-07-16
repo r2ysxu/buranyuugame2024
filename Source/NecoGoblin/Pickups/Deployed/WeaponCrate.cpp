@@ -2,7 +2,6 @@
 
 
 #include "WeaponCrate.h"
-#include "../../Widgets/HUDs/WeaponHUD.h"
 #include "../../Weapons/Ranged/FirearmWeapon.h"
 #include "../../Characters/Ally/MainCharacter.h"
 
@@ -12,29 +11,19 @@
 void AWeaponCrate::BeginPlay() {
 	Super::BeginPlay();
 	WeaponData = WeaponDataTable->FindRow<FFirearmWeaponData>(WeaponKey, FString("MainFirearm"), true);
-
-	InfoHudWidget = CreateWidget<UWeaponHUD>(GetWorld(), InfoHudWidgetClass);
-	if (IsValid(InfoHudWidget)) {
-		InfoHudWidget->AddToViewport();
-		InfoHudWidget->SetVisibility(ESlateVisibility::Hidden);
-		InfoHudWidget->SetCurrentWeaponStats(GetStats());
-	}
 }
 
 void AWeaponCrate::OnWithinRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(actor);
 	if (IsValid(mainCharacter)) {
-		mainCharacter->SetChangableWeapon(WeaponKey);
-		InfoHudWidget->SetVisibility(ESlateVisibility::Visible);
-		InfoHudWidget->SetPlayerWeaponStats(mainCharacter->GetFirearmStats());
+		mainCharacter->ShowWeaponInfoStats(GetStats(), WeaponKey);
 	}
 }
 
 void AWeaponCrate::OnOutsideRange(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex) {
 	AMainCharacter* mainCharacter = Cast<AMainCharacter>(actor);
 	if (IsValid(mainCharacter)) {
-		mainCharacter->SetChangableWeapon(FName());
-		InfoHudWidget->SetVisibility(ESlateVisibility::Hidden);
+		mainCharacter->HideWeaponInfoStats();
 	}
 }
 

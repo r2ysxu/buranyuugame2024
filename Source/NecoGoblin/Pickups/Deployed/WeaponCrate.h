@@ -20,9 +20,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	class UDataTable* WeaponDataTable = nullptr;
 	struct FFirearmWeaponData* WeaponData;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
-	TSubclassOf<class UWeaponHUD> InfoHudWidgetClass;
-	class UWeaponHUD* InfoHudWidget;
 
 	virtual void BeginPlay() override;
 

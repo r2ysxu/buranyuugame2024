@@ -54,6 +54,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class UCharacterHUD> HudWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<class UWeaponHUD> WeaponInfoHudWidgetClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class USkillsMenuWidget> SkillHudWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<class AMagazineActor> MagazineActorBPClass;
@@ -61,6 +63,7 @@ protected:
 	UUserWidget* LoadingScreenWidget;
 	UUserWidget* CrosshairHudWidget;
 	class UCharacterHUD* HudWidget;
+	class UWeaponHUD* WeaponInfoHudWidget;
 	class USkillsMenuWidget* SkillHudWidget;
 	class AMagazineActor* MagazineActor;
 
@@ -193,6 +196,8 @@ public:
 	void StaminaDrain();
 	void SetRunSpeed(float MovementSpeedModifier);
 	void AddMaxHP(float AdditionalHP);
+	void ShowWeaponInfoStats(struct FFirearmStats WeaponStats, FName WeaponKey);
+	void HideWeaponInfoStats();
 
 	virtual	void OnInteract();
 	virtual int RefillAmmo(int AmmoAmount);

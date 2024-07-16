@@ -4,6 +4,7 @@
 #include "../Goblin/Goblin.h"
 #include "../../Gamemodes/GoblinGameMode.h"
 #include "../../Widgets/HUDs/CharacterHUD.h"
+#include "../../Widgets/HUDs/WeaponHUD.h"
 #include "../../Widgets/Actors/MagazineActor.h"
 #include "../../Widgets/Menus/SkillsMenuWidget.h"
 #include "../../GameInstance/NGGameInstance.h"
@@ -100,6 +101,12 @@ void AMainCharacter::SetupHuds() {
 	if (CrosshairHudWidget) {
 		CrosshairHudWidget->AddToViewport();
 		CrosshairHudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	WeaponInfoHudWidget = CreateWidget<UWeaponHUD>(GetWorld(), WeaponInfoHudWidgetClass);
+	if (IsValid(WeaponInfoHudWidget)) {
+		WeaponInfoHudWidget->AddToViewport();
+		WeaponInfoHudWidget->SetVisibility(ESlateVisibility::Hidden);
+		WeaponInfoHudWidget->SetPlayerWeaponStats(GetFirearmStats());
 	}
 	SkillHudWidget = CreateWidget<USkillsMenuWidget>(GetWorld(), SkillHudWidgetClass);
 	upgradeComponent->SetupWidget(SkillHudWidget);
@@ -368,6 +375,21 @@ void AMainCharacter::SetRunSpeed(float MovementSpeedModifier) {
 void AMainCharacter::AddMaxHP(float AdditionalHP) {
 	MaxHealth += AdditionalHP;
 	CurrentHealth += AdditionalHP;
+}
+
+void AMainCharacter::ShowWeaponInfoStats(FFirearmStats WeaponStats, FName WeaponKey) {
+	if (IsValid(WeaponInfoHudWidget)) {
+		SetChangableWeapon(WeaponKey);
+		WeaponInfoHudWidget->SetCurrentWeaponStats(WeaponStats);
+		WeaponInfoHudWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void AMainCharacter::HideWeaponInfoStats() {
+	SetChangableWeapon(FName());
+	if (IsValid(WeaponInfoHudWidget)) {
+		WeaponInfoHudWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void AMainCharacter::PlayGetupMontage() {
