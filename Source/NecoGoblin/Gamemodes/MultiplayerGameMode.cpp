@@ -11,6 +11,7 @@
 
 #include "Engine/LevelStreaming.h"
 #include "Kismet/GameplayStatics.h"
+#include <GameFramework/PlayerStart.h>
 
 AMultiplayerGameMode::AMultiplayerGameMode() {
 	GameStateClass = AMultiplayerGameState::StaticClass();
@@ -41,6 +42,10 @@ void AMultiplayerGameMode::OnPostLogin(AController* NewPlayer) {
 		}
 	}
 	OnInitiateLobbyLoadForPlayers();
+}
+
+void AMultiplayerGameMode::Logout(AController* NewPlayer) {
+	Super::Logout(NewPlayer);
 }
 
 void AMultiplayerGameMode::SpawnEnemy() {

@@ -50,6 +50,7 @@ protected:
 	virtual void Look(const FInputActionValue& Value) override;
 	void Move(const FInputActionValue& Value);
 
+	UFUNCTION() void OnDestoryAccessories(AActor* DestroyedActor);
 	UFUNCTION() void OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(Server, Reliable) void Server_SetupCharacters();

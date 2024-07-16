@@ -37,6 +37,7 @@ void AMainMPCharacter::BeginPlay() {
 		}
 	}
 	ShowReviveHUD(false);
+	OnDestroyed.AddDynamic(this, &AMainMPCharacter::OnDestoryAccessories);
 }
 
 void AMainMPCharacter::ShowReviveHUD(bool IsVisible) {
@@ -103,6 +104,10 @@ void AMainMPCharacter::Look(const FInputActionValue& Value) {
 	FRotator playerRotation = (GetControlRotation() - GetActorRotation()).GetNormalized();
 	SetPlayerPitch(playerRotation.Pitch);
 	//if (!HasAuthority()) Server_SetRotation(GetActorRotation(), playerRotation.Pitch);
+}
+
+void AMainMPCharacter::OnDestoryAccessories(AActor* DestroyedActor) {
+	if (Firearm) Firearm->Destroy();
 }
 
 void AMainMPCharacter::OnDeadBodyTouched(UPrimitiveComponent* OverlappedComponent, AActor* actor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

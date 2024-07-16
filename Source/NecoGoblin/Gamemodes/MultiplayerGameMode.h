@@ -18,12 +18,11 @@ class NECOGOBLIN_API AMultiplayerGameMode : public AGoblinGameMode {
 protected:
 	const FName LOBBY_MENU_MAP = FName("MPLobbyWorld");
 
-	int LoggedInPlayers = 0;
 	bool GameStarted = false;
-
 
 	virtual void StartPlay() override;
 	virtual void OnPostLogin(AController* NewPlayer) override;
+	virtual void Logout(AController* NewPlayer) override;
 	virtual void SpawnEnemy() override;
 	void OnInitiateLobbyLoadForPlayers();
 	void OnInitiateLevelLoadForPlayers();
