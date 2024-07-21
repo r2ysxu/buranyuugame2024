@@ -19,7 +19,7 @@ class NECOGOBLIN_API UNGGameInstance : public UGameInstance {
 protected:
 
 	IOnlineSessionPtr SessionInterface;
-	FName DefaultSessionName = FName("Session#");
+	FName DefaultSessionName = GameSessionName;
 	TSharedPtr<FOnlineSessionSearch> FoundSessions;
 	TArray<FOnlineSessionSearchResult*> SessionSearchResults;
 	float GameVolume = 1.f;
