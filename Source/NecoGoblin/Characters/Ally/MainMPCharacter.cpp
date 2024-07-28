@@ -140,7 +140,7 @@ void AMainMPCharacter::OnRevivePlayer() {
 	if (!HasAuthority()) {
 		Server_OnRevivePlayer();
 	} else {
-		Multicast_OnRevivePlayer();
+		Server_OnRevivePlayer_Implementation();
 	}
 }
 
@@ -236,6 +236,15 @@ void AMainMPCharacter::Multicast_OnFireWeaponOnceFired_Implementation() {
 }
 
 void AMainMPCharacter::OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+	if (HasAuthority()) {
+		Server_OnHitTarget_Implementation(Target, ImpactPoint, IsHeadshot);
+	} else {
+		Server_OnHitTarget(Target, ImpactPoint, IsHeadshot);
+	}
+}
+
+void AMainMPCharacter::Server_OnHitTarget_Implementation(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) {
+	Super::OnHitTarget(Target, ImpactPoint, IsHeadshot);
 	Multicast_OnHitTarget(Target, ImpactPoint, IsHeadshot);
 }
 
@@ -328,19 +337,27 @@ void AMainMPCharacter::Multicast_OnRefillAmmo_Implementation(int AmmoAmount) {
 	Super::RefillAmmo(AmmoAmount);
 }
 
+void AMainMPCharacter::OnDead() {
+	IsAlive = false;
+	Tags.Remove(FName("MainPlayer"));
+	GetCharacterMovement()->StopMovementImmediately();
+	GetMovementComponent()->Deactivate();
+	DisableInput(Cast<APlayerController>(GetController()));
+	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+	GetMesh()->SetSimulatePhysics(true);
+	ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainMPCharacter::OnDeadBodyTouched);
+	ShowReviveHUD(true);
+}
+
 bool AMainMPCharacter::CheckAlive() {
 	if (!IsAlive) return false;
 	if (CurrentHealth <= 0) {
+		if (HasAuthority()) {
+			Server_NotifyDead_Implementation();
+		} else {
+			Server_NotifyDead();
+		}
 		IsAlive = false;
-		Tags.Remove(FName("MainPlayer"));
-		GetCharacterMovement()->StopMovementImmediately();
-		GetMovementComponent()->Deactivate();
-		DisableInput(Cast<APlayerController>(GetController()));
-		GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
-		GetMesh()->SetSimulatePhysics(true);
-		Server_NotifyDead();
-		ReviveBox->OnComponentBeginOverlap.AddDynamic(this, &AMainMPCharacter::OnDeadBodyTouched);
-		ShowReviveHUD(true);
 	}
 	return IsAlive;
 }
@@ -361,11 +378,13 @@ void AMainMPCharacter::Multicast_UpgradeSkill_Implementation(FNecoSkills Skill) 
 	Super::UpgradeSkill(Skill);
 }
 
-
 void AMainMPCharacter::Server_NotifyDead_Implementation() {
+	OnDead();
 	AMultiplayerGameMode* gameMode = Cast<AMultiplayerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	gameMode->OnPlayerDead(0.f);
-	//if (IsValid(gameMode)) {
-	//	gameMode->DelegateGameOver.Broadcast(20.f);
-	//}
+	Multicast_NotifyDead();
+}
+
+void AMainMPCharacter::Multicast_NotifyDead_Implementation() {
+	OnDead();
 }

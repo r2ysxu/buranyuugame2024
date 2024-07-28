@@ -15,6 +15,7 @@ class NECOGOBLIN_API AMainMPCharacter : public AMainCharacter {
 
 private:
 	void ShowReviveHUD(bool IsVisible);
+	void OnDead();
 
 protected:
 
@@ -70,6 +71,7 @@ protected:
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnFireWeaponOnceFired();
 
 	virtual void OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot) override;
+	UFUNCTION(Server, Reliable) void Server_OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
 	UFUNCTION(NetMulticast, Reliable) void Multicast_OnHitTarget(AHumanoid* Target, FVector ImpactPoint, bool IsHeadshot);
 
 	virtual void OnReloadWeapon() override;
@@ -104,6 +106,7 @@ protected:
 	UFUNCTION(NetMulticast, Reliable) void Multicast_UpgradeSkill(enum FNecoSkills Skill);
 
 	UFUNCTION(Server, Reliable) void Server_NotifyDead();
+	UFUNCTION(NetMulticast, Reliable) void Multicast_NotifyDead();
 
 public:
 	AMainMPCharacter();

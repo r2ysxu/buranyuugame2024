@@ -45,7 +45,7 @@ void ARangeGoblinController::OnMoveToTarget() {
 		} else if (GetPawn()->GetDistanceTo(CurrentTarget) > MinimumTargetDistance) {
 			MoveToActor(CurrentTarget);
 		} else {
-			PossessedPawn->TrackTargetStopMovement(CurrentTarget);
+			PossessedPawn->TrackTarget(CurrentTarget);
 			StopMovement();
 		}
 	}

@@ -50,7 +50,7 @@ public:
 
 	void SetRunSpeed(float MovementSpeedModifier) override;
 	bool CheckRangeAttack(class AAllyBase* TargetCharacter, FVector& OutTossVelocity);
-	void TrackTargetStopMovement(class AAllyBase* TargetCharacter);
+	void TrackTarget(class AAllyBase* TargetCharacter);
 	void OnAttackReset();
 	void OnAttackCooldownReset();
 	bool CheckAlive() override;

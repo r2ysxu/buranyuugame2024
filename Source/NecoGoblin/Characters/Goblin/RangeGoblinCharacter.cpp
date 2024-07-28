@@ -100,7 +100,7 @@ void ARangeGoblinCharacter::Multicast_InitiateRangeAttack_Implementation(FVector
 	InitiateRangeAttack_Implementation(OutTossVelocity);
 }
 
-void ARangeGoblinCharacter::TrackTargetStopMovement(AAllyBase* TargetCharacter) {
+void ARangeGoblinCharacter::TrackTarget(AAllyBase* TargetCharacter) {
 	FRotator rotation = UKismetMathLibrary::FindLookAtRotation(GetTargetLocation(), TargetCharacter->GetActorLocation());
 	SetActorRotation(FRotator(GetActorRotation().Pitch, rotation.Yaw, GetActorRotation().Roll));
 }

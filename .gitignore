@@ -11,6 +11,8 @@ Content/NecoGoblin/Mesh/NecoArc
 Content/NecoGoblin/Mesh/Plane
 Content/NecoGoblin/Sounds
 Content/NecoGoblin/Maps/PromoMap
+Content/NecoGoblin/Maps/MenuMap/MenuMapWorld_BuiltData.uasset
+Content/NecoGoblin/Maps/SingleplayerMaps/IslandMap_BuiltData.uasset
 Content/NecoGoblin/Maps/MultiplayerMaps/IslandMap_MP_BuiltData.uasset
 DerivedDataCache
 Intermediate
